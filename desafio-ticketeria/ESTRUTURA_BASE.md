@@ -25,6 +25,15 @@ src/
 ├── services/
 │   └── TicketApi.ts                    # Cliente API centralizado
 │
+├── helpers/
+│   └── ticketStorage.ts                # Helpers para AsyncStorage
+│
+├── database/
+│   └── ticketSqliteOperations.ts       # Operações SQLite (CRUD de tickets)
+│
+├── hooks/
+│   └── useBiometric.ts                 # Hook para biometria (opcional)
+│
 ├── components/
 │   └── _fragments/
 │       ├── TicketCard/

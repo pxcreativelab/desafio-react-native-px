@@ -708,6 +708,145 @@ export default TicketDetails;
 
 ---
 
+## 6. Exemplo com AsyncStorage (Cache Local)
+
+```typescript
+// src/pages/Ticketeria/index.tsx (versão com cache)
+import { useEffect, useState } from "react";
+import { 
+  getTicketsFromStorage, 
+  saveTicketsToStorage,
+  isCacheValid 
+} from "../../helpers/ticketStorage";
+import { fetchTickets, Ticket } from "../../services/TicketApi";
+
+const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isOffline, setIsOffline] = useState<boolean>(false);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
+
+  useEffect(() => {
+    loadTickets();
+  }, []);
+
+  const loadTickets = async (forceRefresh: boolean = false) => {
+    // Carregar do cache primeiro (se não for refresh forçado)
+    if (!forceRefresh) {
+      const cachedTickets = await getTicketsFromStorage();
+      if (cachedTickets && cachedTickets.data.length > 0) {
+        setTickets(cachedTickets.data);
+        setLoading(false);
+        // Continuar buscando da API em background
+      }
+    }
+
+    // Buscar da API
+    try {
+      setLoading(true);
+      setIsOffline(false);
+      
+      const response = await fetchTickets({ page: 1, limit: 20 });
+      
+      setTickets(response.data);
+      await saveTicketsToStorage(response); // Salvar no cache
+      setIsOffline(false);
+    } catch (error) {
+      // Se falhar, tentar usar cache
+      const cachedTickets = await getTicketsFromStorage();
+      if (cachedTickets) {
+        setTickets(cachedTickets.data);
+        setIsOffline(true); // Mostrar que está offline
+      } else {
+        // Sem cache e sem internet = erro
+        setError(true);
+      }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadTickets(true); // Force refresh
+  };
+
+  // Resto do código...
+};
+```
+
+## 7. Exemplo com Biometria
+
+```typescript
+// Componente de botão de login por biometria
+import React, { useState } from "react";
+import { Alert } from "react-native";
+import { useBiometric } from "../../hooks/useBiometric";
+import { useAuth } from "../../contexts/auth";
+import Button from "../../components/_core/Button";
+import Icon from "../../components/_core/Icon";
+
+const BiometricLoginButton = () => {
+  const { isAvailable, authenticate, getSavedCredentials } = useBiometric();
+  const { handleSignIn } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const handleBiometricLogin = async () => {
+    if (!isAvailable) {
+      Alert.alert("Biometria não disponível");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Autenticar biometria
+      const authenticated = await authenticate();
+      
+      if (!authenticated) {
+        return; // Usuário cancelou
+      }
+
+      // Buscar credenciais salvas
+      const credentials = await getSavedCredentials();
+      
+      if (!credentials) {
+        Alert.alert("Erro", "Nenhuma credencial encontrada.");
+        return;
+      }
+
+      // Fazer login
+      await handleSignIn({
+        email: credentials.email,
+        password: credentials.password,
+        origin: "biometric",
+      });
+    } catch (error) {
+      Alert.alert("Erro", "Falha na autenticação biométrica.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (!isAvailable) {
+    return null; // Não mostrar se não disponível
+  }
+
+  return (
+    <Button
+      label="Entrar com Biometria"
+      onPress={handleBiometricLogin}
+      loading={loading}
+      icon={<Icon name="finger-print-outline" size={20} />}
+      outline
+    />
+  );
+};
+```
+
+---
+
 ## 📝 Notas sobre os Exemplos
 
 1. **Componentes Core:** Todos os componentes usados (`Input`, `Button`, `Text`, etc.) devem estar disponíveis em `src/components/_core/`
@@ -715,6 +854,9 @@ export default TicketDetails;
 3. **Navegação:** Ajuste os nomes das rotas conforme sua implementação
 4. **Estilos:** Adapte os estilos conforme o tema do projeto
 5. **TypeScript:** Mantenha a tipagem forte conforme os exemplos
+6. **AsyncStorage:** Consulte `ASYNCSTORAGE_BIOMETRIA.md` para mais detalhes sobre cache e biometria
+7. **SQLite:** Consulte `SQLITE_OFFLINE.md` para modo offline robusto
+8. **Biometria:** Use `react-native-biometrics` e siga os padrões do projeto em `src/helpers/cryptoData.ts`
 
 **Use esses exemplos como referência e adapte conforme necessário!**
 

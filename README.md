@@ -52,6 +52,32 @@ Criar um sistema completo de cadastro e gestão de tickets (ticketeria) seguindo
 - [ ] Tratamento de erros (network, validação, etc.)
 - [ ] Loading states apropriados
 
+### 5. AsyncStorage (Cache Local)
+- [ ] Salvar lista de tickets no AsyncStorage após busca bem-sucedida
+- [ ] Carregar tickets do cache ao iniciar a tela (mostrar dados antigos enquanto carrega novos)
+- [ ] Salvar detalhes do ticket localmente para acesso offline
+- [ ] Limpar cache quando necessário (pull to refresh)
+- [ ] Salvar preferências do usuário (filtros, ordenação)
+- [ ] Implementar sincronização quando voltar online
+
+### 6. SQLite (Modo Offline Robusto)
+- [ ] Criar tabelas SQLite para Tickets, Comments, Attachments
+- [ ] Salvar tickets no SQLite quando criados/atualizados offline
+- [ ] Salvar comentários pendentes para sincronização posterior
+- [ ] Salvar anexos pendentes localmente
+- [ ] Implementar sistema de fila para ações pendentes
+- [ ] Sincronizar dados pendentes quando voltar online
+- [ ] Usar `isConnected()` para detectar status de conexão
+- [ ] Marcar itens como sincronizados após envio bem-sucedido
+
+### 7. Login com Biometria (Opcional mas Desejável)
+- [ ] Adicionar opção de login rápido por biometria
+- [ ] Verificar disponibilidade do sensor biométrico
+- [ ] Implementar autenticação biométrica usando `react-native-biometrics`
+- [ ] Salvar credenciais criptografadas (usar `cryptoData` helper)
+- [ ] Integrar com o contexto de autenticação existente
+- [ ] Permitir habilitar/desabilitar login biométrico nas configurações
+
 ---
 
 ## 🏗️ Estrutura de Arquivos
@@ -74,6 +100,12 @@ src/
 │
 ├── services/
 │   └── TicketApi.ts                     # Cliente API para tickets
+│
+├── helpers/
+│   └── ticketStorage.ts                # Helpers para AsyncStorage (cache)
+│
+├── database/
+│   └── ticketSqliteOperations.ts       # Operações SQLite para tickets
 │
 ├── components/
 │   └── _fragments/
@@ -263,6 +295,11 @@ Para testar sem uma API real, você pode usar:
 - [ ] Adicionar comentários
 - [ ] Alterar status do ticket
 - [ ] Upload e visualização de anexos
+- [ ] Cache local com AsyncStorage funcionando
+- [ ] Carregar dados do cache quando offline
+- [ ] SQLite funcionando para modo offline
+- [ ] Sincronização de dados pendentes funcionando
+- [ ] Login por biometria implementado (opcional)
 
 ### Qualidade de Código
 - [ ] Código segue padrões TypeScript
@@ -285,6 +322,11 @@ Para testar sem uma API real, você pode usar:
 - [ ] APIs chamadas corretamente
 - [ ] Tokens de autenticação utilizados (se necessário)
 - [ ] Tratamento de offline/erro de rede
+- [ ] AsyncStorage funcionando para cache
+- [ ] SQLite funcionando para modo offline robusto
+- [ ] Sincronização de dados local/servidor
+- [ ] Fila de pendências sincronizando corretamente
+- [ ] Biometria integrada (se implementado)
 
 ---
 
@@ -309,6 +351,11 @@ Para entender melhor os padrões, consulte:
 
 5. **Estilos:**
    - `src/styles/theme.ts` - Tema e cores do projeto
+
+6. **SQLite (Modo Offline):**
+   - `src/database/sqlite.ts` - Configuração e criação de tabelas
+   - `src/database/sqliteOperations.ts` - Operações CRUD SQLite
+   - `src/database/migrations.ts` - Migrações de banco de dados
 
 ---
 

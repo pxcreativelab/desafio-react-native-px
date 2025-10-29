@@ -12,6 +12,7 @@ Use este checklist para acompanhar seu progresso durante o desenvolvimento.
 - [ ] Criar pasta `src/components/_fragments/TicketStatusBadge/`
 - [ ] Criar pasta `src/components/_fragments/TicketComment/` (opcional)
 - [ ] Criar `src/services/TicketApi.ts`
+- [ ] Criar `src/helpers/ticketStorage.ts` (helpers para AsyncStorage)
 
 ### Configuração Base
 - [ ] Definir interfaces TypeScript (`Ticket`, `Comment`, `Attachment`)
@@ -21,6 +22,14 @@ Use este checklist para acompanhar seu progresso durante o desenvolvimento.
 - [ ] Implementar função `updateTicket()`
 - [ ] Implementar função `addComment()`
 - [ ] Testar chamadas de API (com mock ou real)
+
+### AsyncStorage Helpers
+- [ ] Criar função `saveTicketsToStorage()`
+- [ ] Criar função `getTicketsFromStorage()`
+- [ ] Criar função `saveTicketDetailsToStorage()`
+- [ ] Criar função `getTicketDetailsFromStorage()`
+- [ ] Criar função `clearTicketCache()`
+- [ ] Criar função `saveUserPreferences()` (filtros, ordenação)
 
 ---
 
@@ -211,7 +220,86 @@ Use este checklist para acompanhar seu progresso durante o desenvolvimento.
 
 ---
 
-## ✅ Fase 10: Testes e Validação Final
+## 💾 Fase 10: AsyncStorage e Cache Local
+
+### Implementação de Cache
+- [ ] Salvar lista de tickets no AsyncStorage após busca bem-sucedida
+- [ ] Carregar tickets do cache ao iniciar (mostrar dados antigos)
+- [ ] Atualizar cache após criar novo ticket
+- [ ] Atualizar cache após atualizar ticket
+- [ ] Salvar detalhes do ticket para acesso offline
+- [ ] Implementar invalidação de cache (após X minutos ou pull to refresh)
+- [ ] Salvar preferências do usuário (filtros selecionados)
+- [ ] Sincronizar dados quando voltar online
+
+### Funcionalidade Offline
+- [ ] Exibir dados do cache quando sem internet
+- [ ] Mostrar indicador visual de "dados offline"
+- [ ] Fila de ações pendentes (criar ticket offline, salvar comentário)
+- [ ] Sincronizar quando voltar online
+
+## 💾 Fase 11: SQLite para Modo Offline
+
+### Estrutura SQLite
+- [ ] Adicionar tabelas de Tickets ao `sqlite.ts`
+- [ ] Criar tabela `Tickets`
+- [ ] Criar tabela `TicketComments`
+- [ ] Criar tabela `TicketAttachments`
+- [ ] Criar tabela `PendingTicketActions`
+- [ ] Testar criação de tabelas
+
+### Operações SQLite
+- [ ] Criar `ticketSqliteOperations.ts`
+- [ ] Implementar `fetchSQLiteTickets()`
+- [ ] Implementar `insertSQLiteTicket()`
+- [ ] Implementar `fetchSQLiteTicketById()`
+- [ ] Implementar `fetchSQLiteComments()`
+- [ ] Implementar `insertSQLiteComment()`
+- [ ] Implementar `fetchSQLiteAttachments()`
+- [ ] Implementar `insertSQLiteAttachment()`
+- [ ] Implementar `savePendingAction()`
+- [ ] Implementar `getPendingActions()`
+- [ ] Implementar `markActionAsSynced()`
+
+### Sincronização
+- [ ] Implementar `syncPendingActions()`
+- [ ] Detectar mudança de conexão (NetInfo)
+- [ ] Sincronizar automaticamente ao voltar online
+- [ ] Tratar IDs temporários vs server IDs
+- [ ] Implementar limite de tentativas de sincronização
+- [ ] Limpar registros antigos sincronizados
+
+### Integração
+- [ ] Carregar tickets do SQLite quando offline
+- [ ] Salvar tickets no SQLite após criação/atualização
+- [ ] Criar tickets offline e marcar como pendente
+- [ ] Adicionar comentários offline
+- [ ] Visualizar tickets offline
+- [ ] Indicador visual de modo offline
+
+## 🔐 Fase 12: Login com Biometria
+
+### Configuração de Biometria
+- [ ] Verificar disponibilidade do sensor biométrico
+- [ ] Implementar detecção de tipo (TouchID, FaceID, Fingerprint)
+- [ ] Criar componente/hook para biometria
+- [ ] Integrar com `react-native-biometrics`
+
+### Autenticação Biométrica
+- [ ] Implementar função de login por biometria
+- [ ] Salvar credenciais criptografadas usando `cryptoData` helper
+- [ ] Carregar credenciais ao iniciar app (se habilitado)
+- [ ] Solicitar biometria ao fazer login
+- [ ] Tratar erros de biometria (usuário cancelou, falha, etc.)
+- [ ] Permitir habilitar/desabilitar nas configurações
+
+### Integração com Auth Context
+- [ ] Integrar com contexto de autenticação existente
+- [ ] Usar mesmo padrão de criptografia do projeto
+- [ ] Seguir padrão de `BIOMETRIC_STORAGE_NAME` do config
+- [ ] Validar token após login biométrico
+
+## ✅ Fase 13: Testes e Validação Final
 
 ### Testes Funcionais
 - [ ] Criar ticket completo
@@ -237,6 +325,13 @@ Use este checklist para acompanhar seu progresso durante o desenvolvimento.
 - [ ] Interface consistente
 - [ ] Sem erros no console
 - [ ] Performance aceitável
+- [ ] Cache funcionando corretamente
+- [ ] SQLite funcionando para modo offline
+- [ ] Sincronização de pendências funcionando
+- [ ] Biometria funcionando (se implementado)
+- [ ] Funcionalidade offline testada
+- [ ] Testado criar ticket offline
+- [ ] Testado sincronização quando voltar online
 
 ---
 

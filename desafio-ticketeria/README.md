@@ -16,6 +16,12 @@ Se não tiver acesso à API real ainda, veja `API_MOCK.md` para configurar um am
 ### 4. Veja Exemplos de Código
 O arquivo `EXEMPLOS_CODIGO.md` contém exemplos completos de componentes para te orientar.
 
+### 5. AsyncStorage e Biometria
+Consulte `ASYNCSTORAGE_BIOMETRIA.md` para implementar cache local e login por biometria.
+
+### 6. SQLite para Modo Offline
+Consulte `SQLITE_OFFLINE.md` para implementar modo offline robusto com SQLite.
+
 ## 📋 Checklist Rápido
 
 Use este checklist durante o desenvolvimento:
@@ -46,6 +52,16 @@ Use este checklist durante o desenvolvimento:
 - [ ] Melhorar UX/UI
 - [ ] Otimizar performance
 - [ ] Testar em diferentes cenários
+
+### Fase 6: AsyncStorage e SQLite
+- [ ] Implementar cache local com AsyncStorage
+- [ ] Implementar SQLite para modo offline robusto
+- [ ] Sistema de sincronização de pendências
+- [ ] Ver documentação em `ASYNCSTORAGE_BIOMETRIA.md` e `SQLITE_OFFLINE.md`
+
+### Fase 7: Biometria
+- [ ] Implementar login por biometria
+- [ ] Ver documentação em `ASYNCSTORAGE_BIOMETRIA.md`
 
 ## 🔍 Referências Rápidas
 
