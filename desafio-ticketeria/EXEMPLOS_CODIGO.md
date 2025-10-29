@@ -8,12 +8,9 @@ Este arquivo contém exemplos mais completos e detalhados para te orientar na im
 // src/components/_fragments/TicketCard/index.tsx
 import React from "react";
 import { TouchableOpacity } from "react-native";
-import Icon from "../../../components/_core/Icon";
-import Text from "../../../components/_core/Text";
 import TicketStatusBadge from "../TicketStatusBadge";
 import { Ticket } from "../../../services/TicketApi";
-import { Container, Header, Content, Footer, MetaInfo } from "./styles";
-import { formatDateBr } from "../../../helpers/formatDateBr";
+import { Container, Header, Content, Footer, MetaInfo, Title, Description, DateText } from "./styles";
 
 interface TicketCardProps {
   ticket: Ticket;
@@ -50,44 +47,37 @@ const TicketCard = ({ ticket, onPress }: TicketCardProps) => {
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <Container>
         <Header>
-          <Text size="h3" weight="bold" numberOfLines={2} style={{ flex: 1 }}>
-            {ticket.title}
-          </Text>
+          <Title numberOfLines={2}>{ticket.title}</Title>
           <TicketStatusBadge status={ticket.status} />
         </Header>
 
         <Content>
-          <Text size="p" color="gray" numberOfLines={2}>
+          <Description numberOfLines={2}>
             {ticket.description}
-          </Text>
+          </Description>
         </Content>
 
         <Footer>
           <MetaInfo>
-            <Icon name="folder-outline" size={16} color="gray" />
-            <Text size="small" color="gray">
-              {ticket.category}
-            </Text>
+            <DateText>{ticket.category}</DateText>
           </MetaInfo>
 
           <MetaInfo>
-            <Icon name="flag-outline" size={16} color={getPriorityColor(ticket.priority)} />
-            <Text size="small" color="gray">
+            <DateText style={{ color: getPriorityColor(ticket.priority) }}>
               {getPriorityLabel(ticket.priority)}
-            </Text>
+            </DateText>
           </MetaInfo>
 
-          <Text size="small" color="gray">
-            {formatDateBr(ticket.createdAt)}
-          </Text>
+          <DateText>
+            {new Date(ticket.createdAt).toLocaleDateString("pt-BR")}
+          </DateText>
         </Footer>
 
         {ticket.comments && ticket.comments.length > 0 && (
           <MetaInfo style={{ marginTop: 8 }}>
-            <Icon name="chatbubble-outline" size={16} color="gray" />
-            <Text size="small" color="gray">
+            <DateText>
               {ticket.comments.length} comentário{ticket.comments.length > 1 ? "s" : ""}
-            </Text>
+            </DateText>
           </MetaInfo>
         )}
       </Container>
@@ -141,6 +131,23 @@ export const MetaInfo = styled.View`
   align-items: center;
   gap: 4px;
 `;
+
+export const Title = styled.Text`
+  font-size: 16px;
+  font-weight: bold;
+  flex: 1;
+  color: ${({ theme }) => theme.colors?.text || "#000"};
+`;
+
+export const Description = styled.Text`
+  font-size: 14px;
+  color: ${({ theme }) => theme.colors?.gray || "#666"};
+`;
+
+export const DateText = styled.Text`
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors?.gray || "#666"};
+`;
 ```
 
 ## 2. TicketStatusBadge
@@ -148,8 +155,7 @@ export const MetaInfo = styled.View`
 ```typescript
 // src/components/_fragments/TicketStatusBadge/index.tsx
 import React from "react";
-import Text from "../../_core/Text";
-import { Container } from "./styles";
+import { Container, StatusText } from "./styles";
 
 interface TicketStatusBadgeProps {
   status: "open" | "in_progress" | "resolved" | "closed";
@@ -190,9 +196,9 @@ const TicketStatusBadge = ({ status }: TicketStatusBadgeProps) => {
 
   return (
     <Container bgColor={config.bgColor}>
-      <Text size="small" weight="medium" color={config.color}>
+      <StatusText color={config.color}>
         {config.label}
-      </Text>
+      </StatusText>
     </Container>
   );
 };
@@ -213,6 +219,12 @@ export const Container = styled.View<ContainerProps>`
   padding: 4px 12px;
   border-radius: 12px;
 `;
+
+export const StatusText = styled.Text<{ color: string }>`
+  font-size: 12px;
+  font-weight: 500;
+  color: ${({ color }) => color};
+`;
 ```
 
 ## 3. Lista de Tickets com Busca e Filtros
@@ -221,13 +233,10 @@ export const Container = styled.View<ContainerProps>`
 // src/pages/Ticketeria/index.tsx
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState, useCallback } from "react";
-import { ScrollView, RefreshControl, View, FlatList } from "react-native";
-import Loading from "../../components/_core/Loading";
-import Error from "../../components/_core/Error";
-import Icon from "../../components/_core/Icon";
-import InputSearch from "../../components/_core/InputSearch";
-import Button from "../../components/_core/Button";
+import { ScrollView, RefreshControl, View, FlatList, TextInput, TouchableOpacity, Text } from "react-native";
 import TicketCard from "../../components/_fragments/TicketCard";
+// Nota: Você precisará criar seus próprios componentes Loading, Error, InputSearch e Button
+// ou usar alternativas do React Native
 import { fetchTickets, Ticket, ListTicketsParams } from "../../services/TicketApi";
 import { Container, Content, Header, FilterRow } from "./styles";
 
@@ -309,11 +318,24 @@ const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
   };
 
   if (loading && !refreshing && tickets.length === 0) {
-    return <Loading fullHeight />;
+    return (
+      <Container>
+        {/* Implementar componente de Loading ou usar ActivityIndicator */}
+        <Text>Carregando...</Text>
+      </Container>
+    );
   }
 
   if (error && tickets.length === 0) {
-    return <Error onRefresh={() => loadTickets(true)} />;
+    return (
+      <Container>
+        {/* Implementar componente de Error */}
+        <Text>Erro ao carregar tickets</Text>
+        <TouchableOpacity onPress={() => loadTickets(true)}>
+          <Text>Tentar novamente</Text>
+        </TouchableOpacity>
+      </Container>
+    );
   }
 
   const statusFilters = [
@@ -327,30 +349,35 @@ const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
   return (
     <Container>
       <Header>
-        <InputSearch
+        {/* Implementar InputSearch ou usar TextInput do React Native */}
+        <TextInput
           placeholder="Buscar tickets..."
           value={searchText}
           onChangeText={handleSearch}
+          style={{ flex: 1, padding: 10, borderWidth: 1, borderRadius: 8 }}
         />
-        <Icon
-          name="add-circle-outline"
-          size={28}
-          color="primary"
-          onPress={handleCreateTicket}
-        />
+        <TouchableOpacity onPress={handleCreateTicket}>
+          <Text>+</Text>
+        </TouchableOpacity>
       </Header>
 
-      <FilterRow>
+        <FilterRow>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {statusFilters.map((filter) => (
-            <Button
+            <TouchableOpacity
               key={filter.value || "all"}
-              label={filter.label}
-              outline={selectedStatus !== filter.value}
-              active={selectedStatus === filter.value}
               onPress={() => handleStatusFilter(filter.value)}
-              style={{ marginRight: 8 }}
-            />
+              style={{
+                marginRight: 8,
+                padding: 8,
+                borderRadius: 8,
+                backgroundColor: selectedStatus === filter.value ? "#007AFF" : "#F2F2F7",
+              }}
+            >
+              <Text style={{ color: selectedStatus === filter.value ? "#FFF" : "#000" }}>
+                {filter.label}
+              </Text>
+            </TouchableOpacity>
           ))}
         </ScrollView>
       </FilterRow>
@@ -367,8 +394,8 @@ const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
         onEndReachedThreshold={0.5}
         ListEmptyComponent={
           <View style={{ padding: 40, alignItems: "center" }}>
-            <Icon name="ticket-outline" size={64} color="gray" />
-            <Text size="p" color="gray" style={{ marginTop: 16, textAlign: "center" }}>
+            <Text style={{ fontSize: 48 }}>🎫</Text>
+            <Text style={{ marginTop: 16, textAlign: "center", color: "#666" }}>
               {searchText || selectedStatus
                 ? "Nenhum ticket encontrado com esses filtros"
                 : "Nenhum ticket cadastrado ainda"}
@@ -389,15 +416,10 @@ export default TicketeriaList;
 // src/pages/Ticketeria/CreateTicket/index.tsx
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useState } from "react";
-import { Alert, Keyboard, ScrollView, TouchableWithoutFeedback } from "react-native";
-import Loading from "../../../components/_core/Loading";
-import Input from "../../../components/_core/Input";
-import InputMask from "../../../components/_core/InputMask";
-import Button from "../../../components/_core/Button";
-import Icon from "../../../components/_core/Icon";
-import Text from "../../../components/_core/Text";
+import { Alert, Keyboard, ScrollView, TouchableWithoutFeedback, TextInput, TouchableOpacity, Text, View } from "react-native";
 import { createTicket } from "../../../services/TicketApi";
 import { Container, Content, Header, Footer, FormGroup } from "./styles";
+// Nota: Você precisará criar seus próprios componentes ou usar componentes do React Native
 
 const CreateTicket = ({ navigation }: NativeStackScreenProps<any>) => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -460,69 +482,92 @@ const CreateTicket = ({ navigation }: NativeStackScreenProps<any>) => {
   };
 
   if (loading) {
-    return <Loading fullHeight />;
+    return (
+      <Container>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Text>Carregando...</Text>
+        </View>
+      </Container>
+    );
   }
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Container>
-        <Header>
-          <Icon name="close-outline" size={28} color="gray" onPress={() => navigation.goBack()} />
-          <Text size="h2" weight="bold">
-            Novo Ticket
-          </Text>
-          <View style={{ width: 28 }} />
-        </Header>
+      <Header>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={{ fontSize: 28 }}>×</Text>
+        </TouchableOpacity>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+          Novo Ticket
+        </Text>
+        <View style={{ width: 28 }} />
+      </Header>
 
         <ScrollView>
           <Content>
             <FormGroup>
-              <Text size="p" weight="medium" style={{ marginBottom: 8 }}>
+              <Text style={{ marginBottom: 8, fontWeight: "500" }}>
                 Título *
               </Text>
-              <Input
+              <TextInput
                 value={title}
                 onChangeText={setTitle}
                 placeholder="Ex: Erro ao fazer login"
                 maxLength={100}
+                style={{ borderWidth: 1, borderRadius: 8, padding: 10 }}
               />
             </FormGroup>
 
             <FormGroup>
-              <Text size="p" weight="medium" style={{ marginBottom: 8 }}>
+              <Text style={{ marginBottom: 8, fontWeight: "500" }}>
                 Descrição *
               </Text>
-              <Input
+              <TextInput
                 value={description}
                 onChangeText={setDescription}
                 placeholder="Descreva o problema ou solicitação..."
                 multiline
                 numberOfLines={6}
-                style={{ minHeight: 120 }}
+                style={{ minHeight: 120, borderWidth: 1, borderRadius: 8, padding: 10 }}
               />
             </FormGroup>
 
             <FormGroup>
-              <Text size="p" weight="medium" style={{ marginBottom: 8 }}>
+              <Text style={{ marginBottom: 8, fontWeight: "500" }}>
                 Categoria *
               </Text>
               {/* Implementar Select/Dropdown aqui */}
-              <Input value={category} onChangeText={setCategory} placeholder="Selecione..." />
+              <TextInput
+                value={category}
+                onChangeText={setCategory}
+                placeholder="Selecione..."
+                style={{ borderWidth: 1, borderRadius: 8, padding: 10 }}
+              />
             </FormGroup>
 
             <FormGroup>
-              <Text size="p" weight="medium" style={{ marginBottom: 8 }}>
+              <Text style={{ marginBottom: 8, fontWeight: "500" }}>
                 Prioridade
               </Text>
               {/* Implementar Select de prioridade */}
             </FormGroup>
 
-            <Button
-              label="Criar Ticket"
+            <TouchableOpacity
               onPress={handleSubmit}
               disabled={!title || !description || !category}
-              style={{ marginTop: 24 }}
-            />
+              style={{
+                marginTop: 24,
+                padding: 15,
+                backgroundColor: (!title || !description || !category) ? "#CCC" : "#007AFF",
+                borderRadius: 8,
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "#FFF", fontWeight: "bold" }}>
+                Criar Ticket
+              </Text>
+            </TouchableOpacity>
           </Content>
         </ScrollView>
       </Container>
@@ -540,13 +585,10 @@ export default CreateTicket;
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { ScrollView, Alert } from "react-native";
-import Loading from "../../../components/_core/Loading";
-import Error from "../../../components/_core/Error";
-import Text from "../../../components/_core/Text";
-import Button from "../../../components/_core/Button";
-import Icon from "../../../components/_core/Icon";
+import { TextInput, TouchableOpacity, Text, View } from "react-native";
 import TicketStatusBadge from "../../../components/_fragments/TicketStatusBadge";
 import TicketComment from "../../../components/_fragments/TicketComment";
+// Nota: Você precisará criar seus próprios componentes ou usar componentes do React Native
 import {
   fetchTicketById,
   updateTicket,
@@ -606,18 +648,31 @@ const TicketDetails = ({ navigation, route }: NativeStackScreenProps<any>) => {
   };
 
   if (loading) {
-    return <Loading fullHeight />;
+    return (
+      <Container>
+        <Text>Carregando...</Text>
+      </Container>
+    );
   }
 
   if (error || !ticket) {
-    return <Error onRefresh={loadTicket} />;
+    return (
+      <Container>
+        <Text>Erro ao carregar ticket</Text>
+        <TouchableOpacity onPress={loadTicket}>
+          <Text>Tentar novamente</Text>
+        </TouchableOpacity>
+      </Container>
+    );
   }
 
   return (
     <Container>
       <Header>
-        <Icon name="chevron-back-outline" size={25} color="primary" onPress={() => navigation.goBack()} />
-        <Text size="h2" weight="bold">
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={{ fontSize: 25 }}>←</Text>
+        </TouchableOpacity>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>
           Detalhes do Ticket
         </Text>
         <View style={{ width: 25 }} />
@@ -626,35 +681,35 @@ const TicketDetails = ({ navigation, route }: NativeStackScreenProps<any>) => {
       <ScrollView>
         <Content>
           <Section>
-            <Text size="h2" weight="bold" style={{ marginBottom: 8 }}>
+            <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 8 }}>
               {ticket.title}
             </Text>
             <TicketStatusBadge status={ticket.status} />
           </Section>
 
           <Section>
-            <Text size="p" style={{ marginBottom: 16 }}>
+            <Text style={{ marginBottom: 16 }}>
               {ticket.description}
             </Text>
           </Section>
 
           <Section>
-            <Text size="p" weight="medium" style={{ marginBottom: 8 }}>
+            <Text style={{ fontWeight: "500", marginBottom: 8 }}>
               Informações
             </Text>
-            <Text size="small" color="gray">
+            <Text style={{ fontSize: 12, color: "#666" }}>
               Categoria: {ticket.category}
             </Text>
-            <Text size="small" color="gray">
+            <Text style={{ fontSize: 12, color: "#666" }}>
               Prioridade: {ticket.priority}
             </Text>
-            <Text size="small" color="gray">
+            <Text style={{ fontSize: 12, color: "#666" }}>
               Criado em: {new Date(ticket.createdAt).toLocaleString("pt-BR")}
             </Text>
           </Section>
 
           <Section>
-            <Text size="p" weight="medium" style={{ marginBottom: 16 }}>
+            <Text style={{ fontWeight: "500", marginBottom: 16 }}>
               Comentários ({ticket.comments?.length || 0})
             </Text>
             {ticket.comments && ticket.comments.length > 0 ? (
@@ -662,40 +717,64 @@ const TicketDetails = ({ navigation, route }: NativeStackScreenProps<any>) => {
                 <TicketComment key={comment.id} comment={comment} />
               ))
             ) : (
-              <Text size="small" color="gray">
+              <Text style={{ fontSize: 12, color: "#666" }}>
                 Nenhum comentário ainda
               </Text>
             )}
 
             {/* Input para novo comentário */}
             <View style={{ marginTop: 16 }}>
-              <Input
+              <TextInput
                 value={newComment}
                 onChangeText={setNewComment}
                 placeholder="Adicione um comentário..."
                 multiline
+                style={{ borderWidth: 1, borderRadius: 8, padding: 10, minHeight: 80 }}
               />
-              <Button
-                label="Enviar Comentário"
+              <TouchableOpacity
                 onPress={handleAddComment}
-                style={{ marginTop: 8 }}
-              />
+                style={{
+                  marginTop: 8,
+                  padding: 15,
+                  backgroundColor: "#007AFF",
+                  borderRadius: 8,
+                  alignItems: "center",
+                }}
+              >
+                <Text style={{ color: "#FFF", fontWeight: "bold" }}>
+                  Enviar Comentário
+                </Text>
+              </TouchableOpacity>
             </View>
           </Section>
 
           <Actions>
-            <Button
-              label="Marcar como Resolvido"
+            <TouchableOpacity
               onPress={() => handleUpdateStatus("resolved")}
-              outline
               disabled={ticket.status === "resolved"}
-            />
-            <Button
-              label="Fechar Ticket"
+              style={{
+                padding: 15,
+                borderWidth: 1,
+                borderRadius: 8,
+                alignItems: "center",
+                opacity: ticket.status === "resolved" ? 0.5 : 1,
+              }}
+            >
+              <Text>Marcar como Resolvido</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               onPress={() => handleUpdateStatus("closed")}
-              outline
               disabled={ticket.status === "closed"}
-            />
+              style={{
+                padding: 15,
+                borderWidth: 1,
+                borderRadius: 8,
+                alignItems: "center",
+                opacity: ticket.status === "closed" ? 0.5 : 1,
+              }}
+            >
+              <Text>Fechar Ticket</Text>
+            </TouchableOpacity>
           </Actions>
         </Content>
       </ScrollView>
@@ -713,12 +792,14 @@ export default TicketDetails;
 ```typescript
 // src/pages/Ticketeria/index.tsx (versão com cache)
 import { useEffect, useState } from "react";
+import { View, Text } from "react-native";
 import { 
   getTicketsFromStorage, 
   saveTicketsToStorage,
   isCacheValid 
 } from "../../helpers/ticketStorage";
 import { fetchTickets, Ticket } from "../../services/TicketApi";
+// Nota: Você precisará criar componentes Loading e Error ou usar alternativas
 
 const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -781,11 +862,10 @@ const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
 ```typescript
 // Componente de botão de login por biometria
 import React, { useState } from "react";
-import { Alert } from "react-native";
+import { Alert, TouchableOpacity, Text } from "react-native";
 import { useBiometric } from "../../hooks/useBiometric";
 import { useAuth } from "../../contexts/auth";
-import Button from "../../components/_core/Button";
-import Icon from "../../components/_core/Icon";
+// Nota: Ajuste conforme sua estrutura de contexto de autenticação
 
 const BiometricLoginButton = () => {
   const { isAvailable, authenticate, getSavedCredentials } = useBiometric();
@@ -834,13 +914,19 @@ const BiometricLoginButton = () => {
   }
 
   return (
-    <Button
-      label="Entrar com Biometria"
+    <TouchableOpacity
       onPress={handleBiometricLogin}
-      loading={loading}
-      icon={<Icon name="finger-print-outline" size={20} />}
-      outline
-    />
+      disabled={loading}
+      style={{
+        padding: 15,
+        borderWidth: 1,
+        borderRadius: 8,
+        alignItems: "center",
+        opacity: loading ? 0.5 : 1,
+      }}
+    >
+      <Text>🔐 Entrar com Biometria</Text>
+    </TouchableOpacity>
   );
 };
 ```
@@ -849,14 +935,14 @@ const BiometricLoginButton = () => {
 
 ## 📝 Notas sobre os Exemplos
 
-1. **Componentes Core:** Todos os componentes usados (`Input`, `Button`, `Text`, etc.) devem estar disponíveis em `src/components/_core/`
-2. **Helpers:** Use os helpers existentes como `formatDateBr` se disponível
+1. **Componentes:** Você precisará criar seus próprios componentes base (Text, Input, Button, etc.) usando React Native ou styled-components
+2. **Helpers:** Crie helpers conforme necessário (ex: `formatDateBr`)
 3. **Navegação:** Ajuste os nomes das rotas conforme sua implementação
-4. **Estilos:** Adapte os estilos conforme o tema do projeto
+4. **Estilos:** Use styled-components para estilização, seguindo os padrões do projeto
 5. **TypeScript:** Mantenha a tipagem forte conforme os exemplos
 6. **AsyncStorage:** Consulte `ASYNCSTORAGE_BIOMETRIA.md` para mais detalhes sobre cache e biometria
 7. **SQLite:** Consulte `SQLITE_OFFLINE.md` para modo offline robusto
-8. **Biometria:** Use `react-native-biometrics` e siga os padrões do projeto em `src/helpers/cryptoData.ts`
+8. **Biometria:** Use `react-native-biometrics` e siga os padrões do projeto em `src/helpers/cryptoData.ts` (se existir)
 
 **Use esses exemplos como referência e adapte conforme necessário!**
 

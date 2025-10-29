@@ -242,9 +242,8 @@ const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
 Adicione um badge ou aviso quando estiver usando dados do cache:
 
 ```typescript
-import { View } from "react-native";
-import Text from "../../components/_core/Text";
-import Icon from "../../components/_core/Icon";
+import { View, Text } from "react-native";
+// Nota: Você precisará criar seus próprios componentes ou usar componentes do React Native
 
 {isOffline && (
   <View style={{
@@ -254,8 +253,8 @@ import Icon from "../../components/_core/Icon";
     alignItems: "center",
     gap: 8,
   }}>
-    <Icon name="cloud-offline-outline" size={16} color="#000" />
-    <Text size="small">Usando dados salvos offline</Text>
+    <Text>☁️</Text>
+    <Text style={{ fontSize: 12 }}>Usando dados salvos offline</Text>
   </View>
 )}
 ```
@@ -409,11 +408,10 @@ Exemplo de uso em uma tela de autenticação:
 
 ```typescript
 import React, { useEffect, useState } from "react";
-import { Alert } from "react-native";
+import { Alert, View, Text, TouchableOpacity, Switch } from "react-native";
 import { useBiometric } from "../../hooks/useBiometric";
 import { useAuth } from "../../contexts/auth";
-import Button from "../../components/_core/Button";
-import Switch from "react-native-paper";
+// Nota: Ajuste conforme sua estrutura de contexto de autenticação
 
 const AuthScreen = () => {
   const { 
@@ -494,7 +492,7 @@ const AuthScreen = () => {
       
       {/* Toggle para habilitar biometria */}
       {isAvailable && (
-        <View>
+        <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 16 }}>
           <Text>Login rápido com biometria</Text>
           <Switch
             value={biometricEnabled}
@@ -504,15 +502,32 @@ const AuthScreen = () => {
       )}
 
       {/* Botão de login normal */}
-      <Button label="Entrar" onPress={handleNormalLogin} />
+      <TouchableOpacity
+        onPress={handleNormalLogin}
+        style={{
+          padding: 15,
+          backgroundColor: "#007AFF",
+          borderRadius: 8,
+          alignItems: "center",
+        }}
+      >
+        <Text style={{ color: "#FFF", fontWeight: "bold" }}>Entrar</Text>
+      </TouchableOpacity>
 
       {/* Botão de login por biometria */}
       {isAvailable && biometricEnabled && (
-        <Button 
-          label="Entrar com Biometria" 
+        <TouchableOpacity
           onPress={handleBiometricLogin}
-          outline
-        />
+          style={{
+            marginTop: 10,
+            padding: 15,
+            borderWidth: 1,
+            borderRadius: 8,
+            alignItems: "center",
+          }}
+        >
+          <Text>🔐 Entrar com Biometria</Text>
+        </TouchableOpacity>
       )}
     </View>
   );

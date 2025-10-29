@@ -5,7 +5,7 @@ Bem-vindo ao desafio de desenvolvimento do sistema de Ticketeria! Este guia ráp
 ## 🚀 Quick Start
 
 ### 1. Leia a Documentação Principal
-Comece lendo o arquivo `DESAFIO_TICKETERIA.md` na raiz do projeto. Ele contém todos os requisitos e especificações.
+Comece lendo o arquivo `README.md` na raiz do projeto. Ele contém todos os requisitos e especificações.
 
 ### 2. Entenda a Estrutura
 Consulte `ESTRUTURA_BASE.md` para ver a organização de arquivos esperada.
@@ -65,31 +65,21 @@ Use este checklist durante o desenvolvimento:
 
 ## 🔍 Referências Rápidas
 
-### Arquivos Importantes no Projeto
+### Estrutura de Arquivos para Criar
 
 ```
 📁 src/
-├── 📄 pages/NewTicket/          → Exemplo de criação de ticket
-├── 📄 pages/Services/            → Exemplo de listagem
-├── 📄 pages/TicketChat/          → Exemplo de detalhes/interação
-├── 📄 services/Api.ts            → Cliente Axios base
-├── 📄 services/Auth.ts           → Exemplo de serviço
-├── 📄 routes/App.routes.tsx      → Onde adicionar rotas
-├── 📄 components/_core/          → Biblioteca de componentes
-└── 📄 styles/theme.ts            → Tema e cores
+├── 📄 services/Api.ts            → Cliente Axios base (verificar se existe)
+├── 📄 services/TicketApi.ts       → Criar: Cliente API para tickets
+├── 📄 routes/App.routes.tsx       → Onde adicionar rotas (verificar estrutura)
+└── 📄 styles/theme.ts            → Tema e cores (verificar se existe)
 ```
 
-### Componentes Core Disponíveis
+### Observações Importantes
 
-- `Text` - Texto estilizado
-- `Input` - Campo de texto
-- `InputMask` - Campo com máscara
-- `Button` - Botão
-- `Icon` - Ícones (Ionicons)
-- `Loading` - Loading state
-- `Error` - Estado de erro
-- `Checkbox` - Checkbox
-- `InputBool` - Input booleano
+- Você precisará criar seus próprios componentes base (Text, Input, Button, etc.) se necessário
+- Use styled-components para estilização
+- Consulte o projeto para entender os padrões existentes
 
 ### Padrões de API
 
@@ -135,7 +125,7 @@ A: O `api` do `src/services/Api.ts` já deve ter interceptors configurados. Veri
 A: Use uma das opções de mock descritas em `API_MOCK.md`.
 
 **Q: Preciso criar componentes do zero?**
-A: Não! Use os componentes de `src/components/_core/`. Só crie novos se realmente necessário.
+A: Sim, você precisará criar os componentes necessários. Use os exemplos em `EXEMPLOS_CODIGO.md` como referência e siga os padrões do projeto.
 
 ## 🎨 Dicas de Desenvolvimento
 

@@ -4,7 +4,48 @@
 
 Criar um sistema completo de cadastro e gestão de tickets (ticketeria) seguindo os padrões e estrutura do projeto. O desenvolvedor deve implementar funcionalidades de criação, listagem e detalhamento de tickets, conectando com APIs e seguindo a arquitetura existente do projeto.
 
-**Tempo estimado:** 5-7 dias de trabalho
+**Tempo estimado:** 
+- **MVP (Requisitos Obrigatórios):** 5-7 dias de trabalho
+- **Completo (incluindo opcionais):** 7-10 dias de trabalho
+
+---
+
+## 🎯 Priorização de Funcionalidades
+
+### ✅ Obrigatório (MVP - Foco Principal)
+Estas funcionalidades são essenciais e devem ser implementadas:
+
+- [ ] Listagem de tickets com busca e filtros
+- [ ] Cadastro de ticket completo
+- [ ] Visualização de detalhes do ticket
+- [ ] Adição de comentários
+- [ ] Alteração de status do ticket
+- [ ] Cache local com AsyncStorage
+- [ ] Carregamento de dados do cache quando offline
+
+### ⭐ Opcional/Bônus (Desejável)
+Estas funcionalidades agregam valor mas não são obrigatórias:
+
+- [ ] SQLite para modo offline robusto
+- [ ] Sistema de sincronização de pendências
+- [ ] Upload e visualização de anexos
+- [ ] Login por biometria
+
+**Nota:** Foque primeiro no MVP. As funcionalidades opcionais são bônus e podem ser implementadas caso o tempo permita.
+
+---
+
+## 📋 Pré-requisitos e Configuração
+
+Antes de começar, verifique no projeto:
+
+- [ ] **Estrutura de Rotas:** Onde ficam as rotas? (`src/routes/App.routes.tsx` ou similar)
+- [ ] **Serviço API Base:** Existe `src/services/Api.ts` configurado?
+- [ ] **Sistema de Tema:** Existe `src/styles/theme.ts` ou similar?
+- [ ] **Padrões de Código:** Como são estruturadas as páginas existentes?
+- [ ] **Autenticação:** Como funciona o sistema de autenticação?
+
+**Dica:** Explore o projeto antes de começar para entender os padrões existentes.
 
 ---
 
@@ -244,10 +285,10 @@ Response: Attachment
 ## 🎨 Padrões de Design e Código
 
 ### 1. Componentes
-- Use os componentes existentes de `src/components/_core/`
-- Siga o padrão de criação de componentes do projeto
+- Crie os componentes necessários seguindo os padrões do projeto
 - Use styled-components para estilização
-- Referencie `src/pages/NewTicket/` como exemplo
+- Consulte `EXEMPLOS_CODIGO.md` para ver exemplos de implementação
+- Os componentes devem ser criados em `src/components/_fragments/`
 
 ### 2. Navegação
 - Adicione rotas em `src/routes/App.routes.tsx`
@@ -256,9 +297,9 @@ Response: Attachment
 
 ### 3. Estado e Dados
 - Use hooks do React (`useState`, `useEffect`)
-- Para loading states, use o componente `Loading` de `_core`
-- Para erros, use o componente `Error` de `_core`
+- Crie componentes de loading e error conforme necessário
 - Mantenha o padrão de `fetchData.ts` nas páginas
+- Consulte os exemplos em `EXEMPLOS_CODIGO.md` para padrões de implementação
 
 ### 4. Validação
 - Validação de formulários usando a estrutura existente
@@ -330,32 +371,30 @@ Para testar sem uma API real, você pode usar:
 
 ---
 
-## 📚 Referências no Projeto
+## 📚 Referências e Documentação
 
-Para entender melhor os padrões, consulte:
+Para entender melhor os padrões, consulte a documentação fornecida:
 
-1. **Estrutura de Página:**
-   - `src/pages/NewTicket/` - Exemplo completo de criação
-   - `src/pages/Services/` - Exemplo de listagem
-   - `src/pages/TicketChat/` - Exemplo de detalhes/interação
+1. **Estrutura de Arquivos:**
+   - `ESTRUTURA_BASE.md` - Estrutura de arquivos esperada
+   - `EXEMPLOS_CODIGO.md` - Exemplos completos de implementação
 
-2. **Componentes Core:**
-   - `src/components/_core/` - Biblioteca de componentes
+2. **API e Mock:**
+   - `API_MOCK.md` - Como configurar mocks para desenvolvimento
+   - Consulte a estrutura de serviços do projeto para entender padrões de API
 
-3. **Serviços API:**
-   - `src/services/Api.ts` - Cliente base do Axios
-   - `src/services/Auth.ts` - Exemplo de serviço
+3. **Rotas:**
+   - Verifique `src/routes/App.routes.tsx` (ou estrutura equivalente) para adicionar rotas
 
-4. **Rotas:**
-   - `src/routes/App.routes.tsx` - Como adicionar novas rotas
+4. **Estilos:**
+   - Verifique se existe `src/styles/theme.ts` ou estruturas similares no projeto
 
-5. **Estilos:**
-   - `src/styles/theme.ts` - Tema e cores do projeto
+5. **SQLite (Modo Offline):**
+   - `SQLITE_OFFLINE.md` - Guia completo de implementação
+   - Verifique `src/database/sqlite.ts` se existir no projeto
 
-6. **SQLite (Modo Offline):**
-   - `src/database/sqlite.ts` - Configuração e criação de tabelas
-   - `src/database/sqliteOperations.ts` - Operações CRUD SQLite
-   - `src/database/migrations.ts` - Migrações de banco de dados
+6. **Cache e Biometria:**
+   - `ASYNCSTORAGE_BIOMETRIA.md` - Guia de implementação
 
 ---
 
@@ -405,10 +444,10 @@ Se terminar antes do prazo ou quiser se destacar:
 ## ❓ Dúvidas?
 
 Se tiver dúvidas sobre:
-- Estrutura do projeto → Consulte os exemplos listados acima
-- Padrões de código → Veja arquivos similares no projeto
-- APIs → Veja `src/services/` e `src/pages/*/fetchData.ts`
-- Componentes → Explore `src/components/_core/` e `src/components/_fragments/`
+- Estrutura do projeto → Consulte `ESTRUTURA_BASE.md`
+- Padrões de código → Veja `EXEMPLOS_CODIGO.md` e arquivos similares no projeto
+- APIs → Consulte `API_MOCK.md` e estrutura de `src/services/`
+- Componentes → Veja exemplos em `EXEMPLOS_CODIGO.md` e crie em `src/components/_fragments/`
 
 ---
 

@@ -212,12 +212,11 @@ export const addComment = (ticketId: string | number, text: string): Promise<Com
 ```typescript
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
-import { ScrollView, RefreshControl } from "react-native";
-import Loading from "../../components/_core/Loading";
-import Error from "../../components/_core/Error";
+import { ScrollView, RefreshControl, Text, View, ActivityIndicator, TouchableOpacity } from "react-native";
 import TicketCard from "../../components/_fragments/TicketCard";
 import { fetchTickets, Ticket } from "../../services/TicketApi";
 import { Container, Content } from "./styles";
+// Nota: Você precisará criar componentes Loading e Error ou usar ActivityIndicator do React Native
 
 const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
   const [loading, setLoading] = useState<boolean>(true);
@@ -255,11 +254,27 @@ const TicketeriaList = ({ navigation }: NativeStackScreenProps<any>) => {
   };
 
   if (loading && !refreshing) {
-    return <Loading fullHeight />;
+    return (
+      <Container>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" />
+          <Text style={{ marginTop: 10 }}>Carregando...</Text>
+        </View>
+      </Container>
+    );
   }
 
   if (error) {
-    return <Error onRefresh={loadTickets} />;
+    return (
+      <Container>
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <Text>Erro ao carregar tickets</Text>
+          <TouchableOpacity onPress={loadTickets} style={{ marginTop: 10, padding: 10 }}>
+            <Text>Tentar novamente</Text>
+          </TouchableOpacity>
+        </View>
+      </Container>
+    );
   }
 
   return (
@@ -305,8 +320,7 @@ export const Content = styled.View`
 
 ```typescript
 import React from "react";
-import { TouchableOpacity } from "react-native";
-import Text from "../../../components/_core/Text";
+import { TouchableOpacity, Text } from "react-native";
 import TicketStatusBadge from "../TicketStatusBadge";
 import { Ticket } from "../../../services/TicketApi";
 import { Container, Title, Description, Footer, DateText } from "./styles";
@@ -337,12 +351,15 @@ export default TicketCard;
 ### 5. Adicionar Rotas em `src/routes/App.routes.tsx`
 
 ```typescript
+// Nota: Ajuste conforme a estrutura de rotas do seu projeto
+// Exemplo de como adicionar as rotas:
+
 // No topo do arquivo, adicione o import:
 import TicketeriaList from "../pages/Ticketeria";
 import CreateTicket from "../pages/Ticketeria/CreateTicket";
 import TicketDetails from "../pages/Ticketeria/TicketDetails";
 
-// Dentro do Stack.Navigator, adicione:
+// Dentro do Stack.Navigator (ou estrutura equivalente), adicione:
 <Stack.Screen 
   name="Ticketeria" 
   component={TicketeriaList} 
@@ -372,7 +389,8 @@ import TicketDetails from "../pages/Ticketeria/TicketDetails";
 ## 📝 Notas
 
 - Adapte os templates conforme necessário
-- Use os componentes do projeto existentes
-- Siga os padrões de estilo vistos em outras páginas
+- Crie os componentes necessários usando React Native e styled-components
+- Siga os padrões de estilo usando styled-components
 - Não esqueça de tratar erros e estados de loading
+- Consulte `EXEMPLOS_CODIGO.md` para exemplos mais completos
 
