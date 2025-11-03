@@ -185,13 +185,24 @@
       "priority": "high",
       "status": "open",
       "createdAt": "2025-11-03T08:00:00.000Z",
-      "updatedAt": "2025-11-03T08:00:00.000Z",
+      "updatedAt": "2025-11-03T13:52:00.025Z",
       "createdBy": {
         "id": "user8",
         "name": "Juliana Pereira",
         "email": "juliana.pereira@email.com"
       },
-      "comments": [],
+      "comments": [
+        {
+          "id": 1762177920024,
+          "text": "teste",
+          "createdAt": "2025-11-03T13:52:00.025Z",
+          "createdBy": {
+            "id": "current_user",
+            "name": "Usuário Atual",
+            "email": "usuario@email.com"
+          }
+        }
+      ],
       "attachments": []
     },
     {

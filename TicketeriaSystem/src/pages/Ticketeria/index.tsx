@@ -111,7 +111,7 @@ const TicketeriaList: React.FC<Props> = ({ navigation }) => {
 
   useEffect(() => {
     loadTickets(true);
-  }, [selectedStatus, searchText]);
+  }, [selectedStatus, searchText, loadTickets]);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -209,6 +209,7 @@ const TicketeriaList: React.FC<Props> = ({ navigation }) => {
           <TicketCard ticket={item} onPress={() => handleTicketPress(item)} />
         )}
         contentContainerStyle={{ padding: 16 }}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
