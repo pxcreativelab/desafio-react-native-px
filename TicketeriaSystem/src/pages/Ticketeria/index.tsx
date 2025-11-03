@@ -1,8 +1,9 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, RefreshControl, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
 import TicketCard from '../../components/_fragments/TicketCard';
 import { getTicketsFromStorage, isCacheValid, saveTicketsToStorage } from '../../helpers/ticketStorage';
+import { useToast } from '../../hooks/useToast';
 import { fetchTickets, ListTicketsParams, Ticket } from '../../services/TicketApi';
 import {
   BoxRow,
@@ -39,6 +40,7 @@ const TicketeriaList: React.FC<Props> = () => {
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
   const { navigate } = useNavigation();
+  const toast = useToast();
 
   const loadTickets = useCallback(async (reset: boolean = false) => {
     try {
@@ -90,10 +92,7 @@ const TicketeriaList: React.FC<Props> = () => {
         const cachedData = await getTicketsFromStorage();
         if (cachedData && cachedData.data.length > 0) {
           setTickets(cachedData.data);
-          Alert.alert(
-            'Modo Offline',
-            'Mostrando dados salvos localmente. Conecte-se à internet para atualizar.'
-          );
+          toast.warning('Modo Offline: mostrando dados salvos localmente');
         } else {
           setError(true);
         }
@@ -103,7 +102,7 @@ const TicketeriaList: React.FC<Props> = () => {
       setRefreshing(false);
       setLoadingMore(false);
     }
-  }, [page, selectedStatus, searchText]);
+  }, [page, selectedStatus, searchText, toast]);
 
   useEffect(() => {
     loadTickets(true);

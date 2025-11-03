@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { ActivityIndicator, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { useToast } from '../../../hooks/useToast';
 import { createTicket } from '../../../services/TicketApi';
 import {
   Container,
@@ -27,6 +28,7 @@ import {
 
 const CreateTicket = () => {
   const [loading, setLoading] = useState<boolean>(false);
+  const toast = useToast();
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [category, setCategory] = useState<string>('');
@@ -64,7 +66,7 @@ const CreateTicket = () => {
 
   const handleSubmit = async () => {
     if (!validate()) {
-      Alert.alert('Erro', 'Por favor, corrija os erros no formulário');
+      toast.error('Por favor, corrija os erros no formulário');
       return;
     }
 
@@ -80,14 +82,13 @@ const CreateTicket = () => {
 
       await createTicket(ticketData);
 
-      Alert.alert('Sucesso', 'Ticket criado com sucesso!', [
-        {
-          text: 'OK',
-          onPress: () => navigate('Home'),
-        },
-      ]);
+      toast.success('Ticket criado com sucesso!');
+
+      setTimeout(() => {
+        navigate('Home');
+      }, 1000);
     } catch (error) {
-      Alert.alert('Erro', 'Não foi possível criar o ticket. Tente novamente.');
+      toast.error('Não foi possível criar o ticket. Tente novamente.');
       setLoading(false);
     }
   };

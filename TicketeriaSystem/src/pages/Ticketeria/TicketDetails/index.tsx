@@ -1,12 +1,13 @@
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import TicketComment from '../../../components/_fragments/TicketComment';
 import TicketStatusBadge from '../../../components/_fragments/TicketStatusBadge';
 import {
   getTicketDetailsFromStorage,
   saveTicketDetailsToStorage,
 } from '../../../helpers/ticketStorage';
+import { useToast } from '../../../hooks/useToast';
 import {
   addComment,
   fetchTicketById,
@@ -59,6 +60,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
   const [sendingComment, setSendingComment] = useState<boolean>(false);
 
   const navigation = useNavigation();
+  const toast = useToast();
 
   const loadTicket = async () => {
     try {
@@ -85,10 +87,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
         const cachedTicket = await getTicketDetailsFromStorage(ticketId);
         if (cachedTicket) {
           setTicket(cachedTicket);
-          Alert.alert(
-            'Modo Offline',
-            'Mostrando dados salvos localmente. Conecte-se à internet para atualizar.'
-          );
+          toast.warning('Modo Offline: mostrando dados salvos localmente');
         } else {
           setError(true);
         }
@@ -100,6 +99,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
 
   useEffect(() => {
     loadTicket();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ticketId]);
 
   const handleUpdateStatus = async (newStatus: string) => {
@@ -107,16 +107,16 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
 
     try {
       await updateTicket(ticketId, { status: newStatus as any });
-      Alert.alert('Sucesso', 'Status atualizado!');
+      toast.success('Status atualizado com sucesso!');
       loadTicket();
     } catch (err) {
-      Alert.alert('Erro', 'Não foi possível atualizar o status');
+      toast.error('Não foi possível atualizar o status');
     }
   };
 
   const handleAddComment = async () => {
     if (!newComment.trim()) {
-      Alert.alert('Erro', 'Digite um comentário');
+      toast.error('Digite um comentário');
       return;
     }
 
@@ -125,10 +125,10 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
     try {
       await addComment(ticketId, newComment);
       setNewComment('');
-      Alert.alert('Sucesso', 'Comentário adicionado!');
+      toast.success('Comentário adicionado!');
       loadTicket();
     } catch (err) {
-      Alert.alert('Erro', 'Não foi possível adicionar o comentário');
+      toast.error('Não foi possível adicionar o comentário');
     } finally {
       setSendingComment(false);
     }
