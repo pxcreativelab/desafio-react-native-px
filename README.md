@@ -112,11 +112,11 @@ Antes de começar, verifique no projeto:
 - [ ] Marcar itens como sincronizados após envio bem-sucedido
 
 ### 7. Login com Biometria (Opcional mas Desejável)
-- [ ] Adicionar opção de login rápido por biometria
-- [ ] Verificar disponibilidade do sensor biométrico
-- [ ] Implementar autenticação biométrica usando `react-native-biometrics`
-- [ ] Salvar credenciais criptografadas (usar `cryptoData` helper)
-- [ ] Integrar com o contexto de autenticação existente
+- [x] Adicionar opção de login rápido por biometria
+- [x] Verificar disponibilidade do sensor biométrico
+- [x] Implementar autenticação biométrica usando `react-native-biometrics`
+- [x] Salvar credenciais criptografadas (usar `cryptoData` helper)
+- [x] Integrar com o contexto de autenticação existente
 - [ ] Permitir habilitar/desabilitar login biométrico nas configurações
 
 ---
