@@ -39,10 +39,10 @@ Estas funcionalidades agregam valor mas não são obrigatórias:
 
 Antes de começar, verifique no projeto:
 
-- [ ] **Estrutura de Rotas:** Onde ficam as rotas? (`src/routes/App.routes.tsx` ou similar)
-- [ ] **Serviço API Base:** Existe `src/services/Api.ts` configurado?
-- [ ] **Sistema de Tema:** Existe `src/styles/theme.ts` ou similar?
-- [ ] **Padrões de Código:** Como são estruturadas as páginas existentes?
+- [x] **Estrutura de Rotas:** Onde ficam as rotas? (`src/routes/App.routes.tsx` ou similar)
+- [x] **Serviço API Base:** Existe `src/services/Api.ts` configurado?
+- [x] **Sistema de Tema:** Existe `src/styles/theme.ts` ou similar?
+- [x] **Padrões de Código:** Como são estruturadas as páginas existentes?
 - [ ] **Autenticação:** Como funciona o sistema de autenticação?
 
 **Dica:** Explore o projeto antes de começar para entender os padrões existentes.
