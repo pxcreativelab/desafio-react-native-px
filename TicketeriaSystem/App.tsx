@@ -1,26 +1,31 @@
-/**
- * Ticketeria System App
- * Sistema completo de gestão de tickets
- *
- * @format
- */
-
-import AppHeader from '@/components/AppHeader';
 import { openDatabase } from '@/database/database';
+import { RootRouter } from '@/routes/RootRouter';
 import { queryClient } from '@/services/queryClient';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { ToastContainer } from '@components/_fragments/Toast';
 import { initSyncService } from '@services/SyncService';
 import { QueryClientProvider } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
-import { StatusBar, useColorScheme } from 'react-native';
+import { ActivityIndicator, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AppRoutes from './src/routes';
 
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
+  const { isAuthenticated, isLoading, restoreSession } = useAuthStore();
 
   useEffect(() => {
+    // Restaurar sessão ao iniciar
+    restoreSession();
+
     // Inicializar banco de dados SQLite
     openDatabase()
       .then(() => {
@@ -29,17 +34,28 @@ function App() {
       .catch(error => {
         console.error('[App] Failed to initialize SQLite:', error);
       });
+  }, [restoreSession]);
 
-    // Inicializar serviço de sincronização
-    initSyncService();
-  }, []);
+  useEffect(() => {
+    // Inicializar serviço de sincronização apenas se autenticado
+    if (isAuthenticated) {
+      initSyncService();
+    }
+  }, [isAuthenticated]);
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007AFF" />
+      </View>
+    );
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <AppHeader />
-        <AppRoutes />
+        <RootRouter isAuthenticated={isAuthenticated} />
         <ToastContainer />
       </SafeAreaProvider>
     </QueryClientProvider>

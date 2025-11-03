@@ -19,7 +19,7 @@ const RootStack = createNativeStackNavigator({
   },
 });
 
-const Navigation = createStaticNavigation(RootStack);
+// const Navigation = createStaticNavigation(RootStack);
 
 type RootStackParamList = StaticParamList<typeof RootStack>;
 
@@ -29,6 +29,7 @@ declare global {
   }
 }
 
-export default function App() {
-  return <Navigation />;
-}
+// export function TicketeriaRoutes() {
+//   return <Navigation />;
+// }
+export const TicketeriaRoutes = createStaticNavigation(RootStack);
