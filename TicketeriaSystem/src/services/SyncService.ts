@@ -1,5 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
-import { API_ORIGIN } from '@services/Api';
+import { API_BASE_URL } from '@services/Api';
 import {
   cleanupFailedActions,
   getPendingActions,
@@ -92,8 +92,8 @@ export const initSyncService = () => {
  * Tenta conectar no servidor API para verificar se o backend está acessível.
  * Retorna true se o servidor responder (qualquer código HTTP) dentro do timeout.
  */
-export const checkServerReachable = async (host?: string): Promise<boolean> => {
-  const target = host || API_ORIGIN || 'http://192.168.1.12:3000';
+export const checkServerReachable = async (): Promise<boolean> => {
+  const target = `${API_BASE_URL}/api/v1/health`
   try {
     // Usa axios para permitir timeout
     const res = await axios.get(target, { timeout: 3000 });
@@ -137,7 +137,7 @@ const notifyListeners = async () => {
 /**
  * Sincroniza todos os dados pendentes
  */
-export const syncPendingData = async (): Promise<void> => {
+const syncPendingData = async (): Promise<void> => {
   if (isSyncing) {
     console.log('[SyncService] Sync already in progress, skipping...');
     return;
@@ -333,7 +333,6 @@ export const getSyncStatus = async (): Promise<SyncStatus> => {
 
 export default {
   initSyncService,
-  syncPendingData,
   checkConnection,
   getSyncStatus,
   addSyncListener,

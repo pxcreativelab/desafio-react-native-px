@@ -2,8 +2,7 @@ import {
   addSyncListener,
   getSyncStatus,
   removeSyncListener,
-  syncPendingData,
-  SyncStatus,
+  SyncStatus
 } from '@services/SyncService';
 import { useEffect, useState } from 'react';
 
@@ -37,25 +36,3 @@ export const useSyncStatus = () => {
   return status;
 };
 
-/**
- * Hook para forçar sincronização manual
- */
-export const useManualSync = () => {
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const sync = async () => {
-    setIsSyncing(true);
-    setError(null);
-
-    try {
-      await syncPendingData();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sync failed');
-    } finally {
-      setIsSyncing(false);
-    }
-  };
-
-  return { sync, isSyncing, error };
-};

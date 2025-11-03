@@ -2,7 +2,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useNavigation } from '@react-navigation/native';
 import * as BiometricService from '@services/BiometricService';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Keyboard } from 'react-native';
+import { ActivityIndicator, Keyboard } from 'react-native';
 
 import {
   BiometricButton,
@@ -14,8 +14,6 @@ import {
   DividerLine,
   DividerText,
   ErrorText,
-  ForgotPasswordButton,
-  ForgotPasswordText,
   FormContainer,
   Input,
   InputGroup,
@@ -102,13 +100,7 @@ const Login: React.FC = () => {
     navigation.navigate('Register');
   };
 
-  const handleForgotPassword = () => {
-    Alert.alert(
-      'Recuperar senha',
-      'Entre em contato com o suporte para recuperar sua senha.',
-      [{ text: 'OK' }]
-    );
-  };
+
 
   if (isLoading) {
     return (
@@ -164,9 +156,6 @@ const Login: React.FC = () => {
               {errors.password && <ErrorText>{errors.password}</ErrorText>}
             </InputGroup>
 
-            <ForgotPasswordButton onPress={handleForgotPassword} disabled={loading}>
-              <ForgotPasswordText>Esqueceu sua senha?</ForgotPasswordText>
-            </ForgotPasswordButton>
 
             <LoginButton onPress={handleLogin} disabled={loading}>
               {loading ? (

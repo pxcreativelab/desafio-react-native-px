@@ -67,16 +67,6 @@ export const ErrorText = styled.Text`
   margin-top: 4px;
 `;
 
-export const ForgotPasswordButton = styled.TouchableOpacity`
-  align-self: flex-end;
-  margin-top: 8px;
-  margin-bottom: 24px;
-`;
-
-export const ForgotPasswordText = styled.Text`
-  color: #007aff;
-  font-size: 14px;
-`;
 
 export const LoginButton = styled.TouchableOpacity<{ disabled?: boolean }>`
   background-color: ${(props) => (props.disabled ? '#ccc' : '#007aff')};
