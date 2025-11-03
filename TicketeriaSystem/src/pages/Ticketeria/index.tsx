@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, FlatList, RefreshControl, View } from 'react-native';
 import TicketCard from '../../components/_fragments/TicketCard';
@@ -25,15 +25,9 @@ import {
   SearchInput,
 } from './styles';
 
-type RootStackParamList = {
-  Ticketeria: undefined;
-  CreateTicket: undefined;
-  TicketDetails: { ticketId: string | number };
-};
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Ticketeria'>;
 
-const TicketeriaList: React.FC<Props> = ({ navigation }) => {
+const TicketeriaList: React.FC<Props> = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -43,6 +37,8 @@ const TicketeriaList: React.FC<Props> = ({ navigation }) => {
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
+
+  const { navigate } = useNavigation();
 
   const loadTickets = useCallback(async (reset: boolean = false) => {
     try {
@@ -126,11 +122,11 @@ const TicketeriaList: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleTicketPress = (ticket: Ticket) => {
-    navigation.navigate('TicketDetails', { ticketId: ticket.id });
+    navigate('TicketDetails', { ticketId: String(ticket.id) });
   };
 
   const handleCreateTicket = () => {
-    navigation.navigate('CreateTicket');
+    navigate('CreateTicket');
   };
 
   const handleStatusFilter = (status: string | undefined) => {

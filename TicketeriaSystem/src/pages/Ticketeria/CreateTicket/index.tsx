@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import { createTicket } from '../../../services/TicketApi';
@@ -24,14 +24,8 @@ import {
   TextArea,
 } from './styles';
 
-type RootStackParamList = {
-  Ticketeria: undefined;
-  CreateTicket: undefined;
-};
 
-type Props = NativeStackScreenProps<RootStackParamList, 'CreateTicket'>;
-
-const CreateTicket: React.FC<Props> = ({ navigation }) => {
+const CreateTicket = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
@@ -40,6 +34,8 @@ const CreateTicket: React.FC<Props> = ({ navigation }) => {
   const [showCategoryPicker, setShowCategoryPicker] = useState<boolean>(false);
   const [showPriorityPicker, setShowPriorityPicker] = useState<boolean>(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const { navigate, goBack } = useNavigation();
 
   const categories = ['Sistema', 'Bug', 'Feature Request', 'Dúvida', 'Outros'];
   const priorities = [
@@ -87,7 +83,7 @@ const CreateTicket: React.FC<Props> = ({ navigation }) => {
       Alert.alert('Sucesso', 'Ticket criado com sucesso!', [
         {
           text: 'OK',
-          onPress: () => navigation.navigate('Ticketeria'),
+          onPress: () => navigate('Home'),
         },
       ]);
     } catch (error) {
@@ -116,7 +112,7 @@ const CreateTicket: React.FC<Props> = ({ navigation }) => {
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <Container>
         <Header>
-          <HeaderButton onPress={() => navigation.goBack()}>
+          <HeaderButton onPress={goBack}>
             <HeaderButtonText>Cancelar</HeaderButtonText>
           </HeaderButton>
           <HeaderTitle>Novo Ticket</HeaderTitle>

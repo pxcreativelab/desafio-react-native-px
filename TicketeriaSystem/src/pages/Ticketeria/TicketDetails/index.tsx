@@ -1,4 +1,4 @@
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import TicketComment from '../../../components/_fragments/TicketComment';
@@ -44,24 +44,21 @@ import {
   TicketTitle,
 } from './styles';
 
-type RootStackParamList = {
-  Ticketeria: undefined;
-  TicketDetails: { ticketId: string | number };
-};
 
-type Props = NativeStackScreenProps<RootStackParamList, 'TicketDetails'>;
+type Props = StaticScreenProps<{
+  ticketId: string;
+}>;
 
-const TicketDetails: React.FC<Props> = ({ navigation, route }) => {
-  const { ticketId } = route.params;
+
+const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Props) => {
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [ticket, setTicket] = useState<Ticket | null>(null);
   const [newComment, setNewComment] = useState<string>('');
   const [sendingComment, setSendingComment] = useState<boolean>(false);
 
-  useEffect(() => {
-    loadTicket();
-  }, [ticketId]);
+  const navigation = useNavigation();
 
   const loadTicket = async () => {
     try {
@@ -100,6 +97,10 @@ const TicketDetails: React.FC<Props> = ({ navigation, route }) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadTicket();
+  }, [ticketId]);
 
   const handleUpdateStatus = async (newStatus: string) => {
     if (!ticket) return;
