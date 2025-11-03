@@ -52,10 +52,16 @@ export interface Database {
 }
 
 export interface CreateTicketDTO {
+  id?: number;
   title: string;
   description: string;
   category: string;
   priority: TicketPriority;
+  createdBy: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
 
 export interface UpdateTicketDTO {

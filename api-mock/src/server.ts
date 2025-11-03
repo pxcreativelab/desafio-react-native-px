@@ -152,7 +152,7 @@ app.post('/api/v1/tickets', (req: Request, res: Response) => {
 
     // Criar novo ticket
     const newTicket: Ticket = {
-      id: Math.max(...db.tickets.map((t) => t.id), 0) + 1,
+      id: body.id ?? Date.now(),
       title: body.title,
       description: body.description,
       category: body.category,
@@ -160,11 +160,7 @@ app.post('/api/v1/tickets', (req: Request, res: Response) => {
       status: 'open',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
-      createdBy: {
-        id: 'current_user',
-        name: 'Usuário Atual',
-        email: 'usuario@email.com',
-      },
+      createdBy: body.createdBy,
       comments: [],
       attachments: [],
     };

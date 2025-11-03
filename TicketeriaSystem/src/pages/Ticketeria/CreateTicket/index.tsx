@@ -2,6 +2,7 @@ import { useCreateTicket } from '@hooks/tickets';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { ActivityIndicator, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
+
 import {
   Container,
   Content,
@@ -81,7 +82,8 @@ const CreateTicket = () => {
         }, 1000);
       },
     });
-  }; const getPriorityLabel = (value: string) => {
+  };
+  const getPriorityLabel = (value: string) => {
     const priorityObj = priorities.find((p) => p.value === value);
     return priorityObj ? priorityObj.label : value;
   };

@@ -1,6 +1,7 @@
 import { queryClient } from '@/services/queryClient';
+import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
-import { createTicket, CreateTicketData, Ticket } from '@services/TicketApi';
+import { CreateTicketData } from '@services/TicketApi';
 import { useMutation } from '@tanstack/react-query';
 import { ticketKeys } from './keys';
 
@@ -22,8 +23,8 @@ import { ticketKeys } from './keys';
 export const useCreateTicket = () => {
   const toast = useToast();
 
-  return useMutation<Ticket, Error, CreateTicketData>({
-    mutationFn: createTicket,
+  return useMutation<string, Error, CreateTicketData>({
+    mutationFn: SQLiteService.saveTicketLocally,
     onSuccess: () => {
       // Invalida todas as listas de tickets para recarregar
       queryClient.invalidateQueries({ queryKey: ticketKeys.lists() });
