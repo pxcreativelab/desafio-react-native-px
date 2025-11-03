@@ -1,9 +1,14 @@
-import TicketCard from '@components/_fragments/TicketCard';
-import { useTicketsList } from '@hooks/tickets';
-import { useNavigation } from '@react-navigation/native';
-import { Ticket } from '@services/TicketApi';
 import React, { useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
+
+import { SyncStatusBadge } from '@components/_fragments/SyncStatusBadge';
+import TicketCard from '@components/_fragments/TicketCard';
+import { TicketSkeleton } from '@components/_fragments/TicketSkeleton';
+import { useTicketsList } from '@hooks/tickets';
+import { useDebounce } from '@hooks/useDebounce';
+import { useNavigation } from '@react-navigation/native';
+import { Ticket } from '@services/TicketApi';
+
 import {
   BoxRow,
   Container,
@@ -18,11 +23,12 @@ import {
   FilterButtonText,
   FilterRow,
   Header,
-  LoadingContainer,
-  LoadingText,
   RetryButton,
   RetryButtonText,
+  SearchIcon,
+  SearchIconText,
   SearchInput,
+  SearchInputContainer
 } from './styles';
 
 
@@ -34,12 +40,15 @@ const TicketeriaList: React.FC = () => {
 
   const { navigate } = useNavigation();
 
+  // Debounce no search para evitar requisições excessivas
+  const debouncedSearch = useDebounce(searchText, 500);
+
   // React Query hook
   const { data, isLoading, isError, refetch, isFetching } = useTicketsList({
     page,
     limit: 20,
     status: selectedStatus,
-    search: searchText || undefined,
+    search: debouncedSearch || undefined,
     sort: 'createdAt_desc',
   });
 
@@ -72,18 +81,10 @@ const TicketeriaList: React.FC = () => {
     { label: 'Fechados', value: 'closed' },
   ];
 
-  if (isLoading && tickets.length === 0) {
-    return (
-      <Container>
-        <LoadingContainer>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <LoadingText>Carregando tickets...</LoadingText>
-        </LoadingContainer>
-      </Container>
-    );
-  }
+  // Loading suave - mostra esqueleto ao invés de tela branca
+  const isInitialLoading = isLoading && tickets.length === 0;
 
-  if (isError && tickets.length === 0) {
+  if (isError) {
     return (
       <Container>
         <ErrorContainer>
@@ -96,80 +97,100 @@ const TicketeriaList: React.FC = () => {
     );
   }
 
+  // Detectar se está aguardando o debounce
+  const isSearching = searchText !== debouncedSearch;
+
   return (
     <Container>
+      <SyncStatusBadge />
       <Header>
-        <SearchInput
-          placeholder="Buscar tickets..."
-          value={searchText}
-          onChangeText={setSearchText}
-          placeholderTextColor="#8E8E93"
-        />
+        <SearchInputContainer>
+          <SearchIcon>
+            {isSearching ? (
+              <ActivityIndicator size="small" color="#8E8E93" />
+            ) : (
+              <SearchIconText>🔍</SearchIconText>
+            )}
+          </SearchIcon>
+          <SearchInput
+            placeholder="Buscar tickets..."
+            value={searchText}
+            onChangeText={setSearchText}
+            placeholderTextColor="#8E8E93"
+          />
+        </SearchInputContainer>
         <CreateButton onPress={handleCreateTicket}>
           <CreateButtonText>+ Novo</CreateButtonText>
         </CreateButton>
       </Header>
 
-      <BoxRow>
-        <FilterRow
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, }}
-        >
-          {statusFilters.map((filter) => (
-            <FilterButton
-              key={filter.value || 'all'}
-              onPress={() => handleStatusFilter(filter.value)}
-              active={selectedStatus === filter.value}
+      {/* Loading Skeleton - mais suave que spinner */}
+      {isInitialLoading ? (
+        <TicketSkeleton />
+      ) : (
+        <>
+          <BoxRow>
+            <FilterRow
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 16, }}
             >
-              <FilterButtonText active={selectedStatus === filter.value}>
-                {filter.label}
-              </FilterButtonText>
-            </FilterButton>
-          ))}
-        </FilterRow>
-      </BoxRow>
-      <FlatList
-        data={tickets}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={({ item }) => (
-          <TicketCard ticket={item} onPress={() => handleTicketPress(item)} />
-        )}
-        contentContainerStyle={{ padding: 16 }}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={isFetching}
-            onRefresh={() => refetch()}
-            colors={['#007AFF']}
-            tintColor="#007AFF"
-          />
-        }
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isFetching && tickets.length > 0 ? (
-            <View style={{ padding: 20, alignItems: 'center' }}>
-              <ActivityIndicator size="small" color="#007AFF" />
-            </View>
-          ) : null
-        }
-        ListEmptyComponent={
-          <EmptyContainer>
-            <EmptyIcon>🎫</EmptyIcon>
-            <EmptyText>
-              {searchText || selectedStatus
-                ? 'Nenhum ticket encontrado com esses filtros'
-                : 'Nenhum ticket cadastrado ainda'}
-            </EmptyText>
-            {!searchText && !selectedStatus && (
-              <CreateButton onPress={handleCreateTicket} style={{ marginTop: 16 }}>
-                <CreateButtonText>Criar primeiro ticket</CreateButtonText>
-              </CreateButton>
+              {statusFilters.map((filter) => (
+                <FilterButton
+                  key={filter.value || 'all'}
+                  onPress={() => handleStatusFilter(filter.value)}
+                  active={selectedStatus === filter.value}
+                >
+                  <FilterButtonText active={selectedStatus === filter.value}>
+                    {filter.label}
+                  </FilterButtonText>
+                </FilterButton>
+              ))}
+            </FilterRow>
+          </BoxRow>
+          <FlatList
+            data={tickets}
+            keyExtractor={(item) => String(item.id)}
+            renderItem={({ item }) => (
+              <TicketCard ticket={item} onPress={() => handleTicketPress(item)} />
             )}
-          </EmptyContainer>
-        }
-      />
+            contentContainerStyle={{ padding: 16 }}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={isFetching}
+                onRefresh={() => refetch()}
+                colors={['#007AFF']}
+                tintColor="#007AFF"
+              />
+            }
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              isFetching && tickets.length > 0 ? (
+                <View style={{ padding: 20, alignItems: 'center' }}>
+                  <ActivityIndicator size="small" color="#007AFF" />
+                </View>
+              ) : null
+            }
+            ListEmptyComponent={
+              <EmptyContainer>
+                <EmptyIcon>🎫</EmptyIcon>
+                <EmptyText>
+                  {searchText || selectedStatus
+                    ? 'Nenhum ticket encontrado com esses filtros'
+                    : 'Nenhum ticket cadastrado ainda'}
+                </EmptyText>
+                {!searchText && !selectedStatus && (
+                  <CreateButton onPress={handleCreateTicket} style={{ marginTop: 16 }}>
+                    <CreateButtonText>Criar primeiro ticket</CreateButtonText>
+                  </CreateButton>
+                )}
+              </EmptyContainer>
+            }
+          />
+        </>
+      )}
     </Container>
   );
 };

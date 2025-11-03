@@ -15,14 +15,30 @@ export const Header = styled.View`
   border-bottom-color: #E5E5EA;
 `;
 
+export const SearchInputContainer = styled.View`
+  flex: 1;
+  position: relative;
+`;
+
 export const SearchInput = styled.TextInput`
   flex: 1;
   height: 40px;
   background-color: #F2F2F7;
   border-radius: 10px;
-  padding: 0 12px;
+  padding: 0 12px 0 40px;
   font-size: 16px;
   color: #000000;
+`;
+
+export const SearchIcon = styled.View`
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 1;
+`;
+
+export const SearchIconText = styled.Text`
+  font-size: 16px;
 `;
 
 export const CreateButton = styled.TouchableOpacity`

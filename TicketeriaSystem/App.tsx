@@ -5,6 +5,7 @@
  * @format
  */
 
+import AppHeader from '@/components/AppHeader';
 import { openDatabase } from '@/database/database';
 import { queryClient } from '@/services/queryClient';
 import { ToastContainer } from '@components/_fragments/Toast';
@@ -38,6 +39,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <AppHeader />
         <AppRoutes />
         <ToastContainer />
       </SafeAreaProvider>
