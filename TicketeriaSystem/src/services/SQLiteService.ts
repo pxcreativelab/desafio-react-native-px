@@ -53,30 +53,44 @@ export const getTicketsLocally = async (filters?: {
   status?: string;
   category?: string;
   search?: string;
-}): Promise<any[]> => {
+  page?: number;
+  limit?: number;
+}): Promise<{ items: any[]; total: number }> => {
   try {
     const db = await openDatabase();
-    let query = 'SELECT * FROM tickets WHERE 1=1';
+    // build WHERE clause
+    let where = 'WHERE 1=1';
     const params: any[] = [];
 
     if (filters?.status) {
-      query += ' AND status = ?';
+      where += ' AND status = ?';
       params.push(filters.status);
     }
 
     if (filters?.category) {
-      query += ' AND category = ?';
+      where += ' AND category = ?';
       params.push(filters.category);
     }
 
     if (filters?.search) {
-      query += ' AND (title LIKE ? OR description LIKE ?)';
+      where += ' AND (title LIKE ? OR description LIKE ?)';
       params.push(`%${filters.search}%`, `%${filters.search}%`);
     }
 
-    query += ' ORDER BY createdAt DESC';
+    // total count
+    const countQuery = `SELECT COUNT(*) as cnt FROM tickets ${where}`;
+    const [countResults] = await db.executeSql(countQuery, params);
+    const total = countResults.rows.length > 0 ? countResults.rows.item(0).cnt : 0;
 
-    const [results] = await db.executeSql(query, params);
+    // pagination
+    const page = filters?.page && filters.page > 0 ? filters.page : 1;
+    const limit = filters?.limit && filters.limit > 0 ? filters.limit : 50;
+    const offset = (page - 1) * limit;
+
+    const query = `SELECT * FROM tickets ${where} ORDER BY createdAt DESC LIMIT ? OFFSET ?`;
+    const queryParams = params.concat([limit, offset]);
+
+    const [results] = await db.executeSql(query, queryParams);
     const tickets: any[] = [];
 
     for (let i = 0; i < results.rows.length; i++) {
@@ -98,8 +112,8 @@ export const getTicketsLocally = async (filters?: {
       });
     }
 
-    console.log(`[SQLite] Found ${tickets.length} tickets locally`);
-    return tickets;
+    console.log(`[SQLite] Found ${tickets.length} tickets locally (page ${page}, limit ${limit}, total ${total})`);
+    return { items: tickets, total };
   } catch (error) {
     console.error('[SQLite] Error getting tickets:', error);
     throw error;
@@ -232,6 +246,49 @@ export const markTicketAsSynced = async (localId: string, serverId: string): Pro
     console.log(`[SQLite] Ticket marked as synced: ${localId} -> ${serverId}`);
   } catch (error) {
     console.error('[SQLite] Error marking ticket as synced:', error);
+    throw error;
+  }
+};
+
+/**
+ * Faz bulk upsert de tickets vindos do servidor (salva novos, atualiza existentes)
+ */
+export const bulkUpsertTickets = async (tickets: any[]): Promise<void> => {
+  if (!tickets || tickets.length === 0) return;
+
+  try {
+    const db = await openDatabase();
+    const now = new Date().toISOString();
+
+    for (const ticket of tickets) {
+      // Usa o ID do servidor como ID local também quando vem do servidor
+      const ticketId = ticket.id;
+      const localId = ticket.id;
+
+      await db.executeSql(
+        `INSERT OR REPLACE INTO tickets 
+         (id, title, description, category, priority, status, createdAt, updatedAt, createdBy, isSynced, localId, serverData)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          ticketId,
+          ticket.title || '',
+          ticket.description || '',
+          ticket.category || '',
+          ticket.priority || 'medium',
+          ticket.status || 'open',
+          ticket.createdAt || now,
+          ticket.updatedAt || now,
+          JSON.stringify(ticket.createdBy || {}),
+          1, // Marcado como sincronizado (veio do servidor)
+          localId,
+          JSON.stringify(ticket),
+        ]
+      );
+    }
+
+    console.log(`[SQLite] Bulk upserted ${tickets.length} tickets from server`);
+  } catch (error) {
+    console.error('[SQLite] Error bulk upserting tickets:', error);
     throw error;
   }
 };
@@ -471,6 +528,32 @@ export const getUnsyncedComments = async (): Promise<any[]> => {
   }
 };
 
+/**
+ * Upsert (merge) uma lista de tickets vindos do servidor localmente.
+ * Salva novos e atualiza existentes.
+ */
+export const upsertTicketsLocally = async (tickets: any[]): Promise<void> => {
+  try {
+    if (!tickets || tickets.length === 0) return;
+
+    // Reaproveita saveTicketLocally para cada item (inserir ou substituir)
+    for (const t of tickets) {
+      // normalize createdAt/updatedAt if needed
+      const ticket = {
+        ...t,
+      };
+      // saveTicketLocally already does INSERT OR REPLACE semantics
+
+      await saveTicketLocally(ticket);
+    }
+
+    console.log(`[SQLite] Upserted ${tickets.length} tickets locally`);
+  } catch (error) {
+    console.error('[SQLite] Error upserting tickets:', error);
+    throw error;
+  }
+};
+
 export default {
   // Tickets
   saveTicketLocally,
@@ -491,4 +574,5 @@ export default {
   saveAttachmentLocally,
   getAttachmentsByTicketIdLocally,
   markAttachmentAsSynced,
+  upsertTicketsLocally,
 };

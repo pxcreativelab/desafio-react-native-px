@@ -1,4 +1,5 @@
 import NetInfo from '@react-native-community/netinfo';
+import { API_ORIGIN } from '@services/Api';
 import {
   cleanupFailedActions,
   getPendingActions,
@@ -17,6 +18,7 @@ import {
   createTicket,
   updateTicket,
 } from '@services/TicketApi';
+import axios from 'axios';
 
 /**
  * Estado da sincronização
@@ -40,24 +42,67 @@ export const initSyncService = () => {
   // Monitorar conexão
   NetInfo.addEventListener(state => {
     const wasOffline = !isOnline;
-    isOnline = state.isConnected === true;
+    // primeiro checa rede
+    const networkConnected = state.isConnected === true;
 
-    console.log(`[SyncService] Connection status: ${isOnline ? 'ONLINE' : 'OFFLINE'}`);
+    console.log(`[SyncService] Network status: ${networkConnected ? 'ONLINE' : 'OFFLINE'}`);
 
-    // Se voltou online, tentar sincronizar
-    if (wasOffline && isOnline) {
-      console.log('[SyncService] Connection restored, starting sync...');
-      syncPendingData();
+    if (networkConnected) {
+      // antes de considerar online, testar se o servidor é alcançável
+      checkServerReachable()
+        .then((reachable) => {
+          isOnline = reachable;
+          console.log(`[SyncService] Server reachable: ${reachable}`);
+
+          // Se passou de offline para online (servidor acessível), iniciar sync
+          if (wasOffline && isOnline) {
+            console.log('[SyncService] Connection restored, starting sync...');
+            syncPendingData();
+          }
+
+          notifyListeners();
+        })
+        .catch((err) => {
+          console.error('[SyncService] Error checking server reachability:', err);
+          isOnline = false;
+          notifyListeners();
+        });
+    } else {
+      isOnline = false;
+      notifyListeners();
     }
-
-    notifyListeners();
   });
 
   // Verificar estado inicial
-  NetInfo.fetch().then(state => {
-    isOnline = state.isConnected === true;
-    console.log(`[SyncService] Initial connection: ${isOnline ? 'ONLINE' : 'OFFLINE'}`);
+  NetInfo.fetch().then(async (state) => {
+    const networkConnected = state.isConnected === true;
+    if (networkConnected) {
+      const reachable = await checkServerReachable();
+      isOnline = reachable;
+      console.log(`[SyncService] Initial connection: ${isOnline ? 'ONLINE' : 'OFFLINE'}, server reachable: ${reachable}`);
+    } else {
+      isOnline = false;
+      console.log('[SyncService] Initial connection: OFFLINE');
+    }
+    notifyListeners();
   });
+};
+
+/**
+ * Tenta conectar no servidor API para verificar se o backend está acessível.
+ * Retorna true se o servidor responder (qualquer código HTTP) dentro do timeout.
+ */
+export const checkServerReachable = async (host?: string): Promise<boolean> => {
+  const target = host || API_ORIGIN || 'http://192.168.1.12:3000';
+  try {
+    // Usa axios para permitir timeout
+    const res = await axios.get(target, { timeout: 3000 });
+    // Se obteve qualquer resposta, consideramos alcançável
+    return res.status >= 0;
+  } catch {
+    // erro de rede ou timeout
+    return false;
+  }
 };
 
 /**

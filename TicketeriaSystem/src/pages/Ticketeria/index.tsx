@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
 
-import { SyncStatusBadge } from '@components/_fragments/SyncStatusBadge';
 import TicketCard from '@components/_fragments/TicketCard';
 import { TicketSkeleton } from '@components/_fragments/TicketSkeleton';
 import { useTicketsList } from '@hooks/tickets';
 import { useDebounce } from '@hooks/useDebounce';
+import { useSyncStatus } from '@hooks/useSync';
 import { useNavigation } from '@react-navigation/native';
 import { Ticket } from '@services/TicketApi';
 
@@ -32,7 +32,6 @@ import {
 } from './styles';
 
 
-
 const TicketeriaList: React.FC = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
@@ -40,11 +39,14 @@ const TicketeriaList: React.FC = () => {
 
   const { navigate } = useNavigation();
 
-  // Debounce no search para evitar requisições excessivas
   const debouncedSearch = useDebounce(searchText, 500);
 
-  // React Query hook
+  // Sync status (online/offline)
+  const { isOnline } = useSyncStatus();
+
+  // React Query hook (now receives isOnline to decide remote vs local)
   const { data, isLoading, isError, refetch, isFetching } = useTicketsList({
+    isOnline,
     page,
     limit: 20,
     status: selectedStatus,
@@ -54,6 +56,10 @@ const TicketeriaList: React.FC = () => {
 
   const tickets = data?.data || [];
   const hasMore = data ? data.page < data.totalPages : false;
+
+  const handleRefresh = () => {
+    refetch();
+  };
 
   const handleLoadMore = () => {
     if (!isLoading && !isFetching && hasMore) {
@@ -102,7 +108,6 @@ const TicketeriaList: React.FC = () => {
 
   return (
     <Container>
-      <SyncStatusBadge />
       <Header>
         <SearchInputContainer>
           <SearchIcon>
@@ -159,7 +164,7 @@ const TicketeriaList: React.FC = () => {
             refreshControl={
               <RefreshControl
                 refreshing={isFetching}
-                onRefresh={() => refetch()}
+                onRefresh={handleRefresh}
                 colors={['#007AFF']}
                 tintColor="#007AFF"
               />

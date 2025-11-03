@@ -32,7 +32,6 @@ function App() {
 
     // Inicializar serviço de sincronização
     initSyncService();
-    console.log('[App] Sync service initialized');
   }, []);
 
   return (

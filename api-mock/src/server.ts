@@ -6,10 +6,14 @@ import {
   Comment,
   CreateCommentDTO,
   CreateTicketDTO,
+  CreateUserDTO,
   Database,
+  LoginDTO,
+  LoginResponse,
   PaginatedResponse,
   Ticket,
-  UpdateTicketDTO
+  UpdateTicketDTO,
+  User
 } from './types';
 
 const app = express();
@@ -285,6 +289,89 @@ app.get('/api/v1/tickets/:id/comments', (req: Request, res: Response) => {
   }
 });
 
+// POST /api/v1/auth/register - Criar novo usuário
+app.post('/api/v1/auth/register', (req: Request, res: Response) => {
+  try {
+    const db = readDatabase();
+    const body: CreateUserDTO = req.body;
+
+    // Validação
+    if (!body.name || body.name.length < 2) {
+      return res
+        .status(400)
+        .json({ error: 'Name must be at least 2 characters' });
+    }
+
+    if (!body.email || !body.email.includes('@')) {
+      return res.status(400).json({ error: 'Valid email is required' });
+    }
+
+    if (!body.password || body.password.length < 6) {
+      return res
+        .status(400)
+        .json({ error: 'Password must be at least 6 characters' });
+    }
+
+    // Verificar se email já existe
+    const existingUser = db.users.find((u) => u.email === body.email);
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already exists' });
+    }
+
+    // Criar novo usuário
+    const newUser: User = {
+      id: `user_${Date.now()}`,
+      name: body.name,
+      email: body.email,
+      password: body.password, // Sem criptografia como solicitado
+      createdAt: new Date().toISOString(),
+    };
+
+    db.users.push(newUser);
+    writeDatabase(db);
+
+    // Retornar usuário sem senha
+    const { password, ...userWithoutPassword } = newUser;
+
+    res.status(201).json(userWithoutPassword);
+  } catch (error) {
+    console.error('Error creating user:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /api/v1/auth/login - Fazer login
+app.post('/api/v1/auth/login', (req: Request, res: Response) => {
+  try {
+    const db = readDatabase();
+    const body: LoginDTO = req.body;
+
+    // Validação
+    if (!body.email || !body.password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    // Buscar usuário
+    const user = db.users.find((u) => u.email === body.email);
+
+    if (!user || user.password !== body.password) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    // Retornar usuário e token mock
+    const { password, ...userWithoutPassword } = user;
+    const response: LoginResponse = {
+      user: userWithoutPassword,
+      token: `mock_token_${user.id}_${Date.now()}`,
+    };
+
+    res.json(response);
+  } catch (error) {
+    console.error('Error logging in:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 // GET /api/v1/health - Health check
 app.get('/api/v1/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
@@ -318,6 +405,8 @@ app.listen(PORT, () => {
 ║   • DELETE /api/v1/tickets/:id               ║
 ║   • POST   /api/v1/tickets/:id/comments      ║
 ║   • GET    /api/v1/tickets/:id/comments      ║
+║   • POST   /api/v1/auth/register             ║
+║   • POST   /api/v1/auth/login                ║
 ║   • GET    /api/v1/health                    ║
 ║                                              ║
 ║   Database: db.json                          ║

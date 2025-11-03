@@ -2,9 +2,12 @@ import axios from 'axios';
 
 // Configure a URL base da API
 // Em produção, use a URL real da API
-const API_BASE_URL = __DEV__
+export const API_BASE_URL = __DEV__
   ? 'http://192.168.1.12:3000/api/v1'
   : 'https://api-production.com/api/v1';
+
+// Origem do host (ex: http://192.168.1.12:3000)
+export const API_ORIGIN = API_BASE_URL.replace(/\/api\/.+$/, '');
 
 const api = axios.create({
   baseURL: API_BASE_URL,

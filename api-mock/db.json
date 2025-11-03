@@ -222,5 +222,275 @@
       "comments": [],
       "attachments": []
     }
+  ],
+  "users": [
+    {
+      "id": "user1",
+      "name": "João Silva",
+      "email": "joao.silva@email.com",
+      "password": "123456",
+      "createdAt": "2025-11-01T10:30:00.000Z"
+    },
+    {
+      "id": "user2",
+      "name": "Maria Santos",
+      "email": "maria.santos@email.com",
+      "password": "123456",
+      "createdAt": "2025-11-01T10:30:00.000Z"
+    },
+    {
+      "id": "admin1",
+      "name": "Suporte Técnico",
+      "email": "suporte@empresa.com",
+      "password": "admin123",
+      "createdAt": "2025-11-01T10:30:00.000Z"
+    }
   ]
+}
+    {
+  "id": 1,
+  "title": "Erro ao fazer login no aplicativo",
+  "description": "Quando tento fazer login, o app trava e fecha sozinho. Testei em diferentes redes WiFi e continua o mesmo problema.",
+  "category": "Bug",
+  "priority": "high",
+  "status": "open",
+  "createdAt": "2025-11-01T10:30:00.000Z",
+  "updatedAt": "2025-11-01T10:30:00.000Z",
+  "createdBy": {
+    "id": "user1",
+    "name": "João Silva",
+    "email": "joao.silva@email.com"
+  },
+  "comments": [
+    {
+      "id": 1,
+      "text": "Consegui reproduzir o erro aqui também. Parece ser um problema de timeout na API.",
+      "createdAt": "2025-11-01T14:20:00.000Z",
+      "createdBy": {
+        "id": "user2",
+        "name": "Maria Santos",
+        "email": "maria.santos@email.com"
+      }
+    },
+    {
+      "id": 2,
+      "text": "Estamos investigando. Deve ser corrigido na próxima atualização.",
+      "createdAt": "2025-11-01T16:45:00.000Z",
+      "createdBy": {
+        "id": "admin1",
+        "name": "Suporte Técnico",
+        "email": "suporte@empresa.com"
+      }
+    }
+  ],
+  "attachments": []
+},
+{
+  "id": 2,
+  "title": "Adicionar funcionalidade de dark mode",
+  "description": "Seria interessante ter a opção de alternar entre tema claro e escuro no aplicativo para melhor experiência do usuário.",
+  "category": "Feature Request",
+  "priority": "medium",
+  "status": "in_progress",
+  "createdAt": "2025-10-28T09:15:00.000Z",
+  "updatedAt": "2025-11-02T11:20:00.000Z",
+  "createdBy": {
+    "id": "user3",
+    "name": "Pedro Costa",
+    "email": "pedro.costa@email.com"
+  },
+  "comments": [
+    {
+      "id": 3,
+      "text": "Ótima sugestão! Vamos incluir no roadmap.",
+      "createdAt": "2025-10-29T10:00:00.000Z",
+      "createdBy": {
+        "id": "admin1",
+        "name": "Suporte Técnico",
+        "email": "suporte@empresa.com"
+      }
+    }
+  ],
+  "attachments": []
+},
+{
+  "id": 3,
+  "title": "Problema na sincronização de dados",
+  "description": "Os dados não estão sincronizando corretamente quando o aplicativo volta a ficar online. Alguns tickets criados offline não aparecem depois.",
+  "category": "Bug",
+  "priority": "critical",
+  "status": "open",
+  "createdAt": "2025-11-02T15:45:00.000Z",
+  "updatedAt": "2025-11-02T15:45:00.000Z",
+  "createdBy": {
+    "id": "user4",
+    "name": "Ana Oliveira",
+    "email": "ana.oliveira@email.com"
+  },
+  "comments": [],
+  "attachments": []
+},
+{
+  "id": 4,
+  "title": "Botão de compartilhar não funciona",
+  "description": "Ao tentar compartilhar um ticket, o botão não responde.",
+  "category": "Bug",
+  "priority": "low",
+  "status": "resolved",
+  "createdAt": "2025-10-25T08:30:00.000Z",
+  "updatedAt": "2025-10-30T14:00:00.000Z",
+  "createdBy": {
+    "id": "user5",
+    "name": "Carlos Mendes",
+    "email": "carlos.mendes@email.com"
+  },
+  "comments": [
+    {
+      "id": 4,
+      "text": "Problema resolvido na versão 1.2.3",
+      "createdAt": "2025-10-30T14:00:00.000Z",
+      "createdBy": {
+        "id": "admin1",
+        "name": "Suporte Técnico",
+        "email": "suporte@empresa.com"
+      }
+    }
+  ],
+  "attachments": []
+},
+{
+  "id": 5,
+  "title": "Dúvida sobre exportação de relatórios",
+  "description": "Como faço para exportar um relatório de todos os tickets do último mês?",
+  "category": "Dúvida",
+  "priority": "low",
+  "status": "closed",
+  "createdAt": "2025-10-20T11:00:00.000Z",
+  "updatedAt": "2025-10-22T09:30:00.000Z",
+  "createdBy": {
+    "id": "user6",
+    "name": "Fernanda Lima",
+    "email": "fernanda.lima@email.com"
+  },
+  "comments": [
+    {
+      "id": 5,
+      "text": "Você pode usar o menu Relatórios > Exportar > Selecionar período.",
+      "createdAt": "2025-10-21T10:15:00.000Z",
+      "createdBy": {
+        "id": "admin1",
+        "name": "Suporte Técnico",
+        "email": "suporte@empresa.com"
+      }
+    },
+    {
+      "id": 6,
+      "text": "Perfeito! Consegui fazer. Muito obrigada!",
+      "createdAt": "2025-10-22T09:30:00.000Z",
+      "createdBy": {
+        "id": "user6",
+        "name": "Fernanda Lima",
+        "email": "fernanda.lima@email.com"
+      }
+    }
+  ],
+  "attachments": []
+},
+{
+  "id": 6,
+  "title": "Melhorar performance na lista de tickets",
+  "description": "A lista de tickets fica lenta quando há muitos itens. Seria bom implementar virtualização ou paginação.",
+  "category": "Feature Request",
+  "priority": "medium",
+  "status": "in_progress",
+  "createdAt": "2025-10-31T13:20:00.000Z",
+  "updatedAt": "2025-11-03T10:00:00.000Z",
+  "createdBy": {
+    "id": "user7",
+    "name": "Roberto Alves",
+    "email": "roberto.alves@email.com"
+  },
+  "comments": [
+    {
+      "id": 7,
+      "text": "Implementando scroll infinito com paginação.",
+      "createdAt": "2025-11-03T10:00:00.000Z",
+      "createdBy": {
+        "id": "dev1",
+        "name": "Desenvolvedor",
+        "email": "dev@empresa.com"
+      }
+    }
+  ],
+  "attachments": []
+},
+{
+  "id": 7,
+  "title": "Notificações push não chegam",
+  "description": "Configurei as notificações mas não recebo alertas quando há atualizações nos meus tickets.",
+  "category": "Sistema",
+  "priority": "high",
+  "status": "open",
+  "createdAt": "2025-11-03T08:00:00.000Z",
+  "updatedAt": "2025-11-03T13:52:00.025Z",
+  "createdBy": {
+    "id": "user8",
+    "name": "Juliana Pereira",
+    "email": "juliana.pereira@email.com"
+  },
+  "comments": [
+    {
+      "id": 1762177920024,
+      "text": "teste",
+      "createdAt": "2025-11-03T13:52:00.025Z",
+      "createdBy": {
+        "id": "current_user",
+        "name": "Usuário Atual",
+        "email": "usuario@email.com"
+      }
+    }
+  ],
+  "attachments": []
+},
+{
+  "id": 8,
+  "title": "Adicionar filtro por categoria",
+  "description": "Seria útil poder filtrar tickets por categoria além de status.",
+  "category": "Feature Request",
+  "priority": "low",
+  "status": "open",
+  "createdAt": "2025-11-02T16:30:00.000Z",
+  "updatedAt": "2025-11-02T16:30:00.000Z",
+  "createdBy": {
+    "id": "user9",
+    "name": "Lucas Martins",
+    "email": "lucas.martins@email.com"
+  },
+  "comments": [],
+  "attachments": []
+}
+],
+"users": [
+{
+  "id": "user1",
+  "name": "João Silva",
+  "email": "joao.silva@email.com",
+  "password": "123456",
+  "createdAt": "2025-11-01T10:30:00.000Z"
+},
+{
+  "id": "user2",
+  "name": "Maria Santos",
+  "email": "maria.santos@email.com",
+  "password": "123456",
+  "createdAt": "2025-11-01T10:30:00.000Z"
+},
+{
+  "id": "admin1",
+  "name": "Suporte Técnico",
+  "email": "suporte@empresa.com",
+  "password": "admin123",
+  "createdAt": "2025-11-01T10:30:00.000Z"
+}
+]
 }

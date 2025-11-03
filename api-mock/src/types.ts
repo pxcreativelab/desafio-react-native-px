@@ -2,6 +2,8 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  password?: string;
+  createdAt?: string;
 }
 
 export interface Comment {
@@ -46,6 +48,7 @@ export interface PaginatedResponse<T> {
 
 export interface Database {
   tickets: Ticket[];
+  users: User[];
 }
 
 export interface CreateTicketDTO {
@@ -65,4 +68,20 @@ export interface UpdateTicketDTO {
 
 export interface CreateCommentDTO {
   text: string;
+}
+
+export interface CreateUserDTO {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginDTO {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  token: string;
 }
