@@ -5,6 +5,7 @@ import TicketCard from '../../components/_fragments/TicketCard';
 import { getTicketsFromStorage, isCacheValid, saveTicketsToStorage } from '../../helpers/ticketStorage';
 import { fetchTickets, ListTicketsParams, Ticket } from '../../services/TicketApi';
 import {
+  BoxRow,
   Container,
   CreateButton,
   CreateButtonText,
@@ -182,24 +183,25 @@ const TicketeriaList: React.FC<Props> = ({ navigation }) => {
         </CreateButton>
       </Header>
 
-      <FilterRow
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 16 }}
-      >
-        {statusFilters.map((filter) => (
-          <FilterButton
-            key={filter.value || 'all'}
-            onPress={() => handleStatusFilter(filter.value)}
-            active={selectedStatus === filter.value}
-          >
-            <FilterButtonText active={selectedStatus === filter.value}>
-              {filter.label}
-            </FilterButtonText>
-          </FilterButton>
-        ))}
-      </FilterRow>
-
+      <BoxRow>
+        <FilterRow
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: 16, }}
+        >
+          {statusFilters.map((filter) => (
+            <FilterButton
+              key={filter.value || 'all'}
+              onPress={() => handleStatusFilter(filter.value)}
+              active={selectedStatus === filter.value}
+            >
+              <FilterButtonText active={selectedStatus === filter.value}>
+                {filter.label}
+              </FilterButtonText>
+            </FilterButton>
+          ))}
+        </FilterRow>
+      </BoxRow>
       <FlatList
         data={tickets}
         keyExtractor={(item) => String(item.id)}

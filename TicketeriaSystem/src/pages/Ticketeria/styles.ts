@@ -39,8 +39,13 @@ export const CreateButtonText = styled.Text`
   font-weight: 600;
 `;
 
+export const BoxRow = styled.View`
+ background-color: #FFFFFF;
+  height: 60px;
+`;
+
 export const FilterRow = styled.ScrollView`
-  background-color: #FFFFFF;
+ 
   padding: 12px 0;
   border-bottom-width: 1px;
   border-bottom-color: #E5E5EA;

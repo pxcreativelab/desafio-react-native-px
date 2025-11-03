@@ -3,7 +3,7 @@ import axios from 'axios';
 // Configure a URL base da API
 // Em produção, use a URL real da API
 const API_BASE_URL = __DEV__
-  ? 'http://localhost:3000/api/v1'
+  ? 'http://192.168.1.12:3000/api/v1'
   : 'https://api-production.com/api/v1';
 
 const api = axios.create({
