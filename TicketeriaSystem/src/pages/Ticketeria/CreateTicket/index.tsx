@@ -1,6 +1,5 @@
-import { useToast } from '@hooks/useToast';
+import { useCreateTicket } from '@hooks/tickets';
 import { useNavigation } from '@react-navigation/native';
-import { createTicket } from '@services/TicketApi';
 import React, { useState } from 'react';
 import { ActivityIndicator, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
 import {
@@ -27,8 +26,6 @@ import {
 
 
 const CreateTicket = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const toast = useToast();
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [category, setCategory] = useState<string>('');
@@ -38,6 +35,7 @@ const CreateTicket = () => {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const { navigate, goBack } = useNavigation();
+  const { mutate: createNewTicket, isPending } = useCreateTicket();
 
   const categories = ['Sistema', 'Bug', 'Feature Request', 'Dúvida', 'Outros'];
   const priorities = [
@@ -64,41 +62,31 @@ const CreateTicket = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     if (!validate()) {
-      toast.error('Por favor, corrija os erros no formulário');
       return;
     }
 
-    setLoading(true);
+    const ticketData = {
+      title,
+      description,
+      category,
+      priority,
+    };
 
-    try {
-      const ticketData = {
-        title,
-        description,
-        category,
-        priority,
-      };
-
-      await createTicket(ticketData);
-
-      toast.success('Ticket criado com sucesso!');
-
-      setTimeout(() => {
-        navigate('Home');
-      }, 1000);
-    } catch (error) {
-      toast.error('Não foi possível criar o ticket. Tente novamente.');
-      setLoading(false);
-    }
-  };
-
-  const getPriorityLabel = (value: string) => {
+    createNewTicket(ticketData, {
+      onSuccess: () => {
+        setTimeout(() => {
+          navigate('Home');
+        }, 1000);
+      },
+    });
+  }; const getPriorityLabel = (value: string) => {
     const priorityObj = priorities.find((p) => p.value === value);
     return priorityObj ? priorityObj.label : value;
   };
 
-  if (loading) {
+  if (isPending) {
     return (
       <Container>
         <LoadingContainer>

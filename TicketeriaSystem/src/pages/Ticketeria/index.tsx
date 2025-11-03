@@ -1,9 +1,8 @@
 import TicketCard from '@components/_fragments/TicketCard';
-import { getTicketsFromStorage, isCacheValid, saveTicketsToStorage } from '@helpers/ticketStorage';
-import { useToast } from '@hooks/useToast';
+import { useTicketsList } from '@hooks/tickets';
 import { useNavigation } from '@react-navigation/native';
-import { fetchTickets, ListTicketsParams, Ticket } from '@services/TicketApi';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Ticket } from '@services/TicketApi';
+import React, { useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
 import {
   BoxRow,
@@ -28,95 +27,28 @@ import {
 
 
 
-const TicketeriaList: React.FC<Props> = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [refreshing, setRefreshing] = useState<boolean>(false);
+const TicketeriaList: React.FC = () => {
   const [searchText, setSearchText] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string | undefined>(undefined);
   const [page, setPage] = useState<number>(1);
-  const [hasMore, setHasMore] = useState<boolean>(true);
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
 
   const { navigate } = useNavigation();
-  const toast = useToast();
 
-  const loadTickets = useCallback(async (reset: boolean = false) => {
-    try {
-      setError(false);
+  // React Query hook
+  const { data, isLoading, isError, refetch, isFetching } = useTicketsList({
+    page,
+    limit: 20,
+    status: selectedStatus,
+    search: searchText || undefined,
+    sort: 'createdAt_desc',
+  });
 
-      if (reset) {
-        setLoading(true);
-        setPage(1);
+  const tickets = data?.data || [];
+  const hasMore = data ? data.page < data.totalPages : false;
 
-        // Tentar carregar do cache primeiro
-        const cachedData = await getTicketsFromStorage();
-        const cacheIsValid = await isCacheValid(5);
-
-        if (cachedData && cacheIsValid) {
-          setTickets(cachedData.data);
-          setLoading(false);
-          // Continuar carregando em background
-        }
-      } else {
-        setLoadingMore(true);
-      }
-
-      const params: ListTicketsParams = {
-        page: reset ? 1 : page,
-        limit: 20,
-        status: selectedStatus,
-        search: searchText || undefined,
-        sort: 'createdAt_desc',
-      };
-
-      const response = await fetchTickets(params);
-
-      if (reset) {
-        setTickets(response.data);
-        await saveTicketsToStorage(response);
-      } else {
-        setTickets((prev) => [...prev, ...response.data]);
-      }
-
-      setHasMore(response.page < response.totalPages);
-      setLoading(false);
-      setRefreshing(false);
-      setLoadingMore(false);
-    } catch (err) {
-      console.error('Error loading tickets:', err);
-
-      // Se falhar e for o primeiro carregamento, tentar carregar do cache
-      if (reset) {
-        const cachedData = await getTicketsFromStorage();
-        if (cachedData && cachedData.data.length > 0) {
-          setTickets(cachedData.data);
-          toast.warning('Modo Offline: mostrando dados salvos localmente');
-        } else {
-          setError(true);
-        }
-      }
-
-      setLoading(false);
-      setRefreshing(false);
-      setLoadingMore(false);
-    }
-  }, [page, selectedStatus, searchText, toast]);
-
-  useEffect(() => {
-    loadTickets(true);
-  }, [selectedStatus, searchText, loadTickets]);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    loadTickets(true);
-  };
-
-  const loadMore = () => {
-    if (!loading && !loadingMore && hasMore) {
+  const handleLoadMore = () => {
+    if (!isLoading && !isFetching && hasMore) {
       setPage((prev) => prev + 1);
-      loadTickets(false);
     }
   };
 
@@ -140,7 +72,7 @@ const TicketeriaList: React.FC<Props> = () => {
     { label: 'Fechados', value: 'closed' },
   ];
 
-  if (loading && !refreshing && tickets.length === 0) {
+  if (isLoading && tickets.length === 0) {
     return (
       <Container>
         <LoadingContainer>
@@ -151,12 +83,12 @@ const TicketeriaList: React.FC<Props> = () => {
     );
   }
 
-  if (error && tickets.length === 0) {
+  if (isError && tickets.length === 0) {
     return (
       <Container>
         <ErrorContainer>
           <ErrorText>Erro ao carregar tickets</ErrorText>
-          <RetryButton onPress={() => loadTickets(true)}>
+          <RetryButton onPress={() => refetch()}>
             <RetryButtonText>Tentar novamente</RetryButtonText>
           </RetryButton>
         </ErrorContainer>
@@ -207,16 +139,16 @@ const TicketeriaList: React.FC<Props> = () => {
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
+            refreshing={isFetching}
+            onRefresh={() => refetch()}
             colors={['#007AFF']}
             tintColor="#007AFF"
           />
         }
-        onEndReached={loadMore}
+        onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}
         ListFooterComponent={
-          loadingMore ? (
+          isFetching && tickets.length > 0 ? (
             <View style={{ padding: 20, alignItems: 'center' }}>
               <ActivityIndicator size="small" color="#007AFF" />
             </View>

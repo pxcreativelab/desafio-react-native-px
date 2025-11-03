@@ -1,18 +1,8 @@
 import TicketComment from '@components/_fragments/TicketComment';
 import TicketStatusBadge from '@components/_fragments/TicketStatusBadge';
-import {
-  getTicketDetailsFromStorage,
-  saveTicketDetailsToStorage,
-} from '@helpers/ticketStorage';
-import { useToast } from '@hooks/useToast';
+import { useAddComment, useTicketDetails, useUpdateTicketStatus } from '@hooks/tickets';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import {
-  addComment,
-  fetchTicketById,
-  Ticket,
-  updateTicket,
-} from '@services/TicketApi';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import {
   ActionButton,
@@ -52,86 +42,29 @@ type Props = StaticScreenProps<{
 
 
 const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Props) => {
-
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const [ticket, setTicket] = useState<Ticket | null>(null);
   const [newComment, setNewComment] = useState<string>('');
-  const [sendingComment, setSendingComment] = useState<boolean>(false);
 
   const navigation = useNavigation();
-  const toast = useToast();
 
-  const loadTicket = async () => {
-    try {
-      setError(false);
-      setLoading(true);
+  // React Query hooks
+  const { data: ticket, isLoading, isError, refetch } = useTicketDetails(ticketId);
+  const { mutate: updateStatus } = useUpdateTicketStatus(ticketId);
+  const { mutate: addNewComment, isPending: isAddingComment } = useAddComment(ticketId);
 
-      // Tentar carregar do cache primeiro
-      const cachedTicket = await getTicketDetailsFromStorage(ticketId);
-      if (cachedTicket) {
-        setTicket(cachedTicket);
-        setLoading(false);
-        // Continuar carregando em background
-      }
-
-      const data = await fetchTicketById(ticketId);
-      setTicket(data);
-      await saveTicketDetailsToStorage(data);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error loading ticket:', err);
-
-      // Se falhar, usar o cache se disponível
-      if (!ticket) {
-        const cachedTicket = await getTicketDetailsFromStorage(ticketId);
-        if (cachedTicket) {
-          setTicket(cachedTicket);
-          toast.warning('Modo Offline: mostrando dados salvos localmente');
-        } else {
-          setError(true);
-        }
-      }
-
-      setLoading(false);
-    }
+  const handleUpdateStatus = (newStatus: string) => {
+    updateStatus(newStatus);
   };
 
-  useEffect(() => {
-    loadTicket();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ticketId]);
-
-  const handleUpdateStatus = async (newStatus: string) => {
-    if (!ticket) return;
-
-    try {
-      await updateTicket(ticketId, { status: newStatus as any });
-      toast.success('Status atualizado com sucesso!');
-      loadTicket();
-    } catch (err) {
-      toast.error('Não foi possível atualizar o status');
-    }
-  };
-
-  const handleAddComment = async () => {
+  const handleAddComment = () => {
     if (!newComment.trim()) {
-      toast.error('Digite um comentário');
       return;
     }
 
-    setSendingComment(true);
-
-    try {
-      await addComment(ticketId, newComment);
-      setNewComment('');
-      toast.success('Comentário adicionado!');
-      loadTicket();
-    } catch (err) {
-      toast.error('Não foi possível adicionar o comentário');
-    } finally {
-      setSendingComment(false);
-    }
+    addNewComment(newComment, {
+      onSuccess: () => {
+        setNewComment('');
+      },
+    });
   };
 
   const getPriorityLabel = (priority: string) => {
@@ -144,7 +77,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
     return labels[priority] || priority;
   };
 
-  if (loading && !ticket) {
+  if (isLoading) {
     return (
       <Container>
         <LoadingContainer>
@@ -155,7 +88,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
     );
   }
 
-  if (error || !ticket) {
+  if (isError || !ticket) {
     return (
       <Container>
         <Header>
@@ -166,7 +99,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
         </Header>
         <ErrorContainer>
           <ErrorText>Erro ao carregar ticket</ErrorText>
-          <RetryButton onPress={loadTicket}>
+          <RetryButton onPress={() => refetch()}>
             <RetryButtonText>Tentar novamente</RetryButtonText>
           </RetryButton>
         </ErrorContainer>
@@ -241,14 +174,14 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
                   onChangeText={setNewComment}
                   placeholder="Adicione um comentário..."
                   multiline
-                  editable={!sendingComment}
+                  editable={!isAddingComment}
                 />
                 <SendButton
                   onPress={handleAddComment}
-                  disabled={!newComment.trim() || sendingComment}
-                  active={!!newComment.trim() && !sendingComment}
+                  disabled={!newComment.trim() || isAddingComment}
+                  active={!!newComment.trim() && !isAddingComment}
                 >
-                  {sendingComment ? (
+                  {isAddingComment ? (
                     <ActivityIndicator size="small" color="#FFFFFF" />
                   ) : (
                     <SendButtonText active={!!newComment.trim()}>
