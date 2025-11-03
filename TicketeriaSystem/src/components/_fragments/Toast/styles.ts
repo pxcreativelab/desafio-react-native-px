@@ -1,5 +1,5 @@
+import { ToastType } from '@stores/useToastStore';
 import styled from 'styled-components/native';
-import { ToastType } from '../../stores/useToastStore';
 
 interface ContainerProps {
   type: ToastType;

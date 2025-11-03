@@ -1,10 +1,10 @@
+import TicketCard from '@components/_fragments/TicketCard';
+import { getTicketsFromStorage, isCacheValid, saveTicketsToStorage } from '@helpers/ticketStorage';
+import { useToast } from '@hooks/useToast';
 import { useNavigation } from '@react-navigation/native';
+import { fetchTickets, ListTicketsParams, Ticket } from '@services/TicketApi';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, View } from 'react-native';
-import TicketCard from '../../components/_fragments/TicketCard';
-import { getTicketsFromStorage, isCacheValid, saveTicketsToStorage } from '../../helpers/ticketStorage';
-import { useToast } from '../../hooks/useToast';
-import { fetchTickets, ListTicketsParams, Ticket } from '../../services/TicketApi';
 import {
   BoxRow,
   Container,

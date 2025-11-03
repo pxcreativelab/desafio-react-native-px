@@ -1,6 +1,6 @@
+import { useToastStore } from '@stores/useToastStore';
 import React, { useEffect } from 'react';
 import { Animated } from 'react-native';
-import { useToastStore } from '../../../stores/useToastStore';
 import * as S from './styles';
 
 export const ToastContainer: React.FC = () => {

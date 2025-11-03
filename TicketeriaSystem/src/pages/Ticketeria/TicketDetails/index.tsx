@@ -1,19 +1,19 @@
-import { StaticScreenProps, useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import TicketComment from '../../../components/_fragments/TicketComment';
-import TicketStatusBadge from '../../../components/_fragments/TicketStatusBadge';
+import TicketComment from '@components/_fragments/TicketComment';
+import TicketStatusBadge from '@components/_fragments/TicketStatusBadge';
 import {
   getTicketDetailsFromStorage,
   saveTicketDetailsToStorage,
-} from '../../../helpers/ticketStorage';
-import { useToast } from '../../../hooks/useToast';
+} from '@helpers/ticketStorage';
+import { useToast } from '@hooks/useToast';
+import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import {
   addComment,
   fetchTicketById,
   Ticket,
   updateTicket,
-} from '../../../services/TicketApi';
+} from '@services/TicketApi';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import {
   ActionButton,
   ActionButtonText,

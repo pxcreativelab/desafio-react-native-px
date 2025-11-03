@@ -1,8 +1,8 @@
+import { useToast } from '@hooks/useToast';
 import { useNavigation } from '@react-navigation/native';
+import { createTicket } from '@services/TicketApi';
 import React, { useState } from 'react';
 import { ActivityIndicator, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
-import { useToast } from '../../../hooks/useToast';
-import { createTicket } from '../../../services/TicketApi';
 import {
   Container,
   Content,
