@@ -6,6 +6,10 @@ export const Container = styled(SafeAreaView)`
   background-color: #F2F2F7;
 `;
 
+export const KeyboardView = styled.KeyboardAvoidingView`
+  flex: 1;
+`;
+
 export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;

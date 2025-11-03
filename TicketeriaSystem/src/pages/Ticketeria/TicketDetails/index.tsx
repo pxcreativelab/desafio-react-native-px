@@ -2,8 +2,9 @@ import TicketComment from '@components/_fragments/TicketComment';
 import TicketStatusBadge from '@components/_fragments/TicketStatusBadge';
 import { useAddComment, useTicketDetails, useUpdateTicketStatus } from '@hooks/tickets';
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
+import { Attachment, Comment } from '@services/TicketApi';
 import React, { useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { ActivityIndicator, Platform, ScrollView } from 'react-native';
 import {
   ActionButton,
   ActionButtonText,
@@ -23,6 +24,7 @@ import {
   InfoLabel,
   InfoRow,
   InfoValue,
+  KeyboardView,
   LoadingContainer,
   LoadingText,
   RetryButton,
@@ -108,9 +110,8 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
   }
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardView
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{ flex: 1 }}
     >
       <Container>
         <Header>
@@ -161,7 +162,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
                 Comentários ({ticket.comments?.length || 0})
               </SectionTitle>
               {ticket.comments && ticket.comments.length > 0 ? (
-                ticket.comments.map((comment) => (
+                ticket.comments.map((comment: Comment) => (
                   <TicketComment key={comment.id} comment={comment} />
                 ))
               ) : (
@@ -192,6 +193,19 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
               </CommentInputContainer>
             </Section>
 
+            {/* Seção de Anexos */}
+            {ticket.attachments && ticket.attachments.length > 0 && (
+              <Section>
+                <SectionTitle>Anexos ({ticket.attachments.length})</SectionTitle>
+                {ticket.attachments.map((attachment: Attachment) => (
+                  <InfoRow key={attachment.id}>
+                    <InfoLabel>📎 {attachment.name}</InfoLabel>
+                    <InfoValue>{(attachment.size / 1024).toFixed(2)} KB</InfoValue>
+                  </InfoRow>
+                ))}
+              </Section>
+            )}
+
             <Section>
               <SectionTitle>Ações</SectionTitle>
               <ActionsRow>
@@ -218,7 +232,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
           </Content>
         </ScrollView>
       </Container>
-    </KeyboardAvoidingView>
+    </KeyboardView>
   );
 };
 
