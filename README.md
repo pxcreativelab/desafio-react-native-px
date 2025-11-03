@@ -15,13 +15,13 @@ Criar um sistema completo de cadastro e gestão de tickets (ticketeria) seguindo
 ### ✅ Obrigatório (MVP - Foco Principal)
 Estas funcionalidades são essenciais e devem ser implementadas:
 
-- [ ] Listagem de tickets com busca e filtros
-- [ ] Cadastro de ticket completo
-- [ ] Visualização de detalhes do ticket
-- [ ] Adição de comentários
-- [ ] Alteração de status do ticket
-- [ ] Cache local com AsyncStorage
-- [ ] Carregamento de dados do cache quando offline
+- [x] Listagem de tickets com busca e filtros
+- [x] Cadastro de ticket completo
+- [x] Visualização de detalhes do ticket
+- [x] Adição de comentários
+- [x] Alteração de status do ticket
+- [x] Cache local com AsyncStorage
+- [x] Carregamento de dados do cache quando offline
 
 ### ⭐ Opcional/Bônus (Desejável)
 Estas funcionalidades agregam valor mas não são obrigatórias:
