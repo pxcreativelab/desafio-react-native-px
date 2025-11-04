@@ -1,13 +1,9 @@
 import SQLite, { SQLiteDatabase } from 'react-native-sqlite-storage';
 
-// Habilitar debug (opcional)
 SQLite.DEBUG(false);
 SQLite.enablePromise(true);
 
-const DATABASE_NAME = 'ticketeria.db';
-const DATABASE_VERSION = '1.0';
-const DATABASE_DISPLAY_NAME = 'Ticketeria Database';
-const DATABASE_SIZE = 200000;
+const DATABASE_NAME = 'ticket.db';
 
 let databaseInstance: SQLiteDatabase | null = null;
 
@@ -52,83 +48,96 @@ export const closeDatabase = async (): Promise<void> => {
  */
 const initializeTables = async (db: SQLiteDatabase): Promise<void> => {
   try {
-    // Tabela de Tickets
-    await db.executeSql(`
-      CREATE TABLE IF NOT EXISTS tickets (
-        id TEXT PRIMARY KEY,
+    // Tickets table (from SQLITE_OFFLINE.md)
+    const createTicketsTableQuery = `
+      CREATE TABLE IF NOT EXISTS Tickets (
+        id INTEGER PRIMARY KEY,
         title TEXT NOT NULL,
         description TEXT NOT NULL,
         category TEXT NOT NULL,
         priority TEXT NOT NULL,
         status TEXT NOT NULL,
-        createdAt TEXT NOT NULL,
-        updatedAt TEXT NOT NULL,
-        createdBy TEXT,
-        isSynced INTEGER DEFAULT 0,
-        localId TEXT,
-        serverData TEXT
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        created_by_id TEXT,
+        created_by_name TEXT,
+        created_by_email TEXT,
+        sync_status TEXT DEFAULT 'synced',
+        server_id INTEGER,
+        created_at_local TEXT DEFAULT CURRENT_TIMESTAMP
       );
-    `);
+    `;
 
-    // Tabela de Comentários
-    await db.executeSql(`
-      CREATE TABLE IF NOT EXISTS comments (
-        id TEXT PRIMARY KEY,
-        ticketId TEXT NOT NULL,
-        text TEXT NOT NULL,
-        createdAt TEXT NOT NULL,
-        createdBy TEXT,
-        isSynced INTEGER DEFAULT 0,
-        localId TEXT,
-        FOREIGN KEY (ticketId) REFERENCES tickets(id) ON DELETE CASCADE
-      );
-    `);
-
-    // Tabela de Anexos
-    await db.executeSql(`
-      CREATE TABLE IF NOT EXISTS attachments (
-        id TEXT PRIMARY KEY,
-        ticketId TEXT NOT NULL,
-        name TEXT NOT NULL,
-        url TEXT,
-        type TEXT NOT NULL,
-        size INTEGER NOT NULL,
-        localUri TEXT,
-        isSynced INTEGER DEFAULT 0,
-        localId TEXT,
-        FOREIGN KEY (ticketId) REFERENCES tickets(id) ON DELETE CASCADE
-      );
-    `);
-
-    // Tabela de Ações Pendentes (Fila de Sincronização)
-    await db.executeSql(`
-      CREATE TABLE IF NOT EXISTS pending_actions (
+    // Ticket comments table
+    const createTicketCommentsTableQuery = `
+      CREATE TABLE IF NOT EXISTS TicketComments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        type TEXT NOT NULL,
-        entityType TEXT NOT NULL,
-        entityId TEXT NOT NULL,
-        data TEXT NOT NULL,
-        createdAt TEXT NOT NULL,
-        attempts INTEGER DEFAULT 0,
-        lastError TEXT
+        ticket_id INTEGER NOT NULL,
+        text TEXT NOT NULL,
+        created_by_id TEXT,
+        created_by_name TEXT,
+        created_by_email TEXT,
+        created_at TEXT NOT NULL,
+        sync_status TEXT DEFAULT 'synced',
+        server_id INTEGER,
+        created_at_local TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (ticket_id) REFERENCES Tickets(id)
       );
+    `;
+
+    // Ticket attachments table
+    const createTicketAttachmentsTableQuery = `
+      CREATE TABLE IF NOT EXISTS TicketAttachments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ticket_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        local_uri TEXT,
+        server_url TEXT,
+        type TEXT,
+        size INTEGER,
+        sync_status TEXT DEFAULT 'synced',
+        server_id INTEGER,
+        created_at_local TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (ticket_id) REFERENCES Tickets(id)
+      );
+    `;
+
+    // Pending actions table
+    const createPendingActionsTableQuery = `
+      CREATE TABLE IF NOT EXISTS PendingTicketActions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        action_type TEXT NOT NULL,
+        ticket_id INTEGER,
+        data TEXT NOT NULL,
+        status TEXT DEFAULT 'pending',
+        retry_count INTEGER DEFAULT 0,
+        error_message TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        last_retry_at TEXT
+      );
+    `;
+
+    // Execute table creation
+    await db.executeSql(createTicketsTableQuery);
+    await db.executeSql(createTicketCommentsTableQuery);
+    await db.executeSql(createTicketAttachmentsTableQuery);
+    await db.executeSql(createPendingActionsTableQuery);
+
+    // Índices para melhor performance (adaptados aos novos nomes)
+    await db.executeSql(`
+      CREATE INDEX IF NOT EXISTS idx_tickets_status ON Tickets(status);
     `);
 
-    // Índices para melhor performance
     await db.executeSql(`
-      CREATE INDEX IF NOT EXISTS idx_tickets_status ON tickets(status);
+      CREATE INDEX IF NOT EXISTS idx_tickets_sync_status ON Tickets(sync_status);
     `);
 
     await db.executeSql(`
-      CREATE INDEX IF NOT EXISTS idx_tickets_synced ON tickets(isSynced);
+      CREATE INDEX IF NOT EXISTS idx_ticketcomments_ticket ON TicketComments(ticket_id);
     `);
 
     await db.executeSql(`
-      CREATE INDEX IF NOT EXISTS idx_comments_ticket ON comments(ticketId);
-    `);
-
-    await db.executeSql(`
-      CREATE INDEX IF NOT EXISTS idx_pending_actions_type ON pending_actions(type);
+      CREATE INDEX IF NOT EXISTS idx_pending_actions_type ON PendingTicketActions(action_type);
     `);
 
     console.log('[SQLite] Tables initialized successfully');

@@ -72,6 +72,6 @@ export const getTicketsLocally = async (filters?: {
     return { items: tickets, total };
   } catch (error) {
     console.error('[SQLite] Error getting tickets:', error);
-    throw error;
+    return { items: [], total: 0 };
   }
 };

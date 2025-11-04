@@ -96,12 +96,12 @@ export const useTicketsList = (params: UseTicketsListOptions = {}) => {
 
   // Busca inicial
   useEffect(() => {
-    fetchData(true);
-  }, [fetchData]);
+    // fetchData(true);
+  }, []);
 
   const refetch = useCallback(() => {
-    return fetchData(false);
-  }, [fetchData]);
+    // return fetchData(false);
+  }, []);
 
   return {
     data,

@@ -1,11 +1,11 @@
-import { openDatabase } from '@/database/database';
-import { RootRouter } from '@/routes/RootRouter';
-import { useAuthStore } from '@/stores/useAuthStore';
-import { ToastContainer } from '@components/_fragments/Toast';
-import { initSyncService } from '@services/SyncService';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+
+import { openDatabase } from '@/database/database';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { ToastContainer } from '@components/_fragments/Toast';
+import { initSyncService } from '@services/SyncService';
 
 
 const styles = StyleSheet.create({
@@ -52,7 +52,7 @@ function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <RootRouter isAuthenticated={isAuthenticated} />
+      {/* <RootRouter isAuthenticated={isAuthenticated} /> */}
       <ToastContainer />
     </SafeAreaProvider>
   );

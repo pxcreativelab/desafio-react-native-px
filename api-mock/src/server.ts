@@ -152,7 +152,7 @@ app.post('/api/v1/tickets', (req: Request, res: Response) => {
 
     // Criar novo ticket
     const newTicket: Ticket = {
-      id: body.id ?? Date.now(),
+      id: Date.now(),
       title: body.title,
       description: body.description,
       category: body.category,
