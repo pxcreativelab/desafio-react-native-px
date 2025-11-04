@@ -7,6 +7,10 @@ export const saveTicketLocally = async (ticket: Ticket): Promise<number> => {
 
   const idValue = ticket.id ?? null;
   const serverId = (ticket as any).serverId ?? null;
+
+  // Se não tem serverId, é novo e deve ser 'pending'
+  // Se tem _isSynced = true, marca como 'synced'
+  // Caso contrário, é 'pending'
   const syncStatus = (ticket as any)._isSynced ? 'synced' : 'pending';
 
   const sql = `INSERT OR REPLACE INTO Tickets (
@@ -39,6 +43,6 @@ export const saveTicketLocally = async (ticket: Ticket): Promise<number> => {
     : null;
 
   const returnId = idValue ?? insertId;
-  console.log(`[SQLite] Ticket saved locally: ${returnId}`);
+  console.log(`[SQLite] Ticket saved locally: id=${returnId}, serverId=${serverId}, sync_status=${syncStatus}, title="${ticket.title}"`);
   return Number(returnId);
 };

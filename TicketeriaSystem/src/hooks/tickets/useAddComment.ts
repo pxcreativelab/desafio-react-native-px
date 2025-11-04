@@ -1,6 +1,7 @@
 import SQLiteService from '@/services/SQLiteService';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useToast } from '@hooks/useToast';
+import { triggerSync } from '@services/SyncService';
 import { useState } from 'react';
 
 /**
@@ -39,12 +40,19 @@ export const useAddComment = (ticketId: string | number) => {
       } as any;
 
       await SQLiteService.saveCommentLocally(localComment);
+      console.log('[useAddComment] Comment saved locally, triggering sync...');
+
+      // Acionar sincronização em background
+      triggerSync().catch((err: Error) => {
+        console.warn('[useAddComment] Background sync failed:', err);
+      });
+
       toast.success('Comentário adicionado!');
 
       if (options?.onSuccess) options.onSuccess();
     } catch (error) {
       toast.error('Não foi possível adicionar o comentário');
-      console.error('Error adding comment:', error);
+      console.error('[useAddComment] Error adding comment:', error);
       if (options?.onError) options.onError(error as Error);
     } finally {
       setIsPending(false);

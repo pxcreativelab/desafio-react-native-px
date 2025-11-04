@@ -2,6 +2,7 @@ import { TicketPriority } from '@/interfaces/Ticket';
 import SQLiteService from '@/services/SQLiteService';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useToast } from '@hooks/useToast';
+import { triggerSync } from '@services/SyncService';
 import { CreateTicketData } from '@services/TicketApi';
 import { useCallback, useState } from 'react';
 
@@ -36,7 +37,7 @@ export const useCreateTicket = () => {
       try {
         setIsPending(true);
 
-        // Salva localmente (será sincronizado depois)
+        // Salva localmente primeiro (será sincronizado depois)
         const ticketId = await SQLiteService.saveTicketLocally({
           category: data.category,
           description: data.description,
@@ -53,6 +54,15 @@ export const useCreateTicket = () => {
           },
         });
 
+        console.log(`[useCreateTicket] Ticket ${ticketId} saved locally with status 'pending', triggering sync...`);
+
+        // Pequeno delay para garantir que o banco foi atualizado, depois acionar sync
+        setTimeout(() => {
+          triggerSync().catch((err: Error) => {
+            console.warn('[useCreateTicket] Background sync failed:', err);
+          });
+        }, 100);
+
         toast.success('Ticket criado com sucesso!');
 
         if (options?.onSuccess) {
@@ -60,7 +70,7 @@ export const useCreateTicket = () => {
         }
       } catch (error) {
         toast.error('Não foi possível criar o ticket');
-        console.error('Error creating ticket:', error);
+        console.error('[useCreateTicket] Error creating ticket:', error);
 
         if (options?.onError) {
           options.onError(error as Error);

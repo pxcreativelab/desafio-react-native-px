@@ -1,4 +1,4 @@
-import { BiometricCredentials } from '@/types/auth';
+import { BiometricCredentials } from '@/interfaces/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const KEYS = {

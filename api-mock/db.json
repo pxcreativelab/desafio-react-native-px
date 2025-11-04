@@ -82,6 +82,57 @@
       },
       "comments": [],
       "attachments": []
+    },
+    {
+      "id": 1762277896880,
+      "title": "teste",
+      "description": "Teste 1234",
+      "category": "Sistema",
+      "priority": "medium",
+      "status": "open",
+      "createdAt": "2025-11-04T17:38:16.880Z",
+      "updatedAt": "2025-11-04T17:38:16.880Z",
+      "createdBy": {
+        "id": "user_1762201619138",
+        "name": "douglas",
+        "email": "douglas@gmail.com"
+      },
+      "comments": [],
+      "attachments": []
+    },
+    {
+      "id": 1762277896956,
+      "title": "teste",
+      "description": "Teste 1234",
+      "category": "Sistema",
+      "priority": "medium",
+      "status": "open",
+      "createdAt": "2025-11-04T17:38:16.956Z",
+      "updatedAt": "2025-11-04T17:38:16.956Z",
+      "createdBy": {
+        "id": "user_1762201619138",
+        "name": "douglas",
+        "email": "douglas@gmail.com"
+      },
+      "comments": [],
+      "attachments": []
+    },
+    {
+      "id": 1762277951341,
+      "title": "Teste 12",
+      "description": "Teste 123123",
+      "category": "Feature Request",
+      "priority": "medium",
+      "status": "open",
+      "createdAt": "2025-11-04T17:39:11.341Z",
+      "updatedAt": "2025-11-04T17:39:11.341Z",
+      "createdBy": {
+        "id": "user_1762201619138",
+        "name": "douglas",
+        "email": "douglas@gmail.com"
+      },
+      "comments": [],
+      "attachments": []
     }
   ],
   "users": [

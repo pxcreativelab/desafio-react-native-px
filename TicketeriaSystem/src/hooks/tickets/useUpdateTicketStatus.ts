@@ -1,5 +1,6 @@
 import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
+import { triggerSync } from '@services/SyncService';
 import { useCallback, useState } from 'react';
 
 /**
@@ -24,7 +25,12 @@ export const useUpdateTicketStatus = (ticketId: string | number) => {
         const idNum = Number(ticketId);
         // Atualiza localmente primeiro
         await SQLiteService.updateTicketLocally(idNum, { status: status as any });
+        console.log('[useUpdateTicketStatus] Status updated locally, triggering sync...');
 
+        // Acionar sincronização em background
+        triggerSync().catch((err: Error) => {
+          console.warn('[useUpdateTicketStatus] Background sync failed:', err);
+        });
 
         toast.success('Status atualizado com sucesso!');
 
@@ -33,7 +39,7 @@ export const useUpdateTicketStatus = (ticketId: string | number) => {
         }
       } catch (error) {
         toast.error('Não foi possível atualizar o status');
-        console.error('Error updating status:', error);
+        console.error('[useUpdateTicketStatus] Error updating status:', error);
 
         if (options?.onError) {
           options.onError(error as Error);

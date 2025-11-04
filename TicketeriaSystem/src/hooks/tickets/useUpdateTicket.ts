@@ -1,7 +1,7 @@
 import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
-import NetInfo from '@react-native-community/netinfo';
-import { Ticket, updateTicket } from '@services/TicketApi';
+import { triggerSync } from '@services/SyncService';
+import { Ticket } from '@services/TicketApi';
 import { useCallback, useState } from 'react';
 
 /**
@@ -24,20 +24,16 @@ export const useUpdateTicket = (ticketId: string) => {
         setIsPending(true);
 
         // Atualiza localmente primeiro
-        const currentTicket = await SQLiteService.getTicketByIdLocally(ticketId);
+        const ticketIdNum = Number(ticketId);
+        const currentTicket = await SQLiteService.getTicketByIdLocally(ticketIdNum);
         if (currentTicket) {
-          await SQLiteService.updateTicketLocally(ticketId, { ...currentTicket, ...data });
-        }
+          await SQLiteService.updateTicketLocally(ticketIdNum, { ...currentTicket, ...data });
+          console.log('[useUpdateTicket] Ticket updated locally, triggering sync...');
 
-        // Tenta atualizar na API se online
-        const netState = await NetInfo.fetch();
-        if (netState.isConnected) {
-          try {
-            const updatedTicket = await updateTicket(ticketId, data);
-            await SQLiteService.updateTicketLocally(ticketId, updatedTicket);
-          } catch (apiError) {
-            console.warn('[useUpdateTicket] API failed, will sync later:', apiError);
-          }
+          // Acionar sincronização em background
+          triggerSync().catch((err: Error) => {
+            console.warn('[useUpdateTicket] Background sync failed:', err);
+          });
         }
 
         toast.success('Ticket atualizado com sucesso!');
@@ -47,7 +43,7 @@ export const useUpdateTicket = (ticketId: string) => {
         }
       } catch (error) {
         toast.error('Não foi possível atualizar o ticket');
-        console.error('Error updating ticket:', error);
+        console.error('[useUpdateTicket] Error updating ticket:', error);
 
         if (options?.onError) {
           options.onError(error as Error);

@@ -8,6 +8,7 @@ import { useSyncStatus } from '@hooks/useSync';
 import { useNavigation } from '@react-navigation/native';
 import { Ticket } from '@services/TicketApi';
 
+import TopLoadingBar from '@/components/TopLoadingBar';
 import {
   BoxRow,
   Container,
@@ -75,6 +76,7 @@ const TicketeriaList: React.FC = () => {
           <CreateButtonText>+ Novo</CreateButtonText>
         </CreateButton>
       </Header>
+      <TopLoadingBar visible={isLoading || isFetching} />
 
       <BoxRow>
         <FilterRow horizontal showsHorizontalScrollIndicator={false}>
@@ -99,6 +101,7 @@ const TicketeriaList: React.FC = () => {
           <TicketCard ticket={item} onPress={() => handleTicketPress(item)} />
         )}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
         refreshControl={
           <RefreshControl
             refreshing={isFetching}

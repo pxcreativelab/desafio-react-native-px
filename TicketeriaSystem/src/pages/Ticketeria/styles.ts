@@ -56,8 +56,9 @@ export const CreateButtonText = styled.Text`
 `;
 
 export const BoxRow = styled.View`
- background-color: #FFFFFF;
+  background-color: #FFFFFF;
   height: 60px;
+  padding: 0 16px;
 `;
 
 export const FilterRow = styled.ScrollView`
