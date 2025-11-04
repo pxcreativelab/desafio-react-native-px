@@ -158,7 +158,7 @@ app.post('/api/v1/tickets', (req: Request, res: Response) => {
       category: body.category,
       priority: body.priority || 'medium',
       status: 'open',
-      createdAt: new Date().toISOString(),
+      createdAt: body.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       createdBy: body.createdBy,
       comments: [],
@@ -246,12 +246,8 @@ app.post('/api/v1/tickets/:id/comments', (req: Request, res: Response) => {
     const newComment: Comment = {
       id: Date.now(),
       text: body.text,
-      createdAt: new Date().toISOString(),
-      createdBy: {
-        id: 'current_user',
-        name: 'Usuário Atual',
-        email: 'usuario@email.com',
-      },
+      createdAt: body.createdAt || new Date().toISOString(),
+      createdBy: body.createdBy
     };
 
     ticket.comments.push(newComment);

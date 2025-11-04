@@ -1,12 +1,7 @@
+import { TicketPriority, TicketStatus } from '@/interfaces/Ticket';
 import NetInfo from '@react-native-community/netinfo';
 import { API_BASE_URL } from '@services/Api';
-import {
-  cleanupFailedActions,
-  getPendingActions,
-  PendingAction,
-  removePendingAction,
-  updatePendingActionAttempt,
-} from '@services/OfflineQueue';
+
 import {
   getUnsyncedComments,
   getUnsyncedTickets,
@@ -160,12 +155,6 @@ const syncPendingData = async (): Promise<void> => {
     // 2. Sincronizar comentários não sincronizados
     await syncComments();
 
-    // 3. Processar fila de ações pendentes
-    await processPendingActions();
-
-    // 4. Limpar ações falhadas após muitas tentativas
-    await cleanupFailedActions(5);
-
     console.log('[SyncService] Sync completed successfully');
   } catch (error) {
     console.error('[SyncService] Sync failed:', error);
@@ -192,29 +181,33 @@ const syncTickets = async (): Promise<void> => {
     for (const ticket of unsyncedTickets) {
       try {
         // Se começa com "local_", é um ticket novo (criar no servidor)
-        if (ticket._localId?.startsWith('local_')) {
+        if (!ticket.serverId) {
           const response = await createTicket({
             title: ticket.title,
             description: ticket.description,
             category: ticket.category,
             priority: ticket.priority,
+            createdAt: ticket.createdAt,
+            createdBy: {
+              id: ticket.createdById?.toString() || 'unknown',
+              name: ticket.createdByName || 'Unknown',
+              email: ticket.createdByEmail || 'unknown@example.com',
+            }
           });
 
           // Marcar como sincronizado
-          await markTicketAsSynced(ticket._localId, response.id.toString());
-          console.log(`[SyncService] Ticket created on server: ${ticket._localId} -> ${response.id}`);
+          await markTicketAsSynced(ticket.id, response.id);
         } else {
           // Ticket existente, atualizar no servidor
           await updateTicket(ticket.id.toString(), {
             title: ticket.title,
             description: ticket.description,
             category: ticket.category,
-            priority: ticket.priority,
-            status: ticket.status,
+            priority: ticket.priority as TicketPriority,
+            status: ticket.status as TicketStatus,
           });
 
-          await markTicketAsSynced(ticket.id.toString(), ticket.id.toString());
-          console.log(`[SyncService] Ticket updated on server: ${ticket.id}`);
+          await markTicketAsSynced(ticket.id, ticket.serverId);
         }
       } catch (error) {
         console.error(`[SyncService] Failed to sync ticket ${ticket.id}:`, error);
@@ -242,9 +235,16 @@ const syncComments = async (): Promise<void> => {
 
     for (const comment of unsyncedComments) {
       try {
-        const response = await addComment(comment.ticketId, comment.text);
-        await markCommentAsSynced(comment._localId!, response.id.toString());
-        console.log(`[SyncService] Comment synced: ${comment._localId} -> ${response.id}`);
+        const response = await addComment(comment.ticketId, {
+          text: comment.text,
+          createdAt: comment.createdAt,
+          createdBy: {
+            id: comment.createdById?.toString() || 'unknown',
+            name: comment.createdByName || 'Unknown',
+            email: comment.createdByEmail || 'unknown@example.com',
+          }
+        });
+        await markCommentAsSynced(comment.id, response.id);
       } catch (error) {
         console.error(`[SyncService] Failed to sync comment ${comment.id}:`, error);
       }
@@ -255,61 +255,6 @@ const syncComments = async (): Promise<void> => {
   }
 };
 
-/**
- * Processa ações pendentes da fila
- */
-const processPendingActions = async (): Promise<void> => {
-  try {
-    const pendingActions = await getPendingActions();
-
-    if (pendingActions.length === 0) {
-      console.log('[SyncService] No pending actions to process');
-      return;
-    }
-
-    console.log(`[SyncService] Processing ${pendingActions.length} pending actions...`);
-
-    for (const action of pendingActions) {
-      try {
-        await processAction(action);
-        await removePendingAction(action.id!);
-        console.log(`[SyncService] Action processed: ${action.type} ${action.entityType} ${action.entityId}`);
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        await updatePendingActionAttempt(action.id!, errorMessage);
-        console.error(`[SyncService] Failed to process action ${action.id}:`, error);
-      }
-    }
-  } catch (error) {
-    console.error('[SyncService] Error processing pending actions:', error);
-    throw error;
-  }
-};
-
-/**
- * Processa uma ação individual
- */
-const processAction = async (action: PendingAction): Promise<void> => {
-  const { type, entityType, entityId, data } = action;
-
-  if (entityType === 'TICKET') {
-    if (type === 'CREATE') {
-      const response = await createTicket(data);
-      await markTicketAsSynced(entityId, response.id.toString());
-    } else if (type === 'UPDATE') {
-      await updateTicket(entityId, data);
-      await markTicketAsSynced(entityId, entityId);
-    }
-  } else if (entityType === 'COMMENT') {
-    if (type === 'CREATE') {
-      const response = await addComment(data.ticketId, data.text);
-      await markCommentAsSynced(entityId, response.id.toString());
-    }
-  } else if (entityType === 'ATTACHMENT') {
-    // TODO: Implementar sincronização de anexos quando necessário
-    console.log('[SyncService] Attachment sync not implemented yet');
-  }
-};
 
 /**
  * Verifica se o dispositivo está online

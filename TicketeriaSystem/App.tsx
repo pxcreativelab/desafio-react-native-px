@@ -3,9 +3,9 @@ import { ActivityIndicator, StatusBar, StyleSheet, useColorScheme, View } from '
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { openDatabase } from '@/database/database';
+import { RootRouter } from '@/routes/RootRouter';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { ToastContainer } from '@components/_fragments/Toast';
-import { initSyncService } from '@services/SyncService';
 
 
 const styles = StyleSheet.create({
@@ -21,9 +21,6 @@ function App() {
   const { isAuthenticated, isLoading, restoreSession } = useAuthStore();
 
   useEffect(() => {
-    // Restaurar sessão ao iniciar
-    restoreSession();
-
     // Inicializar banco de dados SQLite
     openDatabase()
       .then(() => {
@@ -32,14 +29,13 @@ function App() {
       .catch(error => {
         console.error('[App] Failed to initialize SQLite:', error);
       });
-  }, [restoreSession]);
+  }, []);
 
   useEffect(() => {
-    // Inicializar serviço de sincronização apenas se autenticado
-    if (isAuthenticated) {
-      initSyncService();
-    }
-  }, [isAuthenticated]);
+    restoreSession();
+  }, [restoreSession]);
+
+
 
   if (isLoading) {
     return (
@@ -52,7 +48,7 @@ function App() {
   return (
     <SafeAreaProvider>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      {/* <RootRouter isAuthenticated={isAuthenticated} /> */}
+      <RootRouter isAuthenticated={isAuthenticated} />
       <ToastContainer />
     </SafeAreaProvider>
   );

@@ -136,10 +136,6 @@ const initializeTables = async (db: SQLiteDatabase): Promise<void> => {
       CREATE INDEX IF NOT EXISTS idx_ticketcomments_ticket ON TicketComments(ticket_id);
     `);
 
-    await db.executeSql(`
-      CREATE INDEX IF NOT EXISTS idx_pending_actions_type ON PendingTicketActions(action_type);
-    `);
-
     console.log('[SQLite] Tables initialized successfully');
   } catch (error) {
     console.error('[SQLite] Error initializing tables:', error);
@@ -154,7 +150,6 @@ export const clearDatabase = async (): Promise<void> => {
   try {
     const db = await openDatabase();
 
-    await db.executeSql('DELETE FROM pending_actions');
     await db.executeSql('DELETE FROM attachments');
     await db.executeSql('DELETE FROM comments');
     await db.executeSql('DELETE FROM tickets');
@@ -173,7 +168,6 @@ export const dropTables = async (): Promise<void> => {
   try {
     const db = await openDatabase();
 
-    await db.executeSql('DROP TABLE IF EXISTS pending_actions');
     await db.executeSql('DROP TABLE IF EXISTS attachments');
     await db.executeSql('DROP TABLE IF EXISTS comments');
     await db.executeSql('DROP TABLE IF EXISTS tickets');

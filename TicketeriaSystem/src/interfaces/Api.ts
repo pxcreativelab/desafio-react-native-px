@@ -21,5 +21,20 @@ export interface CreateTicketData {
   description: string;
   category: string;
   priority: string;
-  attachments?: any[];
+  createdAt?: string;
+  createdBy: {
+    id: string;
+    name: string;
+    email: string;
+  };
+}
+
+export interface CreateCommentData {
+  text: string;
+  createdAt?: string;
+  createdBy: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }

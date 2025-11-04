@@ -3,14 +3,14 @@ import { openDatabase } from '@/database/database';
 /**
  * Marca um ticket como sincronizado
  */
-export const markTicketAsSynced = async (localId: string, serverId: string): Promise<void> => {
+export const markTicketAsSynced = async (id: number, serverId: number): Promise<void> => {
   try {
     const db = await openDatabase();
     await db.executeSql(
-      'UPDATE tickets SET id = ?, isSynced = 1 WHERE localId = ?',
-      [serverId, localId]
+      'UPDATE Tickets SET server_id = ?, sync_status = "synced" WHERE id = ?;',
+      [serverId, id]
     );
-    console.log(`[SQLite] Ticket marked as synced: ${localId} -> ${serverId}`);
+    console.log(`[SQLite] Ticket marked as synced: local ${id} -> server ${serverId}`);
   } catch (error) {
     console.error('[SQLite] Error marking ticket as synced:', error);
     throw error;

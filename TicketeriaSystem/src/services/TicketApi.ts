@@ -1,5 +1,5 @@
 
-import { CreateTicketData, ListTicketsParams, ListTicketsResponse } from '@/interfaces/Api';
+import { CreateCommentData, CreateTicketData, ListTicketsParams, ListTicketsResponse } from '@/interfaces/Api';
 import { Attachment } from '@/interfaces/Attachment';
 import { Comment } from '@/interfaces/Comment';
 import { Ticket } from '@/interfaces/Ticket';
@@ -57,10 +57,10 @@ export const updateTicket = (id: string | number, data: Partial<Ticket>): Promis
       });
   });
 
-export const addComment = (ticketId: string | number, text: string): Promise<Comment> =>
+export const addComment = (ticketId: string | number, data: CreateCommentData): Promise<Comment> =>
   new Promise((resolve, reject) => {
     api
-      .post(`/tickets/${ticketId}/comments`, { text })
+      .post(`/tickets/${ticketId}/comments`, data)
       .then((response) => {
         resolve(response.data);
       })

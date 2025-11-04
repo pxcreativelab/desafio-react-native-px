@@ -1,13 +1,17 @@
 import { Attachment } from "./Attachment";
 import { Comment } from "./Comment";
 
+export type TicketPriority = 'low' | 'medium' | 'high' | 'critical';
+export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
+
+
 export interface Ticket {
   id: number;
   title: string;
   description: string;
   category: string;
-  priority: 'low' | 'medium' | 'high' | 'critical';
-  status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  priority: TicketPriority;
+  status: TicketStatus;
   createdAt: string;
   updatedAt: string;
   attachments?: Attachment[];

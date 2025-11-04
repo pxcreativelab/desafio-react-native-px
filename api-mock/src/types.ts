@@ -52,11 +52,11 @@ export interface Database {
 }
 
 export interface CreateTicketDTO {
-  id?: number;
   title: string;
   description: string;
   category: string;
   priority: TicketPriority;
+  createdAt?: string;
   createdBy: {
     id: string;
     name: string;
@@ -74,6 +74,12 @@ export interface UpdateTicketDTO {
 
 export interface CreateCommentDTO {
   text: string;
+  createdAt?: string;
+  createdBy: {
+    id: string;
+    name: string;
+    email: string;
+  };
 }
 
 export interface CreateUserDTO {

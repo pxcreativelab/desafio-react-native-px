@@ -1,5 +1,6 @@
 import AppHeader from '@/components/AppHeader';
-import React from 'react';
+import { initSyncService } from '@/services/SyncService';
+import React, { useEffect } from 'react';
 import { AuthRoutes } from './Auth.routes';
 import { TicketeriaRoutes } from './Ticketeria.routes';
 
@@ -8,6 +9,12 @@ interface RootRouterProps {
 }
 
 export const RootRouter: React.FC<RootRouterProps> = ({ isAuthenticated }) => {
+  useEffect(() => {
+    if (isAuthenticated) {
+      initSyncService();
+    }
+  }, [isAuthenticated]);
+
   if (isAuthenticated) {
     return (
       <>
