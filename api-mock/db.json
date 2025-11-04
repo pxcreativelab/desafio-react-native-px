@@ -8,7 +8,7 @@
       "priority": "medium",
       "status": "resolved",
       "createdAt": "2025-11-04T13:08:45.005Z",
-      "updatedAt": "2025-11-04T13:47:07.034Z",
+      "updatedAt": "2025-11-04T14:38:28.235Z",
       "createdBy": {
         "id": "unknown",
         "name": "Unknown",
@@ -64,6 +64,23 @@
           }
         }
       ],
+      "attachments": []
+    },
+    {
+      "id": 1762266863724,
+      "title": "Resumo das mudanças",
+      "description": "ronto — alterei a animação para \"vai e volta\" (ping-pong). Agora a barra desliza para a direita e retorna suavemente, repetindo em loop.",
+      "category": "Bug",
+      "priority": "medium",
+      "status": "open",
+      "createdAt": "2025-11-04T14:34:23.724Z",
+      "updatedAt": "2025-11-04T14:34:23.724Z",
+      "createdBy": {
+        "id": "user_1762201619138",
+        "name": "douglas",
+        "email": "douglas@gmail.com"
+      },
+      "comments": [],
       "attachments": []
     }
   ],

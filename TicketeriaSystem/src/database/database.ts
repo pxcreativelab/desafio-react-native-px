@@ -150,9 +150,10 @@ export const clearDatabase = async (): Promise<void> => {
   try {
     const db = await openDatabase();
 
-    await db.executeSql('DELETE FROM attachments');
-    await db.executeSql('DELETE FROM comments');
-    await db.executeSql('DELETE FROM tickets');
+    await db.executeSql('DELETE FROM TicketComments');
+    await db.executeSql('DELETE FROM TicketAttachments');
+    await db.executeSql('DELETE FROM PendingTicketActions');
+    await db.executeSql('DELETE FROM Tickets');
 
     console.log('[SQLite] Database cleared');
   } catch (error) {
@@ -168,9 +169,11 @@ export const dropTables = async (): Promise<void> => {
   try {
     const db = await openDatabase();
 
-    await db.executeSql('DROP TABLE IF EXISTS attachments');
-    await db.executeSql('DROP TABLE IF EXISTS comments');
-    await db.executeSql('DROP TABLE IF EXISTS tickets');
+
+    await db.executeSql('DROP TABLE IF EXISTS TicketComments');
+    await db.executeSql('DROP TABLE IF EXISTS TicketAttachments');
+    await db.executeSql('DROP TABLE IF EXISTS PendingTicketActions');
+    await db.executeSql('DROP TABLE IF EXISTS Tickets');
 
     console.log('[SQLite] Tables dropped');
 

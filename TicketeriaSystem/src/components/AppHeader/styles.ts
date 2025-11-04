@@ -34,3 +34,18 @@ export const RightContainer = styled.View`
   gap: 12px;
 `;
 
+export const AvatarButton = styled.TouchableOpacity`
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background-color: #007aff;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const AvatarText = styled.Text`
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+`;
+

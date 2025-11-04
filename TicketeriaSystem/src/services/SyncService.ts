@@ -201,7 +201,7 @@ const syncTickets = async (): Promise<void> => {
           await markTicketAsSynced(ticket.id, response.id);
         } else {
           // Ticket existente, atualizar no servidor
-          await updateTicket(ticket.id.toString(), {
+          await updateTicket(ticket.serverId, {
             title: ticket.title,
             description: ticket.description,
             category: ticket.category,

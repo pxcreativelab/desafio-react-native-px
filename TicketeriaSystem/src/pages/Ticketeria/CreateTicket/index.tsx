@@ -1,8 +1,9 @@
 import { useCreateTicket } from '@hooks/tickets';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { ActivityIndicator, Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
+import { Keyboard, ScrollView, TouchableWithoutFeedback } from 'react-native';
 
+import TopLoadingBar from '@/components/TopLoadingBar';
 import {
   Container,
   Content,
@@ -15,8 +16,7 @@ import {
   HeaderTitle,
   Input,
   Label,
-  LoadingContainer,
-  LoadingText,
+  // LoadingContainer and LoadingText removed — using inline submit spinner instead
   PickerButton,
   PickerButtonText,
   PickerContainer,
@@ -88,16 +88,9 @@ const CreateTicket = () => {
     return priorityObj ? priorityObj.label : value;
   };
 
-  if (isPending) {
-    return (
-      <Container>
-        <LoadingContainer>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <LoadingText>Criando ticket...</LoadingText>
-        </LoadingContainer>
-      </Container>
-    );
-  }
+  // When creating a ticket, keep the page visible but disable inputs and
+  // show a small spinner inside the submit button so the loading state
+  // doesn't cover the entire UI.
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -109,6 +102,7 @@ const CreateTicket = () => {
           <HeaderTitle>Novo Ticket</HeaderTitle>
           <HeaderSpacer />
         </Header>
+        <TopLoadingBar visible={isPending} />
 
         <ScrollView keyboardShouldPersistTaps="handled">
           <Content>
@@ -205,13 +199,19 @@ const CreateTicket = () => {
             </FormGroup>
 
             <SubmitButton
-              onPress={handleSubmit}
-              disabled={!title || !description || !category}
-              active={!!title && !!description && !!category}
+              onPress={!isPending ? handleSubmit : undefined}
+              disabled={isPending || !title || !description || !category}
+              active={!!title && !!description && !!category && !isPending}
             >
-              <SubmitButtonText active={!!title && !!description && !!category}>
-                Criar Ticket
-              </SubmitButtonText>
+              {isPending ? (
+                <SubmitButtonText active={false}>
+                  Criando...
+                </SubmitButtonText>
+              ) : (
+                <SubmitButtonText active={!!title && !!description && !!category}>
+                  Criar Ticket
+                </SubmitButtonText>
+              )}
             </SubmitButton>
           </Content>
         </ScrollView>
