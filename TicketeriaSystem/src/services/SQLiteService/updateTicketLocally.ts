@@ -5,7 +5,7 @@ import { Ticket } from '@services/TicketApi';
  * Atualiza um ticket local
  */
 export const updateTicketLocally = async (
-  ticketId: string,
+  ticketId: number,
   updates: Partial<Ticket>
 ): Promise<void> => {
   try {
@@ -36,18 +36,21 @@ export const updateTicketLocally = async (
       values.push(updates.status);
     }
 
-    setters.push('updatedAt = ?');
+    if (updates.createdBy) {
+      setters.push('created_by_id = ?', 'created_by_name = ?', 'created_by_email = ?');
+      values.push(updates.createdBy.id || null, updates.createdBy.name || null, updates.createdBy.email || null);
+    }
+
+    setters.push('updated_at = ?');
     values.push(now);
 
-    setters.push('isSynced = ?');
-    values.push(0);
+    setters.push("sync_status = 'pending'");
 
+    // WHERE placeholders
     values.push(ticketId, ticketId);
 
-    await db.executeSql(
-      `UPDATE tickets SET ${setters.join(', ')} WHERE id = ? OR localId = ?`,
-      values
-    );
+    const sql = `UPDATE Tickets SET ${setters.join(', ')} WHERE id = ? OR server_id = ?;`;
+    await db.executeSql(sql, values);
 
     console.log(`[SQLite] Ticket updated locally: ${ticketId}`);
   } catch (error) {

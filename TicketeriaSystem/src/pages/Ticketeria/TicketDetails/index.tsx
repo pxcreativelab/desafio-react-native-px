@@ -39,44 +39,28 @@ import {
 
 
 type Props = StaticScreenProps<{
-  ticketId: string;
+  ticketId: number | undefined;
+  id: number;
 }>;
 
-
-const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Props) => {
-  const [newComment, setNewComment] = useState<string>('');
-
+const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId, id } } }: Props) => {
+  const [newComment, setNewComment] = useState('');
   const navigation = useNavigation();
 
-  // React Query hooks
-  const { data: ticket, isLoading, isError, refetch } = useTicketDetails(ticketId);
-  const { mutate: updateStatus } = useUpdateTicketStatus(ticketId);
-  const { mutate: addNewComment, isPending: isAddingComment } = useAddComment(ticketId);
+  const { data: ticket, isLoading, isError, refetch } = useTicketDetails(id, ticketId);
+  const { mutate: updateStatus } = useUpdateTicketStatus(id);
+  const { mutate: addNewComment, isPending: isAddingComment } = useAddComment(id);
 
   const handleUpdateStatus = (newStatus: string) => {
     updateStatus(newStatus);
   };
 
   const handleAddComment = () => {
-    if (!newComment.trim()) {
-      return;
-    }
+    if (!newComment.trim()) return;
 
     addNewComment(newComment, {
-      onSuccess: () => {
-        setNewComment('');
-      },
+      onSuccess: () => { setNewComment(''); refetch(); },
     });
-  };
-
-  const getPriorityLabel = (priority: string) => {
-    const labels: Record<string, string> = {
-      critical: 'Crítica',
-      high: 'Alta',
-      medium: 'Média',
-      low: 'Baixa',
-    };
-    return labels[priority] || priority;
   };
 
   if (isLoading) {
@@ -109,10 +93,15 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
     );
   }
 
+  const priorityLabels: Record<string, string> = {
+    critical: 'Crítica',
+    high: 'Alta',
+    medium: 'Média',
+    low: 'Baixa',
+  };
+
   return (
-    <KeyboardView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
+    <KeyboardView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <Container>
         <Header>
           <BackButton onPress={() => navigation.goBack()}>
@@ -141,13 +130,11 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
               </InfoRow>
               <InfoRow>
                 <InfoLabel>Prioridade:</InfoLabel>
-                <InfoValue>{getPriorityLabel(ticket.priority)}</InfoValue>
+                <InfoValue>{priorityLabels[ticket.priority] || ticket.priority}</InfoValue>
               </InfoRow>
               <InfoRow>
                 <InfoLabel>Criado em:</InfoLabel>
-                <InfoValue>
-                  {new Date(ticket.createdAt).toLocaleString('pt-BR')}
-                </InfoValue>
+                <InfoValue>{new Date(ticket.createdAt).toLocaleString('pt-BR')}</InfoValue>
               </InfoRow>
               {ticket.createdBy && (
                 <InfoRow>
@@ -158,9 +145,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
             </Section>
 
             <Section>
-              <SectionTitle>
-                Comentários ({ticket.comments?.length || 0})
-              </SectionTitle>
+              <SectionTitle>Comentários ({ticket.comments?.length || 0})</SectionTitle>
               {ticket.comments && ticket.comments.length > 0 ? (
                 ticket.comments.map((comment: Comment) => (
                   <TicketComment key={comment.id} comment={comment} />
@@ -185,15 +170,12 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
                   {isAddingComment ? (
                     <ActivityIndicator size="small" color="#FFFFFF" />
                   ) : (
-                    <SendButtonText active={!!newComment.trim()}>
-                      Enviar
-                    </SendButtonText>
+                    <SendButtonText active={!!newComment.trim()}>Enviar</SendButtonText>
                   )}
                 </SendButton>
               </CommentInputContainer>
             </Section>
 
-            {/* Seção de Anexos */}
             {ticket.attachments && ticket.attachments.length > 0 && (
               <Section>
                 <SectionTitle>Anexos ({ticket.attachments.length})</SectionTitle>

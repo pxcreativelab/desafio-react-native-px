@@ -9,14 +9,14 @@ import { useCallback, useEffect, useState } from 'react';
  * @example
  * const { data: ticket, isLoading, error } = useTicketDetails('123');
  */
-export const useTicketDetails = (ticketId: string) => {
+export const useTicketDetails = (id: number, serverId: number | undefined) => {
   const [data, setData] = useState<Ticket | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchData = useCallback(async () => {
-    if (!ticketId) {
+  const fetchLocalData = useCallback(async () => {
+    if (!id) {
       setIsLoading(false);
       return;
     }
@@ -26,52 +26,55 @@ export const useTicketDetails = (ticketId: string) => {
       setIsError(false);
       setError(null);
 
-      // 1. Busca local primeiro
-      const localTicket = await SQLiteService.getTicketByIdLocally(ticketId);
-
+      const localTicket = await SQLiteService.getTicketByIdLocally(id);
       if (localTicket) {
         setData(localTicket);
-        setIsLoading(false);
-      }
-
-      // 2. Busca da API em segundo plano
-      try {
-        const serverTicket = await fetchTicketById(ticketId);
-
-        // Compara e atualiza se houver diferenças
-        const hasChanges = JSON.stringify(serverTicket) !== JSON.stringify(localTicket);
-
-        if (hasChanges) {
-          // Atualiza banco local
-          await SQLiteService.updateTicketLocally(ticketId, serverTicket);
-          console.log(`[useTicketDetails] Synced ticket ${ticketId} from API`);
-
-          // Atualiza estado
-          setData(serverTicket);
-        }
-      } catch (apiError) {
-        console.warn('[useTicketDetails] API sync failed, using local data:', apiError);
-        // Se não tinha dado local, propaga erro
-        if (!localTicket) {
-          throw apiError;
-        }
       }
     } catch (err) {
-      console.error('[useTicketDetails] Error:', err);
+      console.error('[useTicketDetails] Local fetch error:', err);
       setIsError(true);
       setError(err as Error);
     } finally {
       setIsLoading(false);
     }
-  }, [ticketId]);
+  }, [id]);
+
+  const fetchServerData = useCallback(async () => {
+    if (!serverId || !id) return;
+
+    try {
+      const serverTicket = await fetchTicketById(serverId);
+      const localTicket = await SQLiteService.getTicketByIdLocally(id);
+
+      const hasChanges = JSON.stringify(serverTicket) !== JSON.stringify(localTicket);
+      if (hasChanges) {
+        await SQLiteService.updateTicketLocally(id, serverTicket);
+        console.log(`[useTicketDetails] Synced ticket ${id} from API`);
+        setData(serverTicket);
+      }
+    } catch (apiError) {
+      console.warn('[useTicketDetails] API sync failed, using local data:', apiError);
+      // if there is no local data, surface the error state
+      const localTicket = await SQLiteService.getTicketByIdLocally(id);
+      if (!localTicket) {
+        setIsError(true);
+        setError(apiError as Error);
+      }
+    }
+  }, [id, serverId]);
+
+  const fetchData = useCallback(async () => {
+    await fetchLocalData();
+    await fetchServerData();
+  }, [fetchLocalData, fetchServerData]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  const refetch = useCallback(() => {
-    return fetchData();
-  }, [fetchData]);
+  const refetch = async () => {
+    await fetchData();
+  };
 
   return {
     data,

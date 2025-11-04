@@ -1,7 +1,5 @@
 import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
-import NetInfo from '@react-native-community/netinfo';
-import { updateTicket } from '@services/TicketApi';
 import { useCallback, useState } from 'react';
 
 /**
@@ -14,7 +12,7 @@ import { useCallback, useState } from 'react';
  *   updateStatus('resolved');
  * };
  */
-export const useUpdateTicketStatus = (ticketId: string) => {
+export const useUpdateTicketStatus = (ticketId: string | number) => {
   const toast = useToast();
   const [isPending, setIsPending] = useState(false);
 
@@ -23,24 +21,10 @@ export const useUpdateTicketStatus = (ticketId: string) => {
       try {
         setIsPending(true);
 
+        const idNum = Number(ticketId);
         // Atualiza localmente primeiro
-        const currentTicket = await SQLiteService.getTicketByIdLocally(ticketId);
-        if (currentTicket) {
-          await SQLiteService.updateTicketLocally(ticketId, { ...currentTicket, status: status as any });
-        }
+        await SQLiteService.updateTicketLocally(idNum, { status: status as any });
 
-        // Tenta atualizar na API se estiver online
-        const netState = await NetInfo.fetch();
-        if (netState.isConnected) {
-          try {
-            const updatedTicket = await updateTicket(ticketId, { status: status as any });
-            // Atualiza local com resposta da API
-            await SQLiteService.updateTicketLocally(ticketId, updatedTicket);
-          } catch (apiError) {
-            console.warn('[useUpdateTicketStatus] API update failed, will sync later:', apiError);
-            // Continua mesmo se API falhar - será sincronizado depois
-          }
-        }
 
         toast.success('Status atualizado com sucesso!');
 

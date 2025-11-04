@@ -22,7 +22,8 @@ export interface Ticket {
     email: string;
   };
 
-  _isSynced?: boolean;
+  serverId?: number;
+  syncStatus?: 'synced' | 'pending';
 }
 
 

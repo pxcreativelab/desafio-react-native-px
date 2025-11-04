@@ -1,15 +1,12 @@
 import { openDatabase } from '@/database/database';
 import { Attachment, Comment, Ticket } from '@services/TicketApi';
 
-/**
- * Busca um ticket específico pelo ID
- */
-export const getTicketByIdLocally = async (ticketId: string): Promise<Ticket | null> => {
+export const getTicketByIdLocally = async (id: number): Promise<Ticket | null> => {
   try {
     const db = await openDatabase();
     const [results] = await db.executeSql(
-      'SELECT * FROM tickets WHERE id = ? OR localId = ?',
-      [ticketId, ticketId]
+      'SELECT * FROM Tickets WHERE id = ?',
+      [id]
     );
 
     if (results.rows.length === 0) {
@@ -18,9 +15,8 @@ export const getTicketByIdLocally = async (ticketId: string): Promise<Ticket | n
 
     const row = results.rows.item(0);
 
-    // Buscar comentários
     const [commentsResults] = await db.executeSql(
-      'SELECT * FROM comments WHERE ticketId = ? ORDER BY createdAt ASC',
+      'SELECT * FROM TicketComments WHERE ticket_id = ? ORDER BY created_at ASC',
       [row.id]
     );
     const comments: Comment[] = [];
@@ -29,14 +25,19 @@ export const getTicketByIdLocally = async (ticketId: string): Promise<Ticket | n
       comments.push({
         id: commentRow.id,
         text: commentRow.text,
-        createdAt: commentRow.createdAt,
-        createdBy: commentRow.createdBy ? JSON.parse(commentRow.createdBy) : { id: '', name: '', email: '' },
+        createdAt: commentRow.created_at,
+        createdBy: commentRow.created_by_id
+          ? {
+            id: String(commentRow.created_by_id),
+            name: commentRow.created_by_name || '',
+            email: commentRow.created_by_email || '',
+          }
+          : { id: '', name: '', email: '' },
       });
     }
 
-    // Buscar anexos
     const [attachmentsResults] = await db.executeSql(
-      'SELECT * FROM attachments WHERE ticketId = ?',
+      'SELECT * FROM TicketAttachments WHERE ticket_id = ?',
       [row.id]
     );
     const attachments: Attachment[] = [];
@@ -45,7 +46,7 @@ export const getTicketByIdLocally = async (ticketId: string): Promise<Ticket | n
       attachments.push({
         id: attachmentRow.id,
         name: attachmentRow.name,
-        url: attachmentRow.url,
+        url: attachmentRow.server_url || attachmentRow.local_uri,
         type: attachmentRow.type,
         size: attachmentRow.size,
       });
@@ -58,9 +59,15 @@ export const getTicketByIdLocally = async (ticketId: string): Promise<Ticket | n
       category: row.category,
       priority: row.priority as Ticket['priority'],
       status: row.status as Ticket['status'],
-      createdAt: row.createdAt,
-      updatedAt: row.updatedAt,
-      createdBy: row.createdBy ? JSON.parse(row.createdBy) : undefined,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+      createdBy: row.created_by_id
+        ? {
+          id: String(row.created_by_id),
+          name: row.created_by_name || '',
+          email: row.created_by_email || '',
+        }
+        : undefined,
       comments,
       attachments,
     };

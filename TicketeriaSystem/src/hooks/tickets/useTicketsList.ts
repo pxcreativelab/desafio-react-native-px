@@ -18,7 +18,7 @@ export type UseTicketsListOptions = ListTicketsParams & { isOnline?: boolean };
  * });
  */
 export const useTicketsList = (params: UseTicketsListOptions = {}) => {
-  const { isOnline, ...rest } = params;
+  const { isOnline, page = 1, limit = 20, status, search } = params;
 
   const [data, setData] = useState<ListTicketsResponse | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,18 +36,14 @@ export const useTicketsList = (params: UseTicketsListOptions = {}) => {
       setIsError(false);
       setError(null);
 
-      // 1. SEMPRE busca dados locais primeiro (local-first)
       const { items: localItems, total: localTotal } = await SQLiteService.getTicketsLocally({
-        status: rest.status,
-        search: rest.search,
-        page: rest.page || 1,
-        limit: rest.limit || 20,
+        status,
+        search,
+        page,
+        limit,
       });
 
-      const page = rest.page || 1;
-      const limit = rest.limit || 20;
       const totalPages = Math.ceil(localTotal / limit);
-
       const localResponse: ListTicketsResponse = {
         data: localItems,
         total: localTotal,
@@ -56,32 +52,23 @@ export const useTicketsList = (params: UseTicketsListOptions = {}) => {
         totalPages,
       };
 
-      // Mostra dados locais imediatamente
       setData(localResponse);
       setIsLoading(false);
       setIsFetching(false);
 
-      // 2. Se online, busca da API em segundo plano
       if (isOnline) {
         try {
-          const serverResponse = await fetchTickets(rest);
-
-          // Compara e atualiza apenas se houver diferenças
+          const serverResponse = await fetchTickets({ page, limit, status, search });
           const hasChanges =
             serverResponse.total !== localTotal ||
             JSON.stringify(serverResponse.data) !== JSON.stringify(localItems);
 
           if (hasChanges && serverResponse.data && serverResponse.data.length > 0) {
-            // Merge no banco local
             await SQLiteService.upsertTicketsLocally(serverResponse.data);
-            console.log(`[useTicketsList] Synced ${serverResponse.data.length} tickets from API`);
-
-            // Atualiza estado com dados do servidor
             setData(serverResponse);
           }
         } catch (apiError) {
-          // Se API falhar, mantém dados locais (já mostrados)
-          console.warn('[useTicketsList] API sync failed, using local data:', apiError);
+          console.warn('[useTicketsList] API sync failed:', apiError);
         }
       }
     } catch (err) {
@@ -92,16 +79,15 @@ export const useTicketsList = (params: UseTicketsListOptions = {}) => {
       setIsLoading(false);
       setIsFetching(false);
     }
-  }, [isOnline, rest]);
+  }, [isOnline, page, limit, status, search]);
 
-  // Busca inicial
   useEffect(() => {
-    // fetchData(true);
-  }, []);
+    fetchData(true);
+  }, [fetchData]);
 
   const refetch = useCallback(() => {
-    // return fetchData(false);
-  }, []);
+    fetchData(false);
+  }, [fetchData]);
 
   return {
     data,
