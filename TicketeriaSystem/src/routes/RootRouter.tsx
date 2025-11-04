@@ -1,4 +1,5 @@
 import AppHeader from '@/components/AppHeader';
+import { navigationRef } from '@/navigation/NavigationService';
 import { initSyncService } from '@/services/SyncService';
 import React, { useEffect } from 'react';
 import { AuthRoutes } from './Auth.routes';
@@ -19,7 +20,7 @@ export const RootRouter: React.FC<RootRouterProps> = ({ isAuthenticated }) => {
     return (
       <>
         <AppHeader />
-        <TicketeriaRoutes />
+        <TicketeriaRoutes ref={navigationRef} />
       </>
     );
   }

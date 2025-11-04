@@ -1,6 +1,7 @@
 import { createStaticNavigation, StaticParamList } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import Profile from '../pages/Profile';
 import TicketeriaList from '../pages/Ticketeria';
 import CreateTicket from '../pages/Ticketeria/CreateTicket';
 import TicketDetails from '../pages/Ticketeria/TicketDetails';
@@ -16,6 +17,7 @@ const RootStack = createNativeStackNavigator({
     Home: TicketeriaList,
     TicketDetails,
     CreateTicket,
+    Profile,
   },
 });
 

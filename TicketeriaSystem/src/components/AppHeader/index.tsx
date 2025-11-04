@@ -1,8 +1,7 @@
-import { dropTables } from '@/database/database';
+import { navigationRef } from '@/navigation/NavigationService';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { SyncStatusBadge } from '@components/_fragments/SyncStatusBadge';
 import React from 'react';
-import { Alert, TouchableOpacity } from 'react-native';
 import {
   AvatarButton, AvatarText,
   HeaderContainer,
@@ -16,22 +15,10 @@ interface AppHeaderProps {
 }
 
 export const AppHeader: React.FC<AppHeaderProps> = ({ title = 'Ticketeria' }) => {
-  const { user, logout } = useAuthStore();
+  const { user } = useAuthStore();
 
-  const handleLogout = () => {
-    console.log('Logout initiated');
-
-    Alert.alert('Sair', 'Deseja fazer logout?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Sair',
-        style: 'destructive',
-        onPress: () => {
-          logout();
-          dropTables();
-        },
-      },
-    ]);
+  const handleProfilePress = () => {
+    navigationRef.current?.navigate('Profile' as never);
   };
 
   const getInitials = (name?: string, email?: string) => {
@@ -55,12 +42,9 @@ export const AppHeader: React.FC<AppHeaderProps> = ({ title = 'Ticketeria' }) =>
       </LeftContainer>
       <RightContainer>
         <SyncStatusBadge />
-        <TouchableOpacity onPress={handleLogout} accessibilityLabel="Perfil">
-          {/* Avatar with initials */}
-          <AvatarButton activeOpacity={0.2}>
-            <AvatarText>{initials}</AvatarText>
-          </AvatarButton>
-        </TouchableOpacity>
+        <AvatarButton activeOpacity={0.2} onPress={handleProfilePress}>
+          <AvatarText>{initials}</AvatarText>
+        </AvatarButton>
       </RightContainer>
     </HeaderContainer>
   );
