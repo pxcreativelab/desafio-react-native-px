@@ -56,6 +56,7 @@ export interface CreateTicketDTO {
   description: string;
   category: string;
   priority: TicketPriority;
+  status?: TicketStatus;
   createdAt?: string;
   createdBy: {
     id: string;

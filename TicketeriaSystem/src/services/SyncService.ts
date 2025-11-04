@@ -189,6 +189,7 @@ const syncTickets = async (): Promise<void> => {
             category: ticket.category,
             priority: ticket.priority,
             createdAt: ticket.createdAt,
+            status: ticket.status,
             createdBy: {
               id: ticket.createdById?.toString() || 'unknown',
               name: ticket.createdByName || 'Unknown',

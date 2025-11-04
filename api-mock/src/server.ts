@@ -157,7 +157,7 @@ app.post('/api/v1/tickets', (req: Request, res: Response) => {
       description: body.description,
       category: body.category,
       priority: body.priority || 'medium',
-      status: 'open',
+      status: body.status || 'open',
       createdAt: body.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       createdBy: body.createdBy,

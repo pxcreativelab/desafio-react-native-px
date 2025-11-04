@@ -21,6 +21,7 @@ export interface CreateTicketData {
   description: string;
   category: string;
   priority: string;
+  status?: string
   createdAt?: string;
   createdBy: {
     id: string;
