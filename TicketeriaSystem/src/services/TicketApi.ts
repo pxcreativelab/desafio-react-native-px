@@ -1,8 +1,8 @@
-
 import { CreateCommentData, CreateTicketData, ListTicketsParams, ListTicketsResponse } from '@/interfaces/Api';
 import { Attachment } from '@/interfaces/Attachment';
 import { Comment } from '@/interfaces/Comment';
 import { Ticket } from '@/interfaces/Ticket';
+
 import api from './Api';
 
 // Funções de API

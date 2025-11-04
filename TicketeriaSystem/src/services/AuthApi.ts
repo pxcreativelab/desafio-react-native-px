@@ -29,25 +29,7 @@ export const register = async (data: RegisterData): Promise<User> => {
   }
 };
 
-/**
- * Valida o token atual
- */
-export const validateToken = async (token: string): Promise<User> => {
-  try {
-    const response = await api.get<User>('/auth/me', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error: any) {
-    console.error('[AuthApi] Error validating token:', error.response?.data || error.message);
-    throw new Error('Token inválido');
-  }
-};
-
 export default {
   login,
   register,
-  validateToken,
 };

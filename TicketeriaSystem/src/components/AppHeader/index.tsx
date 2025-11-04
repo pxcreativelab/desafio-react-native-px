@@ -1,4 +1,5 @@
-import { navigationRef } from '@/navigation/NavigationService';
+
+import { navigationRef } from '@/helpers/NavigationService';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { SyncStatusBadge } from '@components/_fragments/SyncStatusBadge';
 import React from 'react';

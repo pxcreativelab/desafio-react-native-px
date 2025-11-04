@@ -1,4 +1,4 @@
-import { AuthState, LoginCredentials, RegisterData, User } from '@/types/auth';
+import { AuthState, LoginCredentials, RegisterData, User } from '@/interfaces/auth';
 import * as SecureStorage from '@helpers/secureStorage';
 import * as AuthApi from '@services/AuthApi';
 import * as BiometricService from '@services/BiometricService';

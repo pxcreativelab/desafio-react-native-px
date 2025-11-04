@@ -1,5 +1,6 @@
 import AppHeader from '@/components/AppHeader';
-import { navigationRef } from '@/navigation/NavigationService';
+
+import { navigationRef } from '@/helpers/NavigationService';
 import { initSyncService } from '@/services/SyncService';
 import React, { useEffect } from 'react';
 import { AuthRoutes } from './Auth.routes';

@@ -1,9 +1,10 @@
+import ConfirmModal from '@/components/ConfirmModal';
 import { dropTables } from '@/database/database';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { SyncStatusBadge } from '@components/_fragments/SyncStatusBadge';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { Alert, ScrollView, Switch } from 'react-native';
+import React, { useState } from 'react';
+import { ScrollView, Switch } from 'react-native';
 import {
   BackButton,
   BackButtonText,
@@ -26,24 +27,23 @@ const Profile: React.FC = () => {
   const { goBack } = useNavigation();
   const { user, logout, biometricEnabled, disableBiometric } = useAuthStore();
 
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [confirmTitle, setConfirmTitle] = useState<string | undefined>(undefined);
+  const [confirmMessage, setConfirmMessage] = useState<string | undefined>(undefined);
+  const [confirmAction, setConfirmAction] = useState<() => Promise<void> | (() => void) | null>(null);
+
   const handleBiometricToggle = async (value: boolean) => {
     try {
       if (value) {
-        // User needs to provide credentials to enable biometric
-        Alert.alert(
-          'Habilitar Biometria',
-          'Para habilitar o login biométrico, você precisa confirmar suas credenciais.',
-          [
-            { text: 'Cancelar', style: 'cancel' },
-            {
-              text: 'Configurar',
-              onPress: () => {
-                // In a real app, you'd show a modal to collect credentials
-                Alert.alert('Info', 'Funcionalidade disponível no login');
-              },
-            },
-          ]
-        );
+        // Show modal to instruct user to confirm credentials before enabling biometric
+        setConfirmTitle('Habilitar Biometria');
+        setConfirmMessage('Para habilitar o login biométrico, você precisa confirmar suas credenciais.');
+        setConfirmAction(() => async () => {
+          // In a real app you'd start a credential flow. For now show info in console and close modal.
+          console.info('User confirmed biometric setup flow (placeholder)');
+          setConfirmVisible(false);
+        });
+        setConfirmVisible(true);
       } else {
         await disableBiometric();
       }
@@ -54,24 +54,21 @@ const Profile: React.FC = () => {
 
   const handleLogout = () => {
     console.log('Initiating logout process');
-    Alert.alert('Sair', 'Deseja fazer logout?', [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Sair',
-        style: 'destructive',
-        onPress: async () => {
-          try {
-            await logout();
-          } finally {
-            try {
-              dropTables();
-            } catch {
-              // ignore
-            }
-          }
-        },
-      },
-    ]);
+    setConfirmTitle('Sair');
+    setConfirmMessage('Deseja fazer logout?');
+    setConfirmAction(() => async () => {
+      try {
+        await logout();
+      } finally {
+        try {
+          dropTables();
+        } catch {
+          // ignore
+        }
+      }
+      setConfirmVisible(false);
+    });
+    setConfirmVisible(true);
   };
 
 
@@ -133,6 +130,23 @@ const Profile: React.FC = () => {
           </Section>
         </Content>
       </ScrollView>
+      <ConfirmModal
+        visible={confirmVisible}
+        title={confirmTitle}
+        message={confirmMessage}
+        confirmLabel="Confirmar"
+        cancelLabel="Cancelar"
+        onCancel={() => setConfirmVisible(false)}
+        onConfirm={() => {
+          if (confirmAction) {
+            // call and ignore returned promise
+            const res = confirmAction();
+            if (res && typeof (res as any).then === 'function') {
+              (res as any).then(() => {}).catch(() => {});
+            }
+          }
+        }}
+      />
     </Container>
   );
 };
