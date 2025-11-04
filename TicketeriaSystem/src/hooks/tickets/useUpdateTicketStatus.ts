@@ -1,10 +1,10 @@
-import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
-import { triggerSync } from '@services/SyncService';
+import { updateTicket } from '@services/TicketApi';
 import { useCallback, useState } from 'react';
 
 /**
  * Hook para atualizar status do ticket
+ * Atualiza direto na API
  * 
  * @example
  * const { mutate: updateStatus, isPending } = useUpdateTicketStatus('123');
@@ -23,14 +23,9 @@ export const useUpdateTicketStatus = (ticketId: string | number) => {
         setIsPending(true);
 
         const idNum = Number(ticketId);
-        // Atualiza localmente primeiro
-        await SQLiteService.updateTicketLocally(idNum, { status: status as any });
-        console.log('[useUpdateTicketStatus] Status updated locally, triggering sync...');
-
-        // Acionar sincronização em background
-        triggerSync().catch((err: Error) => {
-          console.warn('[useUpdateTicketStatus] Background sync failed:', err);
-        });
+        // Atualiza direto na API
+        await updateTicket(idNum, { status: status as any });
+        console.log('[useUpdateTicketStatus] Status updated successfully');
 
         toast.success('Status atualizado com sucesso!');
 

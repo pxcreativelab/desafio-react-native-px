@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { ActivityIndicator, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { openDatabase } from '@/database/database';
 import { RootRouter } from '@/routes/RootRouter';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { ToastContainer } from '@components/_fragments/Toast';
@@ -13,6 +12,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#7b7b88',
   },
 });
 
@@ -21,21 +21,8 @@ function App() {
   const { isAuthenticated, isLoading, restoreSession } = useAuthStore();
 
   useEffect(() => {
-    // Inicializar banco de dados SQLite
-    openDatabase()
-      .then(() => {
-        console.log('[App] SQLite database initialized');
-      })
-      .catch(error => {
-        console.error('[App] Failed to initialize SQLite:', error);
-      });
-  }, []);
-
-  useEffect(() => {
     restoreSession();
   }, [restoreSession]);
-
-
 
   if (isLoading) {
     return (

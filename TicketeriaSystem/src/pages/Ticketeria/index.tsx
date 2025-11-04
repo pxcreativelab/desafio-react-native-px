@@ -4,8 +4,7 @@ import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
 import TicketCard from '@components/_fragments/TicketCard';
 import { useTicketsList } from '@hooks/tickets';
 import { useDebounce } from '@hooks/useDebounce';
-import { useSyncStatus } from '@hooks/useSync';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Ticket } from '@services/TicketApi';
 
 import TopLoadingBar from '@/components/TopLoadingBar';
@@ -34,20 +33,25 @@ const TicketeriaList: React.FC = () => {
 
   const { navigate } = useNavigation();
   const debouncedSearch = useDebounce(searchText, 500);
-  const { isOnline } = useSyncStatus();
 
   const { data, isLoading, isFetching, refetch } = useTicketsList({
-    isOnline,
     page: 1,
     limit: 50,
     status: selectedStatus,
     search: debouncedSearch || undefined,
   });
 
+  // Refetch quando a tela voltar ao foco
+  useFocusEffect(
+    React.useCallback(() => {
+      refetch();
+    }, [refetch])
+  );
+
   const tickets = data?.data || [];
 
   const handleTicketPress = (ticket: Ticket) => {
-    navigate('TicketDetails', { ticketId: ticket.serverId, id: ticket.id });
+    navigate('TicketDetails', { ticketId: ticket.id });
   };
 
   const statusFilters = [

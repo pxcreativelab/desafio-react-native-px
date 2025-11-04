@@ -2,8 +2,8 @@ import styled from 'styled-components/native';
 
 export const HeaderContainer = styled.View`
   width: 100%;
-  height: 64px;
-  padding: 28px 16px 12px;
+  height:84px;
+  padding: 38px 16px 12px;
   background-color: #ffffff;
   border-bottom-width: 1px;
   border-bottom-color: #e6e6ea;

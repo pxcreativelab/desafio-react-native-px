@@ -1,80 +1,14 @@
 {
   "tickets": [
     {
-      "id": 1762261725005,
-      "title": "yrdyhds",
-      "description": "hsdgfhsdghsdfgh",
-      "category": "Feature Request",
-      "priority": "medium",
-      "status": "resolved",
-      "createdAt": "2025-11-04T13:08:45.005Z",
-      "updatedAt": "2025-11-04T14:38:28.235Z",
-      "createdBy": {
-        "id": "unknown",
-        "name": "Unknown",
-        "email": "unknown@example.com"
-      },
-      "comments": [
-        {
-          "id": 1762264027033,
-          "text": "Testest rwqrwe",
-          "createdAt": "2025-11-04T13:47:07.033Z",
-          "createdBy": {
-            "id": "current_user",
-            "name": "Usuário Atual",
-            "email": "usuario@email.com"
-          }
-        }
-      ],
-      "attachments": []
-    },
-    {
-      "id": 1762263556321,
-      "title": "yrdyhds",
-      "description": "hsdgfhsdghsdfgh",
-      "category": "Feature Request",
-      "priority": "medium",
-      "status": "open",
-      "createdAt": "2025-11-04T13:39:16.321Z",
-      "updatedAt": "2025-11-04T13:47:08.176Z",
-      "createdBy": {
-        "id": "unknown",
-        "name": "Unknown",
-        "email": "unknown@example.com"
-      },
-      "comments": [
-        {
-          "id": 1762264027600,
-          "text": "Testet etwert",
-          "createdAt": "2025-11-04T13:47:07.600Z",
-          "createdBy": {
-            "id": "current_user",
-            "name": "Usuário Atual",
-            "email": "usuario@email.com"
-          }
-        },
-        {
-          "id": 1762264028176,
-          "text": "Casa 123",
-          "createdAt": "2025-11-04T13:47:08.176Z",
-          "createdBy": {
-            "id": "current_user",
-            "name": "Usuário Atual",
-            "email": "usuario@email.com"
-          }
-        }
-      ],
-      "attachments": []
-    },
-    {
-      "id": 1762266863724,
-      "title": "Resumo das mudanças",
-      "description": "ronto — alterei a animação para \"vai e volta\" (ping-pong). Agora a barra desliza para a direita e retorna suavemente, repetindo em loop.",
+      "id": 1762282245749,
+      "title": "Agora vou verificar os erros restantes",
+      "description": "IIS significa Serviços de Informações da Internet, um servidor web da Microsoft para sistemas operacionais Windows, usado para hospedar sites e aplicativos. Ele permite a entrega de conteúdo via HTTP/HTTPS e também pode fornecer outros serviços como FTP, NNTP e SMTP. O IIS é um componente integrado do Windows e pode ser habilitado através dos \"Recursos do Windows\" no Painel de Control",
       "category": "Bug",
       "priority": "medium",
-      "status": "open",
-      "createdAt": "2025-11-04T14:34:23.724Z",
-      "updatedAt": "2025-11-04T14:34:23.724Z",
+      "status": "resolved",
+      "createdAt": "2025-11-04T18:50:45.749Z",
+      "updatedAt": "2025-11-04T21:03:00.026Z",
       "createdBy": {
         "id": "user_1762201619138",
         "name": "douglas",
@@ -84,48 +18,14 @@
       "attachments": []
     },
     {
-      "id": 1762277896880,
-      "title": "teste",
-      "description": "Teste 1234",
-      "category": "Sistema",
+      "id": 1762287309281,
+      "title": "teste 32",
+      "description": "Atualizar a lógica para, em caso de conflito, aplicar merge inteligente (ex: atualizar apenas campos que vêm mais recentes pelo timestamp), se quiser reconciliar servidor vs local.",
+      "category": "Bug",
       "priority": "medium",
-      "status": "open",
-      "createdAt": "2025-11-04T17:38:16.880Z",
-      "updatedAt": "2025-11-04T17:38:16.880Z",
-      "createdBy": {
-        "id": "user_1762201619138",
-        "name": "douglas",
-        "email": "douglas@gmail.com"
-      },
-      "comments": [],
-      "attachments": []
-    },
-    {
-      "id": 1762277896956,
-      "title": "teste",
-      "description": "Teste 1234",
-      "category": "Sistema",
-      "priority": "medium",
-      "status": "open",
-      "createdAt": "2025-11-04T17:38:16.956Z",
-      "updatedAt": "2025-11-04T17:38:16.956Z",
-      "createdBy": {
-        "id": "user_1762201619138",
-        "name": "douglas",
-        "email": "douglas@gmail.com"
-      },
-      "comments": [],
-      "attachments": []
-    },
-    {
-      "id": 1762277951341,
-      "title": "Teste 12",
-      "description": "Teste 123123",
-      "category": "Feature Request",
-      "priority": "medium",
-      "status": "open",
-      "createdAt": "2025-11-04T17:39:11.341Z",
-      "updatedAt": "2025-11-04T17:39:11.341Z",
+      "status": "resolved",
+      "createdAt": "2025-11-04T20:15:06.881Z",
+      "updatedAt": "2025-11-04T21:02:26.565Z",
       "createdBy": {
         "id": "user_1762201619138",
         "name": "douglas",

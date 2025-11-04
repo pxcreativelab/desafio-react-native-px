@@ -1,5 +1,4 @@
 import ConfirmModal from '@/components/ConfirmModal';
-import { dropTables } from '@/database/database';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { SyncStatusBadge } from '@components/_fragments/SyncStatusBadge';
 import { useNavigation } from '@react-navigation/native';
@@ -30,7 +29,7 @@ const Profile: React.FC = () => {
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [confirmTitle, setConfirmTitle] = useState<string | undefined>(undefined);
   const [confirmMessage, setConfirmMessage] = useState<string | undefined>(undefined);
-  const [confirmAction, setConfirmAction] = useState<() => Promise<void> | (() => void) | null>(null);
+  const [confirmAction, setConfirmAction] = useState<() => Promise<void> | (() => void) | null>();
 
   const handleBiometricToggle = async (value: boolean) => {
     try {
@@ -57,20 +56,21 @@ const Profile: React.FC = () => {
     setConfirmTitle('Sair');
     setConfirmMessage('Deseja fazer logout?');
     setConfirmAction(() => async () => {
-      try {
-        await logout();
-      } finally {
-        try {
-          dropTables();
-        } catch {
-          // ignore
-        }
-      }
+      await logout();
       setConfirmVisible(false);
     });
     setConfirmVisible(true);
   };
 
+  const handleClearData = () => {
+    setConfirmTitle('Limpar Dados');
+    setConfirmMessage('Não há mais dados locais para limpar. Todos os dados são gerenciados no servidor.');
+    setConfirmAction(() => async () => {
+      console.log('No local data to clear (API-first mode)');
+      setConfirmVisible(false);
+    });
+    setConfirmVisible(true);
+  };
 
 
   return (
@@ -119,13 +119,20 @@ const Profile: React.FC = () => {
           <Divider />
 
           <Section>
+            <LogoutButton onPress={handleClearData}>
+              <LogoutButtonText>Limpar Dados</LogoutButtonText>
+            </LogoutButton>
+          </Section>
+
+
+          <Section>
             <ButtonRow>
-              <BackButton onPress={() => goBack()}>
-                <BackButtonText>Voltar</BackButtonText>
-              </BackButton>
               <LogoutButton onPress={handleLogout}>
                 <LogoutButtonText>Sair da Conta</LogoutButtonText>
               </LogoutButton>
+              <BackButton onPress={() => goBack()}>
+                <BackButtonText>Voltar</BackButtonText>
+              </BackButton>
             </ButtonRow>
           </Section>
         </Content>

@@ -1,38 +1,30 @@
-import {
-  addSyncListener,
-  getSyncStatus,
-  removeSyncListener,
-  SyncStatus
-} from '@services/SyncService';
+import NetInfo from '@react-native-community/netinfo';
 import { useEffect, useState } from 'react';
 
 /**
- * Hook para monitorar status de sincronização e conexão
+ * Hook para monitorar status de conexão de rede
  */
 export const useSyncStatus = () => {
-  const [status, setStatus] = useState<SyncStatus>({
-    isSyncing: false,
-    isOnline: false,
-    pendingCount: 0,
-  });
+  const [isOnline, setIsOnline] = useState(false);
 
   useEffect(() => {
-    // Buscar status inicial
-    getSyncStatus().then(setStatus);
+    // Verificar estado inicial
+    NetInfo.fetch().then(state => {
+      setIsOnline(state.isConnected ?? false);
+    });
 
-    // Adicionar listener para mudanças
-    const listener = (newStatus: SyncStatus) => {
-      setStatus(newStatus);
-    };
+    // Listener para mudanças de conectividade
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setIsOnline(state.isConnected ?? false);
+    });
 
-    addSyncListener(listener);
-
-    // Cleanup
-    return () => {
-      removeSyncListener(listener);
-    };
+    return unsubscribe;
   }, []);
 
-  return status;
+  return {
+    isOnline,
+    isSyncing: false,
+    pendingCount: 0,
+  };
 };
 

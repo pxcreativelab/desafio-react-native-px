@@ -1,3 +1,4 @@
+import TopLoadingBar from '@/components/TopLoadingBar';
 import TicketComment from '@components/_fragments/TicketComment';
 import TicketStatusBadge from '@components/_fragments/TicketStatusBadge';
 import { useAddComment, useTicketDetails, useUpdateTicketStatus } from '@hooks/tickets';
@@ -25,8 +26,6 @@ import {
   InfoRow,
   InfoValue,
   KeyboardView,
-  LoadingContainer,
-  LoadingText,
   RetryButton,
   RetryButtonText,
   Section,
@@ -34,25 +33,28 @@ import {
   SendButton,
   SendButtonText,
   TicketDescription,
-  TicketTitle,
+  TicketTitle
 } from './styles';
 
 
 type Props = StaticScreenProps<{
-  ticketId: number | undefined;
-  id: number;
+  ticketId: number;
 }>;
 
-const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId, id } } }: Props) => {
+const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Props) => {
   const [newComment, setNewComment] = useState('');
   const navigation = useNavigation();
 
-  const { data: ticket, isLoading, isError, refetch } = useTicketDetails(id, ticketId);
-  const { mutate: updateStatus } = useUpdateTicketStatus(id);
-  const { mutate: addNewComment, isPending: isAddingComment } = useAddComment(id);
+  const { data: ticket, isLoading, isError, refetch } = useTicketDetails(ticketId);
+  const { mutate: updateStatus } = useUpdateTicketStatus(ticketId);
+  const { mutate: addNewComment, isPending: isAddingComment } = useAddComment(ticketId);
 
   const handleUpdateStatus = (newStatus: string) => {
-    updateStatus(newStatus);
+    updateStatus(newStatus, {
+      onSuccess: () => {
+        refetch();
+      },
+    });
   };
 
   const handleAddComment = () => {
@@ -63,16 +65,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId, id } } }:
     });
   };
 
-  if (isLoading) {
-    return (
-      <Container>
-        <LoadingContainer>
-          <ActivityIndicator size="large" color="#007AFF" />
-          <LoadingText>Carregando ticket...</LoadingText>
-        </LoadingContainer>
-      </Container>
-    );
-  }
+
 
   if (isError || !ticket) {
     return (
@@ -83,6 +76,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId, id } } }:
           </BackButton>
           <HeaderSpacer />
         </Header>
+        <TopLoadingBar visible={isLoading} />
         <ErrorContainer>
           <ErrorText>Erro ao carregar ticket</ErrorText>
           <RetryButton onPress={() => refetch()}>
@@ -110,6 +104,7 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId, id } } }:
           <HeaderTitle>Ticket #{ticket.id}</HeaderTitle>
           <HeaderSpacer />
         </Header>
+        <TopLoadingBar visible={isLoading} />
 
         <ScrollView>
           <Content>

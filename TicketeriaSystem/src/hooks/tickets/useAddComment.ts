@@ -1,11 +1,11 @@
-import SQLiteService from '@/services/SQLiteService';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useToast } from '@hooks/useToast';
-import { triggerSync } from '@services/SyncService';
+import { addComment } from '@services/TicketApi';
 import { useState } from 'react';
 
 /**
  * Hook para adicionar comentário a um ticket
+ * Envia direto para a API
  * 
  * @example
  * const { mutate: addNewComment, isPending } = useAddComment('123');
@@ -17,7 +17,7 @@ import { useState } from 'react';
 export const useAddComment = (ticketId: string | number) => {
   const toast = useToast();
   const [isPending, setIsPending] = useState(false);
-  const { user } = useAuthStore()
+  const { user } = useAuthStore();
 
   const mutate = async (
     content: string,
@@ -26,26 +26,17 @@ export const useAddComment = (ticketId: string | number) => {
     try {
       setIsPending(true);
 
-      const now = new Date().toISOString();
-      const localComment = {
-        id: String(Date.now()),
-        ticketId: String(ticketId),
+      // Adiciona o comentário direto na API
+      await addComment(Number(ticketId), {
         text: content,
-        createdAt: now,
+        createdAt: new Date().toISOString(),
         createdBy: {
           id: user?.id ?? 'unknown',
           name: user?.name ?? 'Unknown',
           email: user?.email ?? 'unknown@example.com',
         },
-      } as any;
-
-      await SQLiteService.saveCommentLocally(localComment);
-      console.log('[useAddComment] Comment saved locally, triggering sync...');
-
-      // Acionar sincronização em background
-      triggerSync().catch((err: Error) => {
-        console.warn('[useAddComment] Background sync failed:', err);
       });
+      console.log('[useAddComment] Comment added successfully');
 
       toast.success('Comentário adicionado!');
 

@@ -1,13 +1,11 @@
-
-import SQLiteService from '@/services/SQLiteService/index';
 import { fetchTickets, ListTicketsParams, ListTicketsResponse } from '@services/TicketApi';
 import { useCallback, useEffect, useState } from 'react';
 
-export type UseTicketsListOptions = ListTicketsParams & { isOnline?: boolean };
+export type UseTicketsListOptions = ListTicketsParams;
 
 /**
  * Hook para listar tickets com paginação e filtros
- * Estratégia: busca dados locais primeiro, depois sincroniza com API em background
+ * Busca direto da API
  * 
  * @example
  * const { data, isLoading, error, refetch } = useTicketsList({
@@ -18,7 +16,7 @@ export type UseTicketsListOptions = ListTicketsParams & { isOnline?: boolean };
  * });
  */
 export const useTicketsList = (params: UseTicketsListOptions = {}) => {
-  const { isOnline, page = 1, limit = 20, status, search } = params;
+  const { page = 1, limit = 20, status, search } = params;
 
   const [data, setData] = useState<ListTicketsResponse | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,41 +34,10 @@ export const useTicketsList = (params: UseTicketsListOptions = {}) => {
       setIsError(false);
       setError(null);
 
-      const { items: localItems, total: localTotal } = await SQLiteService.getTicketsLocally({
-        status,
-        search,
-        page,
-        limit,
-      });
+      // Busca direto da API
+      const serverResponse = await fetchTickets({ page, limit, status, search });
+      setData(serverResponse);
 
-      const totalPages = Math.ceil(localTotal / limit);
-      const localResponse: ListTicketsResponse = {
-        data: localItems,
-        total: localTotal,
-        page,
-        limit,
-        totalPages,
-      };
-
-      setData(localResponse);
-      setIsLoading(false);
-      setIsFetching(false);
-
-      if (isOnline) {
-        try {
-          const serverResponse = await fetchTickets({ page, limit, status, search });
-          const hasChanges =
-            serverResponse.total !== localTotal ||
-            JSON.stringify(serverResponse.data) !== JSON.stringify(localItems);
-
-          if (hasChanges && serverResponse.data && serverResponse.data.length > 0) {
-            await SQLiteService.upsertTicketsLocally(serverResponse.data);
-            setData(serverResponse);
-          }
-        } catch (apiError) {
-          console.warn('[useTicketsList] API sync failed:', apiError);
-        }
-      }
     } catch (err) {
       console.error('[useTicketsList] Error:', err);
       setIsError(true);
@@ -79,7 +46,7 @@ export const useTicketsList = (params: UseTicketsListOptions = {}) => {
       setIsLoading(false);
       setIsFetching(false);
     }
-  }, [isOnline, page, limit, status, search]);
+  }, [page, limit, status, search]);
 
   useEffect(() => {
     fetchData(true);

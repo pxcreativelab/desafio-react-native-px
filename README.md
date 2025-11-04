@@ -102,14 +102,14 @@ Antes de começar, verifique no projeto:
 - [x] Implementar sincronização quando voltar online
 
 ### 6. SQLite (Modo Offline Robusto)
-- [x] Criar tabelas SQLite para Tickets, Comments, Attachments
-- [x] Salvar tickets no SQLite quando criados/atualizados offline
-- [x] Salvar comentários pendentes para sincronização posterior
-- [x] Salvar anexos pendentes localmente
-- [x] Implementar sistema de fila para ações pendentes
-- [x] Sincronizar dados pendentes quando voltar online
-- [x] Usar `isConnected()` para detectar status de conexão
-- [x] Marcar itens como sincronizados após envio bem-sucedido
+- [] Criar tabelas SQLite para Tickets, Comments, Attachments
+- [] Salvar tickets no SQLite quando criados/atualizados offline
+- [] Salvar comentários pendentes para sincronização posterior
+- [] Salvar anexos pendentes localmente
+- [] Implementar sistema de fila para ações pendentes
+- [] Sincronizar dados pendentes quando voltar online
+- [] Usar `isConnected()` para detectar status de conexão
+- [] Marcar itens como sincronizados após envio bem-sucedido
 
 ### 7. Login com Biometria (Opcional mas Desejável)
 - [x] Adicionar opção de login rápido por biometria
