@@ -14,6 +14,7 @@ import {
   updateTicket,
 } from '@services/TicketApi';
 import axios from 'axios';
+import getPendingActions from './SQLiteService/getPendingActions';
 
 /**
  * Estado da sincronização
