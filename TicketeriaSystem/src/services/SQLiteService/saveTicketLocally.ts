@@ -1,24 +1,20 @@
 import { openDatabase } from '@/database/database';
-import { CreateTicketData } from '@services/TicketApi';
-import { generateLocalId } from './utils';
+import { Ticket } from '@services/TicketApi';
 
 /**
  * Salva um ticket localmente
  */
-export const saveTicketLocally = async (
-  ticket: CreateTicketData & { id?: string | number; createdAt?: string; updatedAt?: string; status?: string; createdBy?: any }
-): Promise<string> => {
+export const saveTicketLocally = async (ticket: Ticket): Promise<number> => {
   try {
     const db = await openDatabase();
-    const localId = ticket.id ? String(ticket.id) : generateLocalId();
     const now = new Date().toISOString();
 
     await db.executeSql(
       `INSERT OR REPLACE INTO tickets 
-       (id, title, description, category, priority, status, createdAt, updatedAt, createdBy, isSynced, localId, serverData)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (id, title, description, category, priority, status, createdAt, updatedAt, createdBy, isSynced)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
-        localId,
+        ticket.id,
         ticket.title || '',
         ticket.description || '',
         ticket.category || '',
@@ -26,15 +22,13 @@ export const saveTicketLocally = async (
         ticket.status || 'open',
         ticket.createdAt || now,
         ticket.updatedAt || now,
-        ticket.createdBy || '',
-        ticket.id ? 1 : 0,
-        localId,
-        JSON.stringify(ticket),
+        ticket.createdBy ? JSON.stringify(ticket.createdBy) : null,
+        ticket._isSynced ? 1 : 0,
       ]
     );
 
-    console.log(`[SQLite] Ticket saved locally: ${localId}`);
-    return localId;
+    console.log(`[SQLite] Ticket saved locally: ${ticket.id}`);
+    return ticket.id;
   } catch (error) {
     console.error('[SQLite] Error saving ticket:', error);
     throw error;

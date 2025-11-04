@@ -2,7 +2,7 @@ import { Attachment } from "./Attachment";
 import { Comment } from "./Comment";
 
 export interface Ticket {
-  id: string | number;
+  id: number;
   title: string;
   description: string;
   category: string;
@@ -17,13 +17,8 @@ export interface Ticket {
     name: string;
     email: string;
   };
-}
 
-
-// Interfaces para dados locais (com propriedades adicionais)
-export interface LocalTicket extends Ticket {
   _isSynced?: boolean;
-  _localId?: string;
 }
 
 

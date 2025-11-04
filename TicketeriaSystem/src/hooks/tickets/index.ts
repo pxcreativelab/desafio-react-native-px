@@ -1,6 +1,3 @@
-// Query Keys
-export { ticketKeys } from './keys';
-
 // Queries
 export { useTicketDetails } from './useTicketDetails';
 export { useTicketsList } from './useTicketsList';
@@ -11,5 +8,3 @@ export { useCreateTicket } from './useCreateTicket';
 export { useUpdateTicket } from './useUpdateTicket';
 export { useUpdateTicketStatus } from './useUpdateTicketStatus';
 
-// Utils
-export { useInvalidateTickets } from './useInvalidateTickets';

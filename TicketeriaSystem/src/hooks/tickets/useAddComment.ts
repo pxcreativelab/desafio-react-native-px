@@ -1,8 +1,8 @@
-import { queryClient } from '@/services/queryClient';
+import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
-import { addComment, Comment } from '@services/TicketApi';
-import { useMutation } from '@tanstack/react-query';
-import { ticketKeys } from './keys';
+import NetInfo from '@react-native-community/netinfo';
+import { addComment } from '@services/TicketApi';
+import { useCallback, useState } from 'react';
 
 /**
  * Hook para adicionar comentário a um ticket
@@ -15,20 +15,61 @@ import { ticketKeys } from './keys';
  * };
  */
 export const useAddComment = (ticketId: string) => {
-
   const toast = useToast();
+  const [isPending, setIsPending] = useState(false);
 
-  return useMutation<Comment, Error, string>({
-    mutationFn: (content) => addComment(ticketId, content),
-    onSuccess: () => {
-      // Invalida o cache do ticket para recarregar com os novos comentários
-      queryClient.invalidateQueries({ queryKey: ticketKeys.detail(ticketId) });
+  const mutate = useCallback(
+    async (content: string, options?: { onSuccess?: () => void; onError?: (error: Error) => void }) => {
+      try {
+        setIsPending(true);
 
-      toast.success('Comentário adicionado!');
+        // Cria comentário local
+        const localComment = {
+          id: Date.now(),
+          ticketId,
+          text: content,
+          createdAt: new Date().toISOString(),
+          createdBy: {
+            id: 'current_user',
+            name: 'Usuário Atual',
+            email: 'usuario@email.com',
+          },
+        };
+
+        // Salva localmente
+        await SQLiteService.saveCommentLocally(localComment);
+
+        // Tenta enviar para API se online
+        const netState = await NetInfo.fetch();
+        if (netState.isConnected) {
+          try {
+            await addComment(ticketId, content);
+          } catch (apiError) {
+            console.warn('[useAddComment] API failed, will sync later:', apiError);
+          }
+        }
+
+        toast.success('Comentário adicionado!');
+
+        if (options?.onSuccess) {
+          options.onSuccess();
+        }
+      } catch (error) {
+        toast.error('Não foi possível adicionar o comentário');
+        console.error('Error adding comment:', error);
+
+        if (options?.onError) {
+          options.onError(error as Error);
+        }
+      } finally {
+        setIsPending(false);
+      }
     },
-    onError: (error) => {
-      toast.error('Não foi possível adicionar o comentário');
-      console.error('Error adding comment:', error);
-    },
-  });
+    [ticketId, toast]
+  );
+
+  return {
+    mutate,
+    isPending,
+  };
 };

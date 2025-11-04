@@ -1,10 +1,8 @@
 import { openDatabase } from '@/database/database';
 import { RootRouter } from '@/routes/RootRouter';
-import { queryClient } from '@/services/queryClient';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { ToastContainer } from '@components/_fragments/Toast';
 import { initSyncService } from '@services/SyncService';
-import { QueryClientProvider } from '@tanstack/react-query';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -52,13 +50,11 @@ function App() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <RootRouter isAuthenticated={isAuthenticated} />
-        <ToastContainer />
-      </SafeAreaProvider>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <RootRouter isAuthenticated={isAuthenticated} />
+      <ToastContainer />
+    </SafeAreaProvider>
   );
 }
 

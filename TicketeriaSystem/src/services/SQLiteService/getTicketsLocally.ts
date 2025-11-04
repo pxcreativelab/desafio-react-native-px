@@ -13,6 +13,7 @@ export const getTicketsLocally = async (filters?: {
 }): Promise<{ items: Ticket[]; total: number }> => {
   try {
     const db = await openDatabase();
+
     let where = 'WHERE 1=1';
     const params: any[] = [];
 
@@ -45,22 +46,27 @@ export const getTicketsLocally = async (filters?: {
     const [results] = await db.executeSql(query, queryParams);
     const tickets: Ticket[] = [];
 
+
     for (let i = 0; i < results.rows.length; i++) {
       const row = results.rows.item(i);
-      tickets.push({
-        id: row.id,
-        title: row.title,
-        description: row.description,
-        category: row.category,
-        priority: row.priority as Ticket['priority'],
-        status: row.status as Ticket['status'],
-        createdAt: row.createdAt,
-        updatedAt: row.updatedAt,
-        createdBy: row.createdBy ? JSON.parse(row.createdBy) : undefined,
-        comments: [],
-        attachments: [],
-      });
+      console.log(row);
+      // console.log(row);
+
+      // tickets.push({
+      //   id: row.id,
+      //   title: row.title,
+      //   description: row.description,
+      //   category: row.category,
+      //   priority: row.priority as Ticket['priority'],
+      //   status: row.status as Ticket['status'],
+      //   createdAt: row.createdAt,
+      //   updatedAt: row.updatedAt,
+      //   createdBy: row.createdBy ? JSON.parse(row.createdBy) : undefined,
+      //   comments: [],
+      //   attachments: [],
+      // });
     }
+
 
     console.log(`[SQLite] Found ${tickets.length} tickets locally (page ${page}, limit ${limit}, total ${total})`);
     return { items: tickets, total };

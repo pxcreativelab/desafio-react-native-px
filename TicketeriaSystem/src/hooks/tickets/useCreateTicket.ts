@@ -1,9 +1,7 @@
-import { queryClient } from '@/services/queryClient';
 import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
 import { CreateTicketData } from '@services/TicketApi';
-import { useMutation } from '@tanstack/react-query';
-import { ticketKeys } from './keys';
+import { useCallback, useState } from 'react';
 
 /**
  * Hook para criar um novo ticket
@@ -22,17 +20,43 @@ import { ticketKeys } from './keys';
  */
 export const useCreateTicket = () => {
   const toast = useToast();
+  const [isPending, setIsPending] = useState(false);
 
-  return useMutation<string, Error, CreateTicketData>({
-    mutationFn: SQLiteService.saveTicketLocally,
-    onSuccess: () => {
-      // Invalida todas as listas de tickets para recarregar
-      queryClient.invalidateQueries({ queryKey: ticketKeys.lists() });
-      toast.success('Ticket criado com sucesso!');
+  const mutate = useCallback(
+    async (
+      data: CreateTicketData,
+      options?: {
+        onSuccess?: (id: string) => void;
+        onError?: (error: Error) => void;
+      }
+    ) => {
+      try {
+        setIsPending(true);
+
+        // Salva localmente (será sincronizado depois)
+        const ticketId = await SQLiteService.saveTicketLocally(data);
+
+        toast.success('Ticket criado com sucesso!');
+
+        if (options?.onSuccess) {
+          options.onSuccess(ticketId);
+        }
+      } catch (error) {
+        toast.error('Não foi possível criar o ticket');
+        console.error('Error creating ticket:', error);
+
+        if (options?.onError) {
+          options.onError(error as Error);
+        }
+      } finally {
+        setIsPending(false);
+      }
     },
-    onError: (error) => {
-      toast.error('Não foi possível criar o ticket');
-      console.error('Error creating ticket:', error);
-    },
-  });
+    [toast]
+  );
+
+  return {
+    mutate,
+    isPending,
+  };
 };

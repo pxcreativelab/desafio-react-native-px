@@ -10,7 +10,7 @@ export const upsertTicketsLocally = async (tickets: Ticket[]): Promise<void> => 
     if (!tickets || tickets.length === 0) return;
 
     for (const t of tickets) {
-      const ticket = { ...t };
+      const ticket = { ...t, _isSynced: true };
       await saveTicketLocally(ticket);
     }
 

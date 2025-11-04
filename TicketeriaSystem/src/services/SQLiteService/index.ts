@@ -1,6 +1,3 @@
-// Utils
-export { generateLocalId } from './utils';
-
 // Tickets
 export { bulkUpsertTickets } from './bulkUpsertTickets';
 export { deleteTicketLocally } from './deleteTicketLocally';

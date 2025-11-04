@@ -1,8 +1,8 @@
-import { queryClient } from '@/services/queryClient';
+import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
-import { Ticket, updateTicket } from '@services/TicketApi';
-import { useMutation } from '@tanstack/react-query';
-import { ticketKeys } from './keys';
+import NetInfo from '@react-native-community/netinfo';
+import { updateTicket } from '@services/TicketApi';
+import { useCallback, useState } from 'react';
 
 /**
  * Hook para atualizar status do ticket
@@ -16,19 +16,53 @@ import { ticketKeys } from './keys';
  */
 export const useUpdateTicketStatus = (ticketId: string) => {
   const toast = useToast();
+  const [isPending, setIsPending] = useState(false);
 
-  return useMutation<Ticket, Error, string>({
-    mutationFn: (status) => updateTicket(ticketId, { status: status as any }),
-    onSuccess: (updatedTicket) => {
-      // Atualiza o cache
-      queryClient.setQueryData(ticketKeys.detail(ticketId), updatedTicket);
-      queryClient.invalidateQueries({ queryKey: ticketKeys.lists() });
+  const mutate = useCallback(
+    async (status: string, options?: { onSuccess?: () => void; onError?: (error: Error) => void }) => {
+      try {
+        setIsPending(true);
 
-      toast.success('Status atualizado com sucesso!');
+        // Atualiza localmente primeiro
+        const currentTicket = await SQLiteService.getTicketByIdLocally(ticketId);
+        if (currentTicket) {
+          await SQLiteService.updateTicketLocally(ticketId, { ...currentTicket, status: status as any });
+        }
+
+        // Tenta atualizar na API se estiver online
+        const netState = await NetInfo.fetch();
+        if (netState.isConnected) {
+          try {
+            const updatedTicket = await updateTicket(ticketId, { status: status as any });
+            // Atualiza local com resposta da API
+            await SQLiteService.updateTicketLocally(ticketId, updatedTicket);
+          } catch (apiError) {
+            console.warn('[useUpdateTicketStatus] API update failed, will sync later:', apiError);
+            // Continua mesmo se API falhar - será sincronizado depois
+          }
+        }
+
+        toast.success('Status atualizado com sucesso!');
+
+        if (options?.onSuccess) {
+          options.onSuccess();
+        }
+      } catch (error) {
+        toast.error('Não foi possível atualizar o status');
+        console.error('Error updating status:', error);
+
+        if (options?.onError) {
+          options.onError(error as Error);
+        }
+      } finally {
+        setIsPending(false);
+      }
     },
-    onError: (error) => {
-      toast.error('Não foi possível atualizar o status');
-      console.error('Error updating status:', error);
-    },
-  });
+    [ticketId, toast]
+  );
+
+  return {
+    mutate,
+    isPending,
+  };
 };

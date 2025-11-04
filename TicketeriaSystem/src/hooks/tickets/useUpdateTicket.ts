@@ -1,8 +1,8 @@
-import { queryClient } from '@/services/queryClient';
+import SQLiteService from '@/services/SQLiteService';
 import { useToast } from '@hooks/useToast';
+import NetInfo from '@react-native-community/netinfo';
 import { Ticket, updateTicket } from '@services/TicketApi';
-import { useMutation } from '@tanstack/react-query';
-import { ticketKeys } from './keys';
+import { useCallback, useState } from 'react';
 
 /**
  * Hook para atualizar um ticket
@@ -16,21 +16,51 @@ import { ticketKeys } from './keys';
  */
 export const useUpdateTicket = (ticketId: string) => {
   const toast = useToast();
+  const [isPending, setIsPending] = useState(false);
 
-  return useMutation<Ticket, Error, Partial<Ticket>>({
-    mutationFn: (data) => updateTicket(ticketId, data),
-    onSuccess: (updatedTicket) => {
-      // Atualiza o cache do ticket específico
-      queryClient.setQueryData(ticketKeys.detail(ticketId), updatedTicket);
+  const mutate = useCallback(
+    async (data: Partial<Ticket>, options?: { onSuccess?: () => void; onError?: (error: Error) => void }) => {
+      try {
+        setIsPending(true);
 
-      // Invalida as listas para refletir mudanças
-      queryClient.invalidateQueries({ queryKey: ticketKeys.lists() });
+        // Atualiza localmente primeiro
+        const currentTicket = await SQLiteService.getTicketByIdLocally(ticketId);
+        if (currentTicket) {
+          await SQLiteService.updateTicketLocally(ticketId, { ...currentTicket, ...data });
+        }
 
-      toast.success('Ticket atualizado com sucesso!');
+        // Tenta atualizar na API se online
+        const netState = await NetInfo.fetch();
+        if (netState.isConnected) {
+          try {
+            const updatedTicket = await updateTicket(ticketId, data);
+            await SQLiteService.updateTicketLocally(ticketId, updatedTicket);
+          } catch (apiError) {
+            console.warn('[useUpdateTicket] API failed, will sync later:', apiError);
+          }
+        }
+
+        toast.success('Ticket atualizado com sucesso!');
+
+        if (options?.onSuccess) {
+          options.onSuccess();
+        }
+      } catch (error) {
+        toast.error('Não foi possível atualizar o ticket');
+        console.error('Error updating ticket:', error);
+
+        if (options?.onError) {
+          options.onError(error as Error);
+        }
+      } finally {
+        setIsPending(false);
+      }
     },
-    onError: (error) => {
-      toast.error('Não foi possível atualizar o ticket');
-      console.error('Error updating ticket:', error);
-    },
-  });
+    [ticketId, toast]
+  );
+
+  return {
+    mutate,
+    isPending,
+  };
 };
