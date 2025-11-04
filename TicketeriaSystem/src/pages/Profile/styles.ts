@@ -104,3 +104,26 @@ export const LogoutButtonText = styled.Text`
   font-size: 16px;
   font-weight: 700;
 `;
+
+export const ButtonRow = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 12px;
+`;
+
+export const BackButton = styled.TouchableOpacity`
+  background-color: #fff;
+  border-width: 1px;
+  border-color: #e6e6ea;
+  border-radius: 8px;
+  padding: 14px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+`;
+
+export const BackButtonText = styled.Text`
+  color: #007aff;
+  font-size: 16px;
+  font-weight: 700;
+`;

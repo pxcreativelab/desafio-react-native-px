@@ -5,13 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Alert, ScrollView, Switch } from 'react-native';
 import {
+  BackButton,
+  BackButtonText,
+  ButtonRow,
   Container,
   Content,
   Divider,
-  Header,
-  HeaderButton,
-  HeaderButtonText,
-  HeaderTitle,
   InfoLabel,
   InfoRow,
   InfoValue,
@@ -20,7 +19,7 @@ import {
   Section,
   SectionTitle,
   SettingLabel,
-  SettingRow,
+  SettingRow
 } from './styles';
 
 const Profile: React.FC = () => {
@@ -54,6 +53,7 @@ const Profile: React.FC = () => {
   };
 
   const handleLogout = () => {
+    console.log('Initiating logout process');
     Alert.alert('Sair', 'Deseja fazer logout?', [
       { text: 'Cancelar', style: 'cancel' },
       {
@@ -74,30 +74,10 @@ const Profile: React.FC = () => {
     ]);
   };
 
-  const getInitials = (name?: string, email?: string) => {
-    if (name) {
-      const parts = name.trim().split(/\s+/);
-      if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-      return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
-    }
-    if (email) return email.charAt(0).toUpperCase();
-    return '?';
-  };
 
-  const initials = getInitials(user?.name, user?.email);
 
   return (
     <Container>
-      <Header>
-        <HeaderButton onPress={goBack}>
-          <HeaderButtonText>Voltar</HeaderButtonText>
-        </HeaderButton>
-        <HeaderTitle>Perfil</HeaderTitle>
-        <HeaderButton style={{ opacity: 0 }} disabled pointerEvents="none">
-          <HeaderButtonText> </HeaderButtonText>
-        </HeaderButton>
-      </Header>
-
       <ScrollView>
         <Content>
           <Section>
@@ -111,8 +91,8 @@ const Profile: React.FC = () => {
               <InfoValue>{user?.email || 'Não informado'}</InfoValue>
             </InfoRow>
             <InfoRow>
-              <InfoLabel>Iniciais</InfoLabel>
-              <InfoValue>{initials}</InfoValue>
+              <InfoLabel>ID</InfoLabel>
+              <InfoValue>{user?.id || 'Não informado'}</InfoValue>
             </InfoRow>
           </Section>
 
@@ -142,9 +122,14 @@ const Profile: React.FC = () => {
           <Divider />
 
           <Section>
-            <LogoutButton onPress={handleLogout}>
-              <LogoutButtonText>Sair da Conta</LogoutButtonText>
-            </LogoutButton>
+            <ButtonRow>
+              <BackButton onPress={() => goBack()}>
+                <BackButtonText>Voltar</BackButtonText>
+              </BackButton>
+              <LogoutButton onPress={handleLogout}>
+                <LogoutButtonText>Sair da Conta</LogoutButtonText>
+              </LogoutButton>
+            </ButtonRow>
           </Section>
         </Content>
       </ScrollView>
