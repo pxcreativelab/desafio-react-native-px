@@ -35,7 +35,6 @@ export class ExportService {
       const options = {
         html,
         fileName: `tickets_${new Date().getTime()}`,
-        // directory: Platform.OS === 'android' ? 'Downloads' : 'Documents',
         base64: false
       };
 
@@ -46,9 +45,15 @@ export class ExportService {
           url: Platform.OS === 'android' ? `file://${file.filePath}` : file.filePath,
           type: 'application/pdf',
           title: 'Exportar Tickets',
+          saveToFiles: true,
+
         });
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      // User did not share
+      if (typeof error === 'object' && error !== null && 'message' in error && (error as any).message === 'User did not share') {
+        return;
+      }
       console.error('Erro ao exportar PDF:', error);
       throw new Error('Falha ao exportar para PDF');
     }
@@ -143,6 +148,10 @@ export class ExportService {
         type: 'text/csv',
       });
     } catch (error) {
+      // User did not share
+      if (typeof error === 'object' && error !== null && 'message' in error && (error as any).message === 'User did not share') {
+        return;
+      }
       console.error('Erro ao exportar CSV:', error);
       throw new Error('Falha ao exportar para CSV');
     }
