@@ -4,7 +4,7 @@ import axios from 'axios';
 // Em produção, use a URL real da API
 export const API_BASE_URL = __DEV__
   ? 'http://192.168.1.7:3000'
-  : 'https://api-production.com';
+  : 'https://desafio-react-native-px.onrender.com';
 
 const baseUrl = `${API_BASE_URL}/api/v1`
 
