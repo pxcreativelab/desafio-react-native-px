@@ -75,6 +75,16 @@ npx react-native run-ios
 - Se usar Expo (managed), as bibliotecas nativas exigem workflow bare ou EAS.
 - Android pode precisar de permissão de escrita para salvar no `Downloads`.
 
+7) Configurar a API (rápido)
+- A URL base da API fica em `src/services/Api.ts` (variável `API_BASE_URL`). Por padrão o projeto já usa um switch `__DEV__` para apontar para uma URL local em desenvolvimento.
+- Exemplos comuns:
+	- iOS Simulator: `http://localhost:3000`
+	- Android Emulator (AVD): `http://10.0.2.2:3000`
+	- Android Genymotion: `http://10.0.3.2:3000`
+	- Dispositivo físico: `http://<SEU_IP_LOCAL>:3000` (use o IP da sua máquina na mesma rede)
+- Para mudar a URL, edite `API_BASE_URL` em `src/services/Api.ts` ou integre uma solução de variáveis de ambiente (ex.: `react-native-config`).
+- Autenticação: existe um interceptor em `Api.ts` onde você pode descomentar/adicionar o token retornado do storage (ex.: `AsyncStorage`) e inserir no header `Authorization: Bearer <token>`.
+
 Problemas? Cole aqui o log do Metro ou do build e eu te ajudo.
 
 ---
