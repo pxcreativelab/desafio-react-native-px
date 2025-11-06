@@ -3,10 +3,10 @@ import styled from 'styled-components/native';
 export const HeaderContainer = styled.View`
   width: 100%;
   height:84px;
-  padding: 38px 16px 12px;
-  background-color: #ffffff;
+  padding: 18px ${({ theme }) => theme.spacing.md}px 12px;
+  background-color: ${({ theme }) => theme.colors.white};
   border-bottom-width: 1px;
-  border-bottom-color: #e6e6ea;
+  border-bottom-color: ${({ theme }) => theme.colors.border};
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -23,9 +23,9 @@ export const MenuButton = styled.TouchableOpacity`
 `;
 
 export const Title = styled.Text`
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.fontSizes.lg}px;
   font-weight: 700;
-  color: #111;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const RightContainer = styled.View`
@@ -38,14 +38,14 @@ export const AvatarButton = styled.TouchableOpacity`
   width: 36px;
   height: 36px;
   border-radius: 18px;
-  background-color: #007aff;
+  background-color: ${({ theme }) => theme.colors.primary};
   align-items: center;
   justify-content: center;
 `;
 
 export const AvatarText = styled.Text`
-  color: #fff;
+  color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
 `;
 

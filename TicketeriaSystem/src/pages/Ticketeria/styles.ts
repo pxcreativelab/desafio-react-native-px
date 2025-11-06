@@ -3,16 +3,16 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #F2F2F7;
+  background-color: ${({ theme }) => theme.colors.backgroundPage};
 `;
 
 export const Header = styled.View`
   flex-direction: row;
-  padding: 16px;
-  gap: 12px;
-  background-color: #FFFFFF;
+  padding: ${({ theme }) => theme.spacing.md}px;
+  gap: ${({ theme }) => theme.spacing.sm}px;
+  background-color: ${({ theme }) => theme.colors.background};
   border-bottom-width: 1px;
-  border-bottom-color: #E5E5EA;
+  border-bottom-color: ${({ theme }) => theme.colors.border};
 `;
 
 export const SearchInputContainer = styled.View`
@@ -23,11 +23,11 @@ export const SearchInputContainer = styled.View`
 export const SearchInput = styled.TextInput`
   flex: 1;
   height: 40px;
-  background-color: #F2F2F7;
+  background-color: ${({ theme }) => theme.colors.backgroundPage};
   border-radius: 10px;
   padding: 0 12px 0 40px;
-  font-size: 16px;
-  color: #000000;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const SearchIcon = styled.View`
@@ -42,30 +42,29 @@ export const SearchIconText = styled.Text`
 `;
 
 export const CreateButton = styled.TouchableOpacity`
-  background-color: #007AFF;
-  padding: 10px 16px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  padding: 10px ${({ theme }) => theme.spacing.md}px;
   border-radius: 10px;
   justify-content: center;
   align-items: center;
 `;
 
 export const CreateButtonText = styled.Text`
-  color: #FFFFFF;
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: 600;
 `;
 
 export const BoxRow = styled.View`
-  background-color: #FFFFFF;
+  background-color: ${({ theme }) => theme.colors.background};
   height: 60px;
-  padding: 0 16px;
+  padding: 0 ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const FilterRow = styled.ScrollView`
- 
-  padding: 12px 0;
+  padding: ${({ theme }) => theme.spacing.sm}px 0;
   border-bottom-width: 1px;
-  border-bottom-color: #E5E5EA;
+  border-bottom-color: ${({ theme }) => theme.colors.border};
 `;
 
 interface FilterButtonProps {
@@ -73,16 +72,18 @@ interface FilterButtonProps {
 }
 
 export const FilterButton = styled.TouchableOpacity<FilterButtonProps>`
-  padding: 8px 16px;
+  padding: 0 ${({ theme }) => theme.spacing.md}px;
   border-radius: 20px;
-  margin-right: 8px;
-  background-color: ${({ active }) => (active ? '#007AFF' : '#F2F2F7')};
+  margin-right: ${({ theme }) => theme.spacing.sm}px;
+  background-color: ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.backgroundPage)};
+  align-items: center;
+  justify-content: center;
 `;
 
 export const FilterButtonText = styled.Text<FilterButtonProps>`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ active }) => (active ? '#FFFFFF' : '#000000')};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  font-weight: 600;
+  color: ${({ active, theme }) => (active ? theme.colors.white : theme.colors.text)};
 `;
 
 export const EmptyContainer = styled.View`
@@ -98,8 +99,8 @@ export const EmptyIcon = styled.Text`
 `;
 
 export const EmptyText = styled.Text`
-  font-size: 16px;
-  color: #8E8E93;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.gray};
   text-align: center;
   line-height: 22px;
 `;
@@ -111,9 +112,9 @@ export const LoadingContainer = styled.View`
 `;
 
 export const LoadingText = styled.Text`
-  margin-top: 16px;
-  font-size: 16px;
-  color: #8E8E93;
+  margin-top: ${({ theme }) => theme.spacing.md}px;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.gray};
 `;
 
 export const ErrorContainer = styled.View`
@@ -124,22 +125,22 @@ export const ErrorContainer = styled.View`
 `;
 
 export const ErrorText = styled.Text`
-  font-size: 18px;
-  color: #FF3B30;
+  font-size: ${({ theme }) => theme.fontSizes.lg}px;
+  color: ${({ theme }) => theme.colors.danger};
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
   text-align: center;
 `;
 
 export const RetryButton = styled.TouchableOpacity`
-  background-color: #007AFF;
-  padding: 12px 24px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  padding: ${({ theme }) => theme.spacing.sm}px ${({ theme }) => theme.spacing.lg}px;
   border-radius: 10px;
 `;
 
 export const RetryButtonText = styled.Text`
-  color: #FFFFFF;
-  font-size: 16px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
   font-weight: 600;
 `;
 

@@ -2,7 +2,7 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #f5f5f5;
+  background-color: ${({ theme }) => theme.colors.backgroundPage};
 `;
 
 export const ScrollContainer = styled.ScrollView.attrs({
@@ -16,25 +16,25 @@ export const ScrollContainer = styled.ScrollView.attrs({
 
 export const Content = styled.View`
   flex: 1;
-  padding: 24px;
+  padding: ${({ theme }) => theme.spacing.lg}px;
   padding-top: 60px;
 `;
 
 export const Header = styled.View`
   align-items: center;
-  margin-bottom: 32px;
+  margin-bottom: ${({ theme }) => theme.spacing.xl}px;
 `;
 
 export const Title = styled.Text`
   font-size: 28px;
   font-weight: bold;
-  color: #333;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const Subtitle = styled.Text`
-  font-size: 14px;
-  color: #666;
-  margin-top: 8px;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  margin-top: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const FormContainer = styled.View`
@@ -42,54 +42,54 @@ export const FormContainer = styled.View`
 `;
 
 export const InputGroup = styled.View`
-  margin-bottom: 16px;
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const Label = styled.Text`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const Input = styled.TextInput`
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 12px 16px;
-  font-size: 16px;
-  color: #333;
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.lightGray};
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
+  padding: 12px ${({ theme }) => theme.spacing.md}px;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const ErrorText = styled.Text`
-  color: #ff3b30;
-  font-size: 12px;
+  color: ${({ theme }) => theme.colors.danger};
+  font-size: ${({ theme }) => theme.fontSizes.xs}px;
   margin-top: 4px;
 `;
 
 export const RegisterButton = styled.TouchableOpacity<{ disabled?: boolean }>`
-  background-color: ${(props) => (props.disabled ? '#ccc' : '#007aff')};
-  padding: 16px;
-  border-radius: 8px;
+  background-color: ${({ disabled, theme }) => (disabled ? theme.colors.lightGray : theme.colors.primary)};
+  padding: ${({ theme }) => theme.spacing.md}px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
   align-items: center;
-  margin-top: 8px;
+  margin-top: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const RegisterButtonText = styled.Text`
-  color: #fff;
-  font-size: 16px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
   font-weight: 600;
 `;
 
 export const LoginContainer = styled.View`
   flex-direction: row;
   justify-content: center;
-  margin-top: 24px;
+  margin-top: ${({ theme }) => theme.spacing.lg}px;
 `;
 
 export const LoginText = styled.Text`
-  color: #666;
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
 `;
 
 export const LoginButton = styled.TouchableOpacity`
@@ -97,20 +97,20 @@ export const LoginButton = styled.TouchableOpacity`
 `;
 
 export const LoginButtonText = styled.Text`
-  color: #007aff;
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: 600;
 `;
 
 export const PasswordRequirements = styled.View`
-  background-color: #f9f9f9;
+  background-color: ${({ theme }) => theme.colors.backgroundPage};
   padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const RequirementText = styled.Text<{ met?: boolean }>`
-  font-size: 12px;
-  color: ${(props) => (props.met ? '#34c759' : '#666')};
+  font-size: ${({ theme }) => theme.fontSizes.xs}px;
+  color: ${({ met, theme }) => (met ? theme.colors.success : theme.colors.textSecondary)};
   margin-bottom: 4px;
 `;

@@ -1,28 +1,27 @@
-import theme from '@/styles/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 
 export const Container = styled(SafeAreaView)`
   flex: 1;
-  background-color: #F2F2F7;
+  background-color: ${({ theme }) => theme.colors.backgroundPage};
 `;
 
 export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background-color: #FFFFFF;
+  padding: ${({ theme }) => theme.spacing.md}px;
+  background-color: ${({ theme }) => theme.colors.white};
   border-bottom-width: 1px;
-  border-bottom-color: #E5E5EA;
+  border-bottom-color: ${({ theme }) => theme.colors.border};
 `;
 
 
 
 export const HeaderTitle = styled.Text`
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.fontSizes.lg}px;
   font-weight: 600;
-  color: #000000;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const HeaderSpacer = styled.View`
@@ -38,35 +37,35 @@ export const FormGroup = styled.View`
 `;
 
 export const Label = styled.Text`
-  font-size: 14px;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: 600;
-  color: #000000;
-  margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const Input = styled.TextInput`
-  background-color: #FFFFFF;
+  background-color: ${({ theme }) => theme.colors.white};
   border-width: 1px;
-  border-color: #E5E5EA;
+  border-color: ${({ theme }) => theme.colors.border};
   border-radius: 10px;
   padding: 12px;
-  font-size: 16px;
-  color: #000000;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const TextArea = styled.TextInput`
-  background-color: #FFFFFF;
+  background-color: ${({ theme }) => theme.colors.white};
   border-width: 1px;
-  border-color: #E5E5EA;
+  border-color: ${({ theme }) => theme.colors.border};
   border-radius: 10px;
   padding: 12px;
-  font-size: 16px;
-  color: #000000;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.text};
   min-height: 120px;
 `;
 
 export const PickerContainer = styled.View`
-  background-color: #FFFFFF;
+  background-color: ${({ theme }) => theme.colors.white};
   border-radius: 10px;
   overflow: hidden;
 `;
@@ -74,7 +73,7 @@ export const PickerContainer = styled.View`
 export const PickerButton = styled.TouchableOpacity`
   padding: 12px;
   border-width: 1px;
-  border-color: #E5E5EA;
+  border-color: ${({ theme }) => theme.colors.border};
   border-radius: 10px;
   margin-bottom: 4px;
 `;
@@ -84,30 +83,30 @@ interface PickerButtonTextProps {
 }
 
 export const PickerButtonText = styled.Text<PickerButtonTextProps>`
-  font-size: 16px;
-  color: ${({ selected }) => (selected ? '#000000' : '#8E8E93')};
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ selected, theme }) => (selected ? theme.colors.text : theme.colors.gray)};
 `;
 
 export const BoxButtons = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 24px;
+  margin-top: ${({ theme }) => theme.spacing.lg}px;
 `;
 
 export const CancelButton = styled.TouchableOpacity`
   padding: 4px;
-  border: 1px solid #E5E5EA;
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: 10px;
-  background-color:${theme.colors.danger};
+  background-color: ${({ theme }) => theme.colors.danger};
   padding: 12px 0px;
   width: 40%;
   align-items: center;
 `;
 
 export const CancelButtonText = styled.Text`
-  font-size: 16px;
-  color: #ffffffff;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
 `;
 
@@ -116,8 +115,8 @@ interface SubmitButtonProps {
 }
 
 export const SubmitButton = styled.TouchableOpacity<SubmitButtonProps>`
-margin-left: 16px;
-  background-color: ${({ active }) => (active ? '#007AFF' : '#C7C7CC')};
+  margin-left: ${({ theme }) => theme.spacing.md}px;
+  background-color: ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.lightGray)};
   padding: 12px 0;
   flex: 1;
   border-radius: 10px;
@@ -127,8 +126,8 @@ margin-left: 16px;
 `;
 
 export const SubmitButtonText = styled.Text<SubmitButtonProps>`
-  color: #FFFFFF;
-  font-size: 16px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
   font-weight: 600;
 `;
 
@@ -139,13 +138,13 @@ export const LoadingContainer = styled.View`
 `;
 
 export const LoadingText = styled.Text`
-  margin-top: 16px;
-  font-size: 16px;
-  color: #8E8E93;
+  margin-top: ${({ theme }) => theme.spacing.md}px;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.gray};
 `;
 
 export const ErrorText = styled.Text`
-  font-size: 12px;
-  color: #FF3B30;
+  font-size: ${({ theme }) => theme.fontSizes.xs}px;
+  color: ${({ theme }) => theme.colors.danger};
   margin-top: 4px;
 `;

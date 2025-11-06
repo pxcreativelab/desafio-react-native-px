@@ -19,23 +19,23 @@ export const Spacer = styled.TouchableOpacity`
 export const ModalContainer = styled.View`
   width: 90%;
   max-width: 420px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   border-radius: 10px;
   padding: 18px;
   /* elevation removed for cross-platform compatibility; use shadow props if needed */
 `;
 
 export const ModalTitle = styled.Text`
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.fontSizes.lg}px;
   font-weight: 700;
-  color: #111;
-  margin-bottom: 8px;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const ModalMessage = styled.Text`
-  font-size: 14px;
-  color: #333;
-  margin-bottom: 16px;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const ButtonRow = styled.View`
@@ -44,26 +44,26 @@ export const ButtonRow = styled.View`
 `;
 
 export const CancelButton = styled.TouchableOpacity`
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   border-width: 1px;
-  border-color: #e6e6ea;
+  border-color: ${({ theme }) => theme.colors.border};
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
   margin-right: 12px;
 `;
 
 export const CancelButtonText = styled.Text`
-  color: #007aff;
+  color: ${({ theme }) => theme.colors.primary};
   font-weight: 600;
 `;
 
 export const ConfirmButton = styled.TouchableOpacity`
-  background-color: #007aff;
+  background-color: ${({ theme }) => theme.colors.primary};
   padding: 10px 12px;
-  border-radius: 8px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
 `;
 
 export const ConfirmButtonText = styled.Text`
-  color: #fff;
+  color: ${({ theme }) => theme.colors.white};
   font-weight: 700;
 `;

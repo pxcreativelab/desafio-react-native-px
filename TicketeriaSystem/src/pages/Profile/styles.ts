@@ -2,16 +2,16 @@ import styled from 'styled-components/native';
 
 export const Container = styled.View`
   flex: 1;
-  background-color: #f5f5f5;
+  background-color: ${({ theme }) => theme.colors.backgroundPage};
 `;
 
 export const Header = styled.View`
   width: 100%;
   height: 64px;
-  padding: 28px 16px 12px;
-  background-color: #ffffff;
+  padding: 28px ${({ theme }) => theme.spacing.md}px 12px;
+  background-color: ${({ theme }) => theme.colors.white};
   border-bottom-width: 1px;
-  border-bottom-color: #e6e6ea;
+  border-bottom-color: ${({ theme }) => theme.colors.border};
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
@@ -22,31 +22,31 @@ export const HeaderButton = styled.TouchableOpacity`
 `;
 
 export const HeaderButtonText = styled.Text`
-  color: #007aff;
-  font-size: 16px;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
 `;
 
 export const HeaderTitle = styled.Text`
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.fontSizes.lg}px;
   font-weight: 700;
-  color: #111;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const Content = styled.View`
-  padding: 16px;
+  padding: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const Section = styled.View`
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
+  background-color: ${({ theme }) => theme.colors.white};
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
+  padding: ${({ theme }) => theme.spacing.md}px;
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const SectionTitle = styled.Text`
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
   font-weight: 700;
-  color: #111;
+  color: ${({ theme }) => theme.colors.text};
   margin-bottom: 12px;
 `;
 
@@ -54,46 +54,46 @@ export const InfoRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: ${({ theme }) => theme.spacing.sm}px;
+  padding-bottom: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const InfoLabel = styled.Text`
-  font-size: 14px;
-  color: #666;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.textSecondary};
   font-weight: 500;
 `;
 
 export const InfoValue = styled.Text`
-  font-size: 14px;
-  color: #111;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.text};
   font-weight: 600;
 `;
 
 export const Divider = styled.View`
   height: 1px;
-  background-color: #e6e6ea;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  background-color: ${({ theme }) => theme.colors.border};
+  margin-top: ${({ theme }) => theme.spacing.sm}px;
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const SettingRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: ${({ theme }) => theme.spacing.sm}px;
+  padding-bottom: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const SettingLabel = styled.Text`
-  font-size: 14px;
-  color: #111;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.text};
   font-weight: 500;
 `;
 
 export const LogoutButton = styled.TouchableOpacity`
-  background-color: #d9534f;
-  border-radius: 8px;
+  background-color: ${({ theme }) => theme.colors.danger};
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
   padding: 14px;
   align-items: center;
   justify-content: center;
@@ -101,8 +101,8 @@ export const LogoutButton = styled.TouchableOpacity`
 `;
 
 export const LogoutButtonText = styled.Text`
-  color: #fff;
-  font-size: 16px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
   font-weight: 700;
 `;
 
@@ -113,10 +113,10 @@ export const ButtonRow = styled.View`
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.white};
   border-width: 1px;
-  border-color: #e6e6ea;
-  border-radius: 8px;
+  border-color: ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
   padding: 14px;
   align-items: center;
   justify-content: center;
@@ -124,7 +124,7 @@ export const BackButton = styled.TouchableOpacity`
 `;
 
 export const BackButtonText = styled.Text`
-  color: #007aff;
-  font-size: 16px;
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
   font-weight: 700;
 `;

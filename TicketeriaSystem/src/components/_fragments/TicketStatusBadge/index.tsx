@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTheme } from 'styled-components/native';
 import { Container, StatusText } from './styles';
 
 interface TicketStatusBadgeProps {
@@ -6,6 +7,8 @@ interface TicketStatusBadgeProps {
 }
 
 const TicketStatusBadge: React.FC<TicketStatusBadgeProps> = ({ status }) => {
+  const theme = useTheme();
+
   const getStatusConfig = () => {
     const configs: Record<
       string,
@@ -13,23 +16,23 @@ const TicketStatusBadge: React.FC<TicketStatusBadgeProps> = ({ status }) => {
     > = {
       open: {
         label: 'Aberto',
-        color: '#FF9500',
-        bgColor: '#FFF4E6',
+        color: theme.colors.statusOpen,
+        bgColor: theme.colors.statusOpenBg,
       },
       in_progress: {
         label: 'Em Andamento',
-        color: '#007AFF',
-        bgColor: '#E6F2FF',
+        color: theme.colors.statusInProgress,
+        bgColor: theme.colors.statusInProgressBg,
       },
       resolved: {
         label: 'Resolvido',
-        color: '#34C759',
-        bgColor: '#E6F9EC',
+        color: theme.colors.statusResolved,
+        bgColor: theme.colors.statusResolvedBg,
       },
       closed: {
         label: 'Fechado',
-        color: '#8E8E93',
-        bgColor: '#F2F2F7',
+        color: theme.colors.statusClosed,
+        bgColor: theme.colors.statusClosedBg,
       },
     };
 

@@ -21,7 +21,7 @@ export const Bar = styled.View`
   left: 0;
   top: 0;
   bottom: 0;
-  background-color: #007aff;
+  background-color: ${({ theme }) => theme.colors.primary};
   width: 100%;
   border-radius: 20px;
 `;

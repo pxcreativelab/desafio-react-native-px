@@ -1,22 +1,22 @@
 import { ToastType } from '@stores/useToastStore';
-import styled from 'styled-components/native';
+import styled, { DefaultTheme } from 'styled-components/native';
 
 interface ContainerProps {
   type: ToastType;
 }
 
-const getBackgroundColor = (type: ToastType) => {
+const getBackgroundColor = (type: ToastType, theme: DefaultTheme) => {
   switch (type) {
     case 'success':
-      return '#34C759';
+      return theme.colors.success;
     case 'error':
-      return '#FF3B30';
+      return theme.colors.danger;
     case 'warning':
-      return '#FF9500';
+      return theme.colors.warning;
     case 'info':
-      return '#007AFF';
+      return theme.colors.info;
     default:
-      return '#8E8E93';
+      return theme.colors.gray;
   }
 };
 
@@ -38,16 +38,16 @@ const getIcon = (type: ToastType) => {
 export const Container = styled.View`
   position: absolute;
   top: 60px;
-  left: 16px;
-  right: 16px;
+  left: ${({ theme }) => theme.spacing.md}px;
+  right: ${({ theme }) => theme.spacing.md}px;
   z-index: 9999;
 `;
 
 export const ToastItem = styled.View<ContainerProps>`
-  background-color: ${props => getBackgroundColor(props.type)};
-  padding: 16px;
-  border-radius: 12px;
-  margin-bottom: 8px;
+  background-color: ${({ type, theme }) => getBackgroundColor(type, theme)};
+  padding: ${({ theme }) => theme.spacing.md}px;
+  border-radius: ${({ theme }) => theme.borderRadius.md}px;
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
   flex-direction: row;
   align-items: center;
 `;
@@ -55,7 +55,7 @@ export const ToastItem = styled.View<ContainerProps>`
 export const IconContainer = styled.View`
   width: 24px;
   height: 24px;
-  border-radius: 12px;
+  border-radius: ${({ theme }) => theme.borderRadius.md}px;
   background-color: rgba(255, 255, 255, 0.3);
   align-items: center;
   justify-content: center;
@@ -63,26 +63,26 @@ export const IconContainer = styled.View`
 `;
 
 export const IconText = styled.Text`
-  color: #ffffff;
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: bold;
 `;
 
 export const Message = styled.Text`
-  color: #ffffff;
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: 600;
   flex: 1;
 `;
 
 export const CloseButton = styled.TouchableOpacity`
   padding: 4px;
-  margin-left: 8px;
+  margin-left: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const CloseButtonText = styled.Text`
-  color: #ffffff;
-  font-size: 18px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.lg}px;
   font-weight: bold;
 `;
 

@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { ActivityIndicator, StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ThemeProvider } from 'styled-components/native';
 
 import { RootRouter } from '@/routes/RootRouter';
 import { useAuthStore } from '@/stores/useAuthStore';
+import theme from '@/styles/theme';
 import { ToastContainer } from '@components/_fragments/Toast';
 
 
@@ -33,11 +35,13 @@ function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <RootRouter isAuthenticated={isAuthenticated} />
-      <ToastContainer />
-    </SafeAreaProvider>
+    <ThemeProvider theme={theme}>
+      <SafeAreaProvider>
+        <StatusBar barStyle={'light-content'} hidden />
+        <RootRouter isAuthenticated={isAuthenticated} />
+        <ToastContainer />
+      </SafeAreaProvider>
+    </ThemeProvider>
   );
 }
 

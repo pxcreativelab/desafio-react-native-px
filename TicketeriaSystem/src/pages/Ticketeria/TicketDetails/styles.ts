@@ -12,26 +12,26 @@ export const Header = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 16px;
-  background-color: #FFFFFF;
+  padding: ${({ theme }) => theme.spacing.md}px;
+  background-color: ${({ theme }) => theme.colors.background};
   border-bottom-width: 1px;
-  border-bottom-color: #E5E5EA;
+  border-bottom-color: ${({ theme }) => theme.colors.border};
   margin-top: 0px;
 `;
 
 export const BackButton = styled.TouchableOpacity`
-  padding: 4px;
+  padding: ${({ theme }) => theme.spacing.xs}px;
 `;
 
 export const BackButtonText = styled.Text`
-  font-size: 16px;
-  color: #007AFF;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.primary};
 `;
 
 export const HeaderTitle = styled.Text`
-  font-size: 18px;
+  font-size: ${({ theme }) => theme.fontSizes.lg}px;
   font-weight: 600;
-  color: #000000;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const HeaderSpacer = styled.View`
@@ -39,69 +39,69 @@ export const HeaderSpacer = styled.View`
 `;
 
 export const Content = styled.View`
-  padding: 16px;
+  padding: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const Section = styled.View`
-  background-color: #FFFFFF;
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 16px;
+  background-color: ${({ theme }) => theme.colors.background};
+  border-radius: ${({ theme }) => theme.borderRadius.md}px;
+  padding: ${({ theme }) => theme.spacing.md}px;
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const SectionTitle = styled.Text`
-  font-size: 16px;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
   font-weight: 600;
-  color: #000000;
-  margin-bottom: 12px;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const TicketTitle = styled.Text`
-  font-size: 20px;
+  font-size: ${({ theme }) => theme.fontSizes.xl}px;
   font-weight: bold;
-  color: #000000;
-  margin-bottom: 12px;
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 export const TicketDescription = styled.Text`
-  font-size: 16px;
-  color: #000000;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.text};
   line-height: 24px;
 `;
 
 export const InfoRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: ${({ theme }) => theme.spacing.sm}px 0;
   border-bottom-width: 1px;
-  border-bottom-color: #F2F2F7;
+  border-bottom-color: ${({ theme }) => theme.colors.backgroundPage};
 `;
 
 export const InfoLabel = styled.Text`
-  font-size: 14px;
-  color: #8E8E93;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.gray};
   font-weight: 500;
 `;
 
 export const InfoValue = styled.Text`
-  font-size: 14px;
-  color: #000000;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.text};
 `;
 
 export const CommentInputContainer = styled.View`
-  margin-top: 16px;
+  margin-top: ${({ theme }) => theme.spacing.md}px;
   flex-direction: row;
-  gap: 8px;
+  gap: ${({ theme }) => theme.spacing.sm}px;
   align-items: flex-end;
 `;
 
 export const CommentInput = styled.TextInput`
   flex: 1;
-  background-color: #F2F2F7;
+  background-color: ${({ theme }) => theme.colors.backgroundPage};
   border-radius: 10px;
-  padding: 12px;
-  font-size: 14px;
-  color: #000000;
+  padding: ${({ theme }) => theme.spacing.sm}px;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.text};
   min-height: 80px;
   max-height: 120px;
 `;
@@ -111,8 +111,8 @@ interface SendButtonProps {
 }
 
 export const SendButton = styled.TouchableOpacity<SendButtonProps>`
-  background-color: ${({ active }) => (active ? '#007AFF' : '#C7C7CC')};
-  padding: 12px 16px;
+  background-color: ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.lightGray)};
+  padding: ${({ theme }) => theme.spacing.sm}px ${({ theme }) => theme.spacing.md}px;
   border-radius: 10px;
   justify-content: center;
   align-items: center;
@@ -120,13 +120,13 @@ export const SendButton = styled.TouchableOpacity<SendButtonProps>`
 `;
 
 export const SendButtonText = styled.Text<SendButtonProps>`
-  color: #FFFFFF;
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: 600;
 `;
 
 export const ActionsRow = styled.View`
-  gap: 12px;
+  gap: ${({ theme }) => theme.spacing.sm}px;
 `;
 
 interface ActionButtonProps {
@@ -134,18 +134,18 @@ interface ActionButtonProps {
 }
 
 export const ActionButton = styled.TouchableOpacity<ActionButtonProps>`
-  background-color: ${({ active }) => (active ? '#FFFFFF' : '#F2F2F7')};
+  background-color: ${({ active, theme }) => (active ? theme.colors.background : theme.colors.backgroundPage)};
   border-width: 1px;
-  border-color: ${({ active }) => (active ? '#007AFF' : '#C7C7CC')};
-  padding: 12px;
+  border-color: ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.lightGray)};
+  padding: ${({ theme }) => theme.spacing.sm}px;
   border-radius: 10px;
   align-items: center;
   opacity: ${({ active }) => (active ? 1 : 0.5)};
 `;
 
 export const ActionButtonText = styled.Text<ActionButtonProps>`
-  color: ${({ active }) => (active ? '#007AFF' : '#8E8E93')};
-  font-size: 14px;
+  color: ${({ active, theme }) => (active ? theme.colors.primary : theme.colors.gray)};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: 600;
 `;
 
@@ -156,9 +156,9 @@ export const LoadingContainer = styled.View`
 `;
 
 export const LoadingText = styled.Text`
-  margin-top: 16px;
-  font-size: 16px;
-  color: #8E8E93;
+  margin-top: ${({ theme }) => theme.spacing.md}px;
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
+  color: ${({ theme }) => theme.colors.gray};
 `;
 
 export const ErrorContainer = styled.View`
@@ -169,44 +169,44 @@ export const ErrorContainer = styled.View`
 `;
 
 export const ErrorText = styled.Text`
-  font-size: 18px;
-  color: #FF3B30;
+  font-size: ${({ theme }) => theme.fontSizes.lg}px;
+  color: ${({ theme }) => theme.colors.danger};
   font-weight: 600;
-  margin-bottom: 16px;
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
   text-align: center;
 `;
 
 export const RetryButton = styled.TouchableOpacity`
-  background-color: #007AFF;
-  padding: 12px 24px;
+  background-color: ${({ theme }) => theme.colors.primary};
+  padding: ${({ theme }) => theme.spacing.sm}px ${({ theme }) => theme.spacing.lg}px;
   border-radius: 10px;
 `;
 
 export const RetryButtonText = styled.Text`
-  color: #FFFFFF;
-  font-size: 16px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.md}px;
   font-weight: 600;
 `;
 
 export const EmptyCommentsText = styled.Text`
-  font-size: 14px;
-  color: #8E8E93;
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  color: ${({ theme }) => theme.colors.gray};
   text-align: center;
   padding: 20px;
 `;
 
 export const CacheBadge = styled.View`
-  background-color: #34C759;
-  padding: 8px 16px;
-  margin: 8px 16px 0;
-  border-radius: 8px;
+  background-color: ${({ theme }) => theme.colors.success};
+  padding: ${({ theme }) => theme.spacing.sm}px ${({ theme }) => theme.spacing.md}px;
+  margin: ${({ theme }) => theme.spacing.sm}px ${({ theme }) => theme.spacing.md}px 0;
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
   flex-direction: row;
   align-items: center;
   justify-content: center;
 `;
 
 export const CacheBadgeText = styled.Text`
-  color: #FFFFFF;
-  font-size: 14px;
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
   font-weight: 600;
 `;
