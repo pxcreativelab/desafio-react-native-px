@@ -69,7 +69,7 @@ Antes de começar, verifique no projeto:
   - Prioridade (baixa, média, alta, crítica)
   - Anexos (opcional, múltiplos arquivos)
 - [x] Validação de campos em tempo real
-- [x] Preview de arquivos anexados
+- [] Preview de arquivos anexados
 - [x] Feedback visual de sucesso/erro
 - [x] Redirecionamento após criação bem-sucedida
 
@@ -78,7 +78,7 @@ Antes de começar, verifique no projeto:
 - [x] Lista de comentários/respostas
 - [x] Adicionar novo comentário
 - [x] Alterar status do ticket (abrir, fechar, resolver)
-- [x] Visualizar anexos (download/visualização)
+- [] Visualizar anexos (download/visualização)
 - [ ] Histórico de alterações (opcional, se API suportar)
 
 ### 4. Integração com APIs
@@ -94,12 +94,12 @@ Antes de começar, verifique no projeto:
 - [x] Loading states apropriados
 
 ### 5. AsyncStorage (Cache Local)
-- [ ] Salvar lista de tickets no AsyncStorage após busca bem-sucedida
-- [ ] Carregar tickets do cache ao iniciar a tela (mostrar dados antigos enquanto carrega novos)
-- [ ] Salvar detalhes do ticket localmente para acesso offline
-- [ ] Limpar cache quando necessário (pull to refresh)
-- [ ] Salvar preferências do usuário (filtros, ordenação)
-- [ ] Implementar sincronização quando voltar online
+- [x] Salvar lista de tickets no AsyncStorage após busca bem-sucedida
+- [x] Carregar tickets do cache ao iniciar a tela (mostrar dados antigos enquanto carrega novos)
+- [x] Salvar detalhes do ticket localmente para acesso offline
+- [x] Limpar cache quando necessário (pull to refresh)
+- [x] Salvar preferências do usuário (filtros, ordenação)
+- [x] Implementar sincronização quando voltar online
 
 ### 6. SQLite (Modo Offline Robusto)
 - [] Criar tabelas SQLite para Tickets, Comments, Attachments
@@ -335,10 +335,10 @@ Para testar sem uma API real, você pode usar:
 - [x] Visualização de detalhes
 - [x] Adicionar comentários
 - [x] Alterar status do ticket
-- [x] Upload e visualização de anexos
+- [] Upload e visualização de anexos
 - [x] Cache local com AsyncStorage funcionando
 - [x] Carregar dados do cache quando offline
-- [x] SQLite funcionando para modo offline
+- [] SQLite funcionando para modo offline
 - [x] Sincronização de dados pendentes funcionando
 - [x] Login por biometria implementado (opcional)
 
@@ -364,7 +364,7 @@ Para testar sem uma API real, você pode usar:
 - [x] Tokens de autenticação utilizados (se necessário)
 - [x] Tratamento de offline/erro de rede
 - [x] AsyncStorage funcionando para cache
-- [x] SQLite funcionando para modo offline robusto
+- [] SQLite funcionando para modo offline robusto
 - [x] Sincronização de dados local/servidor
 - [x] Fila de pendências sincronizando corretamente
 - [x] Biometria integrada (se implementado)
@@ -436,7 +436,7 @@ Se terminar antes do prazo ou quiser se destacar:
 - [ ] Modo offline com cache local
 - [ ] Notificações push para atualizações de ticket
 - [ ] Busca avançada com múltiplos filtros
-- [ ] Exportar lista de tickets (PDF/CSV)
+- [x] Exportar lista de tickets (PDF/CSV)
 - [ ] Gráficos/estatísticas de tickets
 
 ---

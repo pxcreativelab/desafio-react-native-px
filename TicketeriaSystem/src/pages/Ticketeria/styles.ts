@@ -144,3 +144,24 @@ export const RetryButtonText = styled.Text`
   font-weight: 600;
 `;
 
+export const ExportButton = styled.TouchableOpacity`
+  flex: 1;
+  background-color: ${({ theme }) => theme.colors.secondary};
+  padding: ${({ theme }) => theme.spacing.sm}px ${({ theme }) => theme.spacing.md}px;
+  border-radius: ${({ theme }) => theme.borderRadius.sm}px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ExportButtonText = styled.Text`
+  color: ${({ theme }) => theme.colors.white};
+  font-size: ${({ theme }) => theme.fontSizes.sm}px;
+  font-weight: 600;
+`;
+
+export const ExportRow = styled.View`
+  padding: ${({ theme }) => theme.spacing.sm}px ${({ theme }) => theme.spacing.md}px;
+  flex-direction: row;
+  gap: ${({ theme }) => theme.spacing.sm}px;
+  background-color: ${({ theme }) => theme.colors.background};
+`;

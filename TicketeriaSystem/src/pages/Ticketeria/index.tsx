@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
+import { ActivityIndicator, Alert, FlatList, RefreshControl } from 'react-native';
 
 import TicketCard from '@components/_fragments/TicketCard';
 import { useTicketsList } from '@hooks/tickets';
 import { useDebounce } from '@hooks/useDebounce';
 import { useUserPreferences } from '@hooks/useUserPreferences';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { ExportService } from '@services/ExportService';
 import { Ticket } from '@services/TicketApi';
 
 import TopLoadingBar from '@/components/TopLoadingBar';
@@ -17,6 +18,9 @@ import {
   EmptyContainer,
   EmptyIcon,
   EmptyText,
+  ExportButton,
+  ExportButtonText,
+  ExportRow,
   FilterButton,
   FilterButtonText,
   FilterRow,
@@ -76,6 +80,30 @@ const TicketeriaList: React.FC = () => {
     { label: 'Fechados', value: 'closed' },
   ];
 
+  const handleExportPDF = async () => {
+    try {
+      if (tickets.length === 0) {
+        Alert.alert('Aviso', 'Não há tickets para exportar');
+        return;
+      }
+      await ExportService.exportToPDF(tickets);
+    } catch {
+      Alert.alert('Erro', 'Falha ao exportar para PDF');
+    }
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      if (tickets.length === 0) {
+        Alert.alert('Aviso', 'Não há tickets para exportar');
+        return;
+      }
+      await ExportService.exportToCSV(tickets);
+    } catch {
+      Alert.alert('Erro', 'Falha ao exportar para CSV');
+    }
+  };
+
   return (
     <Container>
       <Header>
@@ -111,6 +139,15 @@ const TicketeriaList: React.FC = () => {
           ))}
         </FilterRow>
       </BoxRow>
+
+      <ExportRow>
+        <ExportButton onPress={handleExportPDF}>
+          <ExportButtonText>📄 Exportar PDF</ExportButtonText>
+        </ExportButton>
+        <ExportButton onPress={handleExportCSV}>
+          <ExportButtonText>📊 Exportar CSV</ExportButtonText>
+        </ExportButton>
+      </ExportRow>
 
       <FlatList
         data={tickets}
