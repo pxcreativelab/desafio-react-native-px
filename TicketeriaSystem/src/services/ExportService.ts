@@ -1,5 +1,6 @@
 import { Ticket } from '@/interfaces/Ticket';
 import { Platform } from 'react-native';
+import RNFS from 'react-native-fs';
 import { generatePDF } from 'react-native-html-to-pdf';
 import Share from 'react-native-share';
 
@@ -138,16 +139,28 @@ export class ExportService {
   static async exportToCSV(tickets: Ticket[]): Promise<void> {
     try {
       const csv = this.generateCSV(tickets);
+      const fileName = `tickets_${new Date().getTime()}.csv`;
 
-      // Para iOS/Android, vamos usar Share para compartilhar o CSV
+      // prefer Downloads on Android, Documents on iOS (app-specific)
+      const directory = Platform.OS === 'android'
+        ? (RNFS.DownloadDirectoryPath || RNFS.ExternalDirectoryPath || RNFS.DocumentDirectoryPath)
+        : RNFS.DocumentDirectoryPath;
+
+      const filePath = `${directory}/${fileName}`;
+
+      // write file to disk
+      await RNFS.writeFile(filePath, csv, 'utf8');
+
+      const shareUrl = Platform.OS === 'android' ? `file://${filePath}` : filePath;
+
       await Share.open({
         title: 'Exportar Tickets CSV',
-        message: csv,
-        subject: 'Tickets Export',
-        filename: `tickets_${new Date().getTime()}.csv`,
+        url: shareUrl,
+        filename: fileName,
         type: 'text/csv',
+        saveToFiles: true,
       });
-    } catch (error) {
+    } catch (error: unknown) {
       // User did not share
       if (typeof error === 'object' && error !== null && 'message' in error && (error as any).message === 'User did not share') {
         return;
