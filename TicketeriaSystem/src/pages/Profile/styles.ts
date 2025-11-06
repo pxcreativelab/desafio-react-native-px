@@ -97,6 +97,7 @@ export const LogoutButton = styled.TouchableOpacity`
   padding: 14px;
   align-items: center;
   justify-content: center;
+  flex: 2;
 `;
 
 export const LogoutButtonText = styled.Text`
@@ -119,7 +120,7 @@ export const BackButton = styled.TouchableOpacity`
   padding: 14px;
   align-items: center;
   justify-content: center;
-  flex: 1;
+  flex: 3;
 `;
 
 export const BackButtonText = styled.Text`

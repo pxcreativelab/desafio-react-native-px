@@ -65,15 +65,7 @@ const Profile: React.FC = () => {
     setConfirmVisible(true);
   };
 
-  const handleClearData = () => {
-    setConfirmTitle('Limpar Dados');
-    setConfirmMessage('Não há mais dados locais para limpar. Todos os dados são gerenciados no servidor.');
-    setConfirmAction(() => async () => {
-      console.log('No local data to clear (API-first mode)');
-      setConfirmVisible(false);
-    });
-    setConfirmVisible(true);
-  };
+
 
   const handleClearCache = () => {
     setConfirmTitle('Limpar Cache');
@@ -200,13 +192,6 @@ const Profile: React.FC = () => {
           </Section>
 
           <Divider />
-
-          <Section>
-            <LogoutButton onPress={handleClearData}>
-              <LogoutButtonText>Limpar Dados</LogoutButtonText>
-            </LogoutButton>
-          </Section>
-
 
           <Section>
             <ButtonRow>
