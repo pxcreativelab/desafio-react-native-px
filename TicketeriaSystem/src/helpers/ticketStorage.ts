@@ -5,7 +5,18 @@ const STORAGE_KEYS = {
   TICKETS_LIST: '@ticketeria:tickets_list',
   TICKET_DETAILS: '@ticketeria:ticket_details',
   LAST_SYNC: '@ticketeria:last_sync',
+  PENDING_ACTIONS: '@ticketeria:pending_actions',
+  OFFLINE_TICKETS: '@ticketeria:offline_tickets',
 };
+
+export interface PendingAction {
+  id: string;
+  type: 'create' | 'update' | 'updateStatus' | 'addComment';
+  ticketId?: number | string;
+  data: any;
+  timestamp: number;
+  localTicketId?: string; // Para tickets criados offline
+}
 
 // Cache da lista de tickets
 export const saveTicketsToStorage = async (data: ListTicketsResponse): Promise<void> => {
@@ -102,4 +113,146 @@ export const clearAllCache = async (): Promise<void> => {
   } catch (error) {
     console.error('Error clearing all cache:', error);
   }
+};
+
+// ============ OFFLINE QUEUE ============
+
+// Gerar ID único para tickets criados offline
+const generateOfflineId = (): string => {
+  return `offline_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+};
+
+// Adicionar ação pendente à fila
+export const addPendingAction = async (action: Omit<PendingAction, 'id' | 'timestamp'>): Promise<string> => {
+  try {
+    const actionId = generateOfflineId();
+    const pendingAction: PendingAction = {
+      ...action,
+      id: actionId,
+      timestamp: Date.now(),
+    };
+
+    const existingActions = await getPendingActions();
+    const updatedActions = [...existingActions, pendingAction];
+
+    await AsyncStorage.setItem(STORAGE_KEYS.PENDING_ACTIONS, JSON.stringify(updatedActions));
+    console.log('[TicketStorage] Pending action added:', pendingAction.type, actionId);
+
+    return actionId;
+  } catch (error) {
+    console.error('Error adding pending action:', error);
+    throw error;
+  }
+};
+
+// Obter todas as ações pendentes
+export const getPendingActions = async (): Promise<PendingAction[]> => {
+  try {
+    const data = await AsyncStorage.getItem(STORAGE_KEYS.PENDING_ACTIONS);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Error getting pending actions:', error);
+    return [];
+  }
+};
+
+// Remover ação pendente da fila
+export const removePendingAction = async (actionId: string): Promise<void> => {
+  try {
+    const actions = await getPendingActions();
+    const filtered = actions.filter(a => a.id !== actionId);
+    await AsyncStorage.setItem(STORAGE_KEYS.PENDING_ACTIONS, JSON.stringify(filtered));
+    console.log('[TicketStorage] Pending action removed:', actionId);
+  } catch (error) {
+    console.error('Error removing pending action:', error);
+  }
+};
+
+// Limpar todas as ações pendentes
+export const clearPendingActions = async (): Promise<void> => {
+  try {
+    await AsyncStorage.removeItem(STORAGE_KEYS.PENDING_ACTIONS);
+    console.log('[TicketStorage] All pending actions cleared');
+  } catch (error) {
+    console.error('Error clearing pending actions:', error);
+  }
+};
+
+// Salvar ticket criado offline
+export const saveOfflineTicket = async (ticket: Ticket): Promise<void> => {
+  try {
+    const offlineTickets = await getOfflineTickets();
+    const updated = [...offlineTickets, ticket];
+    await AsyncStorage.setItem(STORAGE_KEYS.OFFLINE_TICKETS, JSON.stringify(updated));
+
+    // Também salvar nos detalhes para acesso direto
+    await saveTicketDetailsToStorage(ticket);
+
+    console.log('[TicketStorage] Offline ticket saved:', ticket.id);
+  } catch (error) {
+    console.error('Error saving offline ticket:', error);
+  }
+};
+
+// Obter todos os tickets criados offline
+export const getOfflineTickets = async (): Promise<Ticket[]> => {
+  try {
+    const data = await AsyncStorage.getItem(STORAGE_KEYS.OFFLINE_TICKETS);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Error getting offline tickets:', error);
+    return [];
+  }
+};
+
+// Atualizar ticket offline localmente
+export const updateOfflineTicket = async (ticketId: string | number, updates: Partial<Ticket>): Promise<void> => {
+  try {
+    // Atualizar na lista de offline tickets
+    const offlineTickets = await getOfflineTickets();
+    const index = offlineTickets.findIndex(t => String(t.id) === String(ticketId));
+
+    if (index !== -1) {
+      offlineTickets[index] = { ...offlineTickets[index], ...updates };
+      await AsyncStorage.setItem(STORAGE_KEYS.OFFLINE_TICKETS, JSON.stringify(offlineTickets));
+    }
+
+    // Atualizar também no cache de detalhes
+    const existingTicket = await getTicketDetailsFromStorage(ticketId);
+    if (existingTicket) {
+      const updatedTicket = { ...existingTicket, ...updates };
+      await saveTicketDetailsToStorage(updatedTicket);
+    }
+
+    // Atualizar na lista principal se existir
+    const cachedList = await getTicketsFromStorage();
+    if (cachedList) {
+      const listIndex = cachedList.data.findIndex(t => String(t.id) === String(ticketId));
+      if (listIndex !== -1) {
+        cachedList.data[listIndex] = { ...cachedList.data[listIndex], ...updates };
+        await saveTicketsToStorage(cachedList);
+      }
+    }
+
+    console.log('[TicketStorage] Offline ticket updated:', ticketId);
+  } catch (error) {
+    console.error('Error updating offline ticket:', error);
+  }
+};
+
+// Remover ticket offline após sincronização
+export const removeOfflineTicket = async (localTicketId: string): Promise<void> => {
+  try {
+    const offlineTickets = await getOfflineTickets();
+    const filtered = offlineTickets.filter(t => String(t.id) !== localTicketId);
+    await AsyncStorage.setItem(STORAGE_KEYS.OFFLINE_TICKETS, JSON.stringify(filtered));
+    console.log('[TicketStorage] Offline ticket removed:', localTicketId);
+  } catch (error) {
+    console.error('Error removing offline ticket:', error);
+  }
+};
+
+// Verificar se um ticket é offline (ID começa com "offline_")
+export const isOfflineTicket = (ticketId: string | number): boolean => {
+  return String(ticketId).startsWith('offline_');
 };

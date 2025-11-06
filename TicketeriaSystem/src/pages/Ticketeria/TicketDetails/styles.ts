@@ -1,9 +1,7 @@
-import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 
-export const Container = styled(SafeAreaView)`
+export const Container = styled.View`
   flex: 1;
-  background-color: #F2F2F7;
 `;
 
 export const KeyboardView = styled.KeyboardAvoidingView`
@@ -18,6 +16,7 @@ export const Header = styled.View`
   background-color: #FFFFFF;
   border-bottom-width: 1px;
   border-bottom-color: #E5E5EA;
+  margin-top: 0px;
 `;
 
 export const BackButton = styled.TouchableOpacity`
@@ -194,4 +193,20 @@ export const EmptyCommentsText = styled.Text`
   color: #8E8E93;
   text-align: center;
   padding: 20px;
+`;
+
+export const CacheBadge = styled.View`
+  background-color: #34C759;
+  padding: 8px 16px;
+  margin: 8px 16px 0;
+  border-radius: 8px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const CacheBadgeText = styled.Text`
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: 600;
 `;

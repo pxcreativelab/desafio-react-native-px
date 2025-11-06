@@ -1,3 +1,4 @@
+import theme from '@/styles/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 
@@ -16,14 +17,7 @@ export const Header = styled.View`
   border-bottom-color: #E5E5EA;
 `;
 
-export const HeaderButton = styled.TouchableOpacity`
-  padding: 4px;
-`;
 
-export const HeaderButtonText = styled.Text`
-  font-size: 16px;
-  color: #007AFF;
-`;
 
 export const HeaderTitle = styled.Text`
   font-size: 18px;
@@ -94,17 +88,42 @@ export const PickerButtonText = styled.Text<PickerButtonTextProps>`
   color: ${({ selected }) => (selected ? '#000000' : '#8E8E93')};
 `;
 
+export const BoxButtons = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+`;
+
+export const CancelButton = styled.TouchableOpacity`
+  padding: 4px;
+  border: 1px solid #E5E5EA;
+  border-radius: 10px;
+  background-color:${theme.colors.danger};
+  padding: 12px 0px;
+  width: 40%;
+  align-items: center;
+`;
+
+export const CancelButtonText = styled.Text`
+  font-size: 16px;
+  color: #ffffffff;
+  font-weight: 700;
+`;
+
 interface SubmitButtonProps {
   active?: boolean;
 }
 
 export const SubmitButton = styled.TouchableOpacity<SubmitButtonProps>`
+margin-left: 16px;
   background-color: ${({ active }) => (active ? '#007AFF' : '#C7C7CC')};
-  padding: 16px;
+  padding: 12px 0;
+  flex: 1;
   border-radius: 10px;
   align-items: center;
-  margin-top: 24px;
   opacity: ${({ active }) => (active ? 1 : 0.6)};
+  font-weight: 700;
 `;
 
 export const SubmitButtonText = styled.Text<SubmitButtonProps>`

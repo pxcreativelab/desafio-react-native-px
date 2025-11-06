@@ -94,12 +94,12 @@ Antes de começar, verifique no projeto:
 - [x] Loading states apropriados
 
 ### 5. AsyncStorage (Cache Local)
-- [x] Salvar lista de tickets no AsyncStorage após busca bem-sucedida
-- [x] Carregar tickets do cache ao iniciar a tela (mostrar dados antigos enquanto carrega novos)
-- [x] Salvar detalhes do ticket localmente para acesso offline
-- [x] Limpar cache quando necessário (pull to refresh)
-- [x] Salvar preferências do usuário (filtros, ordenação)
-- [x] Implementar sincronização quando voltar online
+- [ ] Salvar lista de tickets no AsyncStorage após busca bem-sucedida
+- [ ] Carregar tickets do cache ao iniciar a tela (mostrar dados antigos enquanto carrega novos)
+- [ ] Salvar detalhes do ticket localmente para acesso offline
+- [ ] Limpar cache quando necessário (pull to refresh)
+- [ ] Salvar preferências do usuário (filtros, ordenação)
+- [ ] Implementar sincronização quando voltar online
 
 ### 6. SQLite (Modo Offline Robusto)
 - [] Criar tabelas SQLite para Tickets, Comments, Attachments

@@ -1,9 +1,11 @@
 import ConfirmModal from '@/components/ConfirmModal';
+import AsyncStorageCache from '@/helpers/AsyncStorageCache';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { SyncStatusBadge } from '@components/_fragments/SyncStatusBadge';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { ScrollView, Switch } from 'react-native';
+import { ScrollView, StyleSheet, Switch, Text, TouchableOpacity } from 'react-native';
 import {
   BackButton,
   BackButtonText,
@@ -25,6 +27,7 @@ import {
 const Profile: React.FC = () => {
   const { goBack } = useNavigation();
   const { user, logout, biometricEnabled, disableBiometric } = useAuthStore();
+  const { preferences, updatePreferences } = useUserPreferences();
 
   const [confirmVisible, setConfirmVisible] = useState(false);
   const [confirmTitle, setConfirmTitle] = useState<string | undefined>(undefined);
@@ -72,6 +75,26 @@ const Profile: React.FC = () => {
     setConfirmVisible(true);
   };
 
+  const handleClearCache = () => {
+    setConfirmTitle('Limpar Cache');
+    setConfirmMessage('Deseja limpar o cache local? Isso forçará o recarregamento dos dados do servidor.');
+    setConfirmAction(() => async () => {
+      await AsyncStorageCache.clearTicketsCache();
+      console.log('Cache cleared');
+      setConfirmVisible(false);
+    });
+    setConfirmVisible(true);
+  };
+
+  const statusFilterOptions = [
+    { label: 'Nenhum', value: undefined },
+    { label: 'Abertos', value: 'open' },
+    { label: 'Em Andamento', value: 'in_progress' },
+    { label: 'Resolvidos', value: 'resolved' },
+    { label: 'Fechados', value: 'closed' },
+  ];
+
+  const pageSizeOptions = [10, 20, 50, 100];
 
   return (
     <Container>
@@ -119,6 +142,66 @@ const Profile: React.FC = () => {
           <Divider />
 
           <Section>
+            <SectionTitle>Preferências de Visualização</SectionTitle>
+
+            <InfoRow>
+              <InfoLabel>Filtro Padrão</InfoLabel>
+            </InfoRow>
+            <SettingRow style={{ flexWrap: 'wrap', gap: 8 }}>
+              {statusFilterOptions.map((option) => (
+                <TouchableOpacity
+                  key={option.value || 'none'}
+                  onPress={() => updatePreferences({ defaultFilter: option.value })}
+                  style={[
+                    styles.optionButton,
+                    preferences.defaultFilter === option.value && styles.optionButtonSelected
+                  ]}
+                >
+                  <Text style={[
+                    styles.optionText,
+                    preferences.defaultFilter === option.value && styles.optionTextSelected
+                  ]}>
+                    {option.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </SettingRow>
+
+            <InfoRow style={{ marginTop: 16 }}>
+              <InfoLabel>Itens por Página</InfoLabel>
+            </InfoRow>
+            <SettingRow style={{ flexWrap: 'wrap', gap: 8 }}>
+              {pageSizeOptions.map((size) => (
+                <TouchableOpacity
+                  key={size}
+                  onPress={() => updatePreferences({ pageSize: size })}
+                  style={[
+                    styles.optionButton,
+                    preferences.pageSize === size && styles.optionButtonSelected
+                  ]}
+                >
+                  <Text style={[
+                    styles.optionText,
+                    preferences.pageSize === size && styles.optionTextSelected
+                  ]}>
+                    {size}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </SettingRow>
+          </Section>
+
+          <Divider />
+
+          <Section>
+            <LogoutButton onPress={handleClearCache}>
+              <LogoutButtonText>Limpar Cache</LogoutButtonText>
+            </LogoutButton>
+          </Section>
+
+          <Divider />
+
+          <Section>
             <LogoutButton onPress={handleClearData}>
               <LogoutButtonText>Limpar Dados</LogoutButtonText>
             </LogoutButton>
@@ -157,5 +240,28 @@ const Profile: React.FC = () => {
     </Container>
   );
 };
+
+const styles = StyleSheet.create({
+  optionButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+    backgroundColor: '#FFFFFF',
+  },
+  optionButtonSelected: {
+    borderColor: '#007AFF',
+    backgroundColor: '#007AFF',
+  },
+  optionText: {
+    fontSize: 14,
+    color: '#000000',
+    fontWeight: '500',
+  },
+  optionTextSelected: {
+    color: '#FFFFFF',
+  },
+});
 
 export default Profile;

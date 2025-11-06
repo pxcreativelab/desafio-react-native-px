@@ -1,3 +1,4 @@
+import { isOfflineTicket } from '@/helpers/ticketStorage';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import { Ticket } from '../../../services/TicketApi';
@@ -35,11 +36,16 @@ const TicketCard: React.FC<TicketCardProps> = ({ ticket, onPress }) => {
     return labels[priority] || priority;
   };
 
+  const isOffline = isOfflineTicket(ticket.id);
+
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
       <Container>
         <Header>
-          <Title numberOfLines={2}>{ticket.title}</Title>
+          <Title numberOfLines={2}>
+            {ticket.title}
+            {isOffline && ' 📱'}
+          </Title>
           <TicketStatusBadge status={ticket.status} />
         </Header>
 

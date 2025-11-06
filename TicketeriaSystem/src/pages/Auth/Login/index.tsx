@@ -77,9 +77,8 @@ const Login: React.FC = () => {
     setLoading(true);
     try {
       await login({ email: email.trim(), password }, true);
-      // Navegação será feita automaticamente pelo AuthContext
     } catch {
-      // Erro já tratado pelo toast no contexto
+
     } finally {
       setLoading(false);
     }
@@ -99,8 +98,6 @@ const Login: React.FC = () => {
   const handleRegister = () => {
     navigation.navigate('Register');
   };
-
-
 
   if (isLoading) {
     return (

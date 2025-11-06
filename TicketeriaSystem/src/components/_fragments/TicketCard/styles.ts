@@ -60,3 +60,16 @@ export const PriorityBadge = styled.View<{ color: string }>`
   border-radius: 8px;
   background-color: ${({ color }) => `${color}15`};
 `;
+
+export const OfflineBadge = styled.View`
+  background-color: #FF9500;
+  padding: 2px 8px;
+  border-radius: 8px;
+  margin-left: 8px;
+`;
+
+export const OfflineBadgeText = styled.Text`
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 600;
+`;

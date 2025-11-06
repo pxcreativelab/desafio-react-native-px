@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, RefreshControl } from 'react-native';
 
 import TicketCard from '@components/_fragments/TicketCard';
 import { useTicketsList } from '@hooks/tickets';
 import { useDebounce } from '@hooks/useDebounce';
+import { useUserPreferences } from '@hooks/useUserPreferences';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { Ticket } from '@services/TicketApi';
 
@@ -33,10 +34,18 @@ const TicketeriaList: React.FC = () => {
 
   const { navigate } = useNavigation();
   const debouncedSearch = useDebounce(searchText, 500);
+  const { preferences } = useUserPreferences();
 
-  const { data, isLoading, isFetching, refetch } = useTicketsList({
+  // Aplicar filtro padrão das preferências ao carregar
+  useEffect(() => {
+    if (preferences.defaultFilter !== undefined) {
+      setSelectedStatus(preferences.defaultFilter);
+    }
+  }, [preferences.defaultFilter]);
+
+  const { data, isLoading, isFetching, refetch, clearCache, } = useTicketsList({
     page: 1,
-    limit: 50,
+    limit: preferences.pageSize || 50,
     status: selectedStatus,
     search: debouncedSearch || undefined,
   });
@@ -47,6 +56,11 @@ const TicketeriaList: React.FC = () => {
       refetch();
     }, [refetch])
   );
+
+  // Pull-to-refresh: limpa cache e recarrega
+  const handleRefresh = React.useCallback(async () => {
+    await clearCache();
+  }, [clearCache]);
 
   const tickets = data?.data || [];
 
@@ -109,7 +123,7 @@ const TicketeriaList: React.FC = () => {
         refreshControl={
           <RefreshControl
             refreshing={isFetching}
-            onRefresh={refetch}
+            onRefresh={handleRefresh}
             colors={['#007AFF']}
             tintColor="#007AFF"
           />

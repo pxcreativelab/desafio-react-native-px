@@ -1,10 +1,13 @@
+import AsyncStorageCache from '@/helpers/AsyncStorageCache';
+import { addPendingAction, isOfflineTicket, updateOfflineTicket } from '@/helpers/ticketStorage';
+import { useSyncStatus } from '@hooks/useSync';
 import { useToast } from '@hooks/useToast';
 import { Ticket, updateTicket } from '@services/TicketApi';
 import { useCallback, useState } from 'react';
 
 /**
  * Hook para atualizar um ticket
- * Atualiza direto na API
+ * Atualiza direto na API e invalida o cache
  * 
  * @example
  * const { mutate: update, isPending } = useUpdateTicket('123');
@@ -15,6 +18,7 @@ import { useCallback, useState } from 'react';
  */
 export const useUpdateTicket = (ticketId: string) => {
   const toast = useToast();
+  const { isOnline } = useSyncStatus();
   const [isPending, setIsPending] = useState(false);
 
   const mutate = useCallback(
@@ -22,12 +26,33 @@ export const useUpdateTicket = (ticketId: string) => {
       try {
         setIsPending(true);
 
-        // Atualiza direto na API
-        const ticketIdNum = Number(ticketId);
-        await updateTicket(ticketIdNum, data);
-        console.log('[useUpdateTicket] Ticket updated successfully');
+        const isOffline = isOfflineTicket(ticketId);
 
-        toast.success('Ticket atualizado com sucesso!');
+        if (isOnline && !isOffline) {
+          // ONLINE: Atualiza direto na API
+          const ticketIdNum = Number(ticketId);
+          await updateTicket(ticketIdNum, data);
+          console.log('[useUpdateTicket] Ticket updated successfully');
+
+          // Limpar cache do ticket específico e da lista
+          await AsyncStorageCache.clearTicketDetail(ticketIdNum);
+          await AsyncStorageCache.clearTicketsCache();
+
+          toast.success('Ticket atualizado com sucesso!');
+        } else {
+          // OFFLINE: Atualiza localmente e adiciona à fila
+          await updateOfflineTicket(ticketId, data);
+
+          // Adicionar à fila de sincronização
+          await addPendingAction({
+            type: 'update',
+            ticketId,
+            data,
+          });
+
+          console.log('[useUpdateTicket] Ticket updated offline:', ticketId);
+          toast.success('Alteração salva offline. Será sincronizada quando conectar!');
+        }
 
         if (options?.onSuccess) {
           options.onSuccess();
@@ -43,7 +68,7 @@ export const useUpdateTicket = (ticketId: string) => {
         setIsPending(false);
       }
     },
-    [ticketId, toast]
+    [ticketId, toast, isOnline]
   );
 
   return {

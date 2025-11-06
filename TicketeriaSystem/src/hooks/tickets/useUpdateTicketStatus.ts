@@ -1,3 +1,5 @@
+import { addPendingAction, isOfflineTicket, updateOfflineTicket } from '@/helpers/ticketStorage';
+import { useSyncStatus } from '@hooks/useSync';
 import { useToast } from '@hooks/useToast';
 import { updateTicket } from '@services/TicketApi';
 import { useCallback, useState } from 'react';
@@ -15,6 +17,7 @@ import { useCallback, useState } from 'react';
  */
 export const useUpdateTicketStatus = (ticketId: string | number) => {
   const toast = useToast();
+  const { isOnline } = useSyncStatus();
   const [isPending, setIsPending] = useState(false);
 
   const mutate = useCallback(
@@ -23,11 +26,28 @@ export const useUpdateTicketStatus = (ticketId: string | number) => {
         setIsPending(true);
 
         const idNum = Number(ticketId);
-        // Atualiza direto na API
-        await updateTicket(idNum, { status: status as any });
-        console.log('[useUpdateTicketStatus] Status updated successfully');
+        const isOffline = isOfflineTicket(ticketId);
 
-        toast.success('Status atualizado com sucesso!');
+        if (isOnline && !isOffline) {
+          // ONLINE: Atualiza direto na API
+          await updateTicket(idNum, { status: status as any });
+          console.log('[useUpdateTicketStatus] Status updated successfully');
+
+          toast.success('Status atualizado com sucesso!');
+        } else {
+          // OFFLINE: Atualiza localmente e adiciona à fila
+          await updateOfflineTicket(ticketId, { status: status as any });
+
+          // Adicionar à fila de sincronização
+          await addPendingAction({
+            type: 'updateStatus',
+            ticketId,
+            data: { status },
+          });
+
+          console.log('[useUpdateTicketStatus] Status updated offline:', ticketId);
+          toast.success('Status alterado offline. Será sincronizado quando conectar!');
+        }
 
         if (options?.onSuccess) {
           options.onSuccess();
@@ -43,7 +63,7 @@ export const useUpdateTicketStatus = (ticketId: string | number) => {
         setIsPending(false);
       }
     },
-    [ticketId, toast]
+    [ticketId, toast, isOnline]
   );
 
   return {

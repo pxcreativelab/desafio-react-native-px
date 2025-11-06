@@ -6,15 +6,26 @@
       "description": "IIS significa Serviços de Informações da Internet, um servidor web da Microsoft para sistemas operacionais Windows, usado para hospedar sites e aplicativos. Ele permite a entrega de conteúdo via HTTP/HTTPS e também pode fornecer outros serviços como FTP, NNTP e SMTP. O IIS é um componente integrado do Windows e pode ser habilitado através dos \"Recursos do Windows\" no Painel de Control",
       "category": "Bug",
       "priority": "medium",
-      "status": "resolved",
+      "status": "closed",
       "createdAt": "2025-11-04T18:50:45.749Z",
-      "updatedAt": "2025-11-04T21:03:00.026Z",
+      "updatedAt": "2025-11-04T22:18:06.425Z",
       "createdBy": {
         "id": "user_1762201619138",
         "name": "douglas",
         "email": "douglas@gmail.com"
       },
-      "comments": [],
+      "comments": [
+        {
+          "id": 1762294653811,
+          "text": "Rafasd sfasdf",
+          "createdAt": "2025-11-04T22:17:07.078Z",
+          "createdBy": {
+            "id": "user_1762201619138",
+            "name": "douglas",
+            "email": "douglas@gmail.com"
+          }
+        }
+      ],
       "attachments": []
     },
     {
@@ -23,14 +34,37 @@
       "description": "Atualizar a lógica para, em caso de conflito, aplicar merge inteligente (ex: atualizar apenas campos que vêm mais recentes pelo timestamp), se quiser reconciliar servidor vs local.",
       "category": "Bug",
       "priority": "medium",
-      "status": "resolved",
+      "status": "closed",
       "createdAt": "2025-11-04T20:15:06.881Z",
-      "updatedAt": "2025-11-04T21:02:26.565Z",
+      "updatedAt": "2025-11-04T22:17:53.493Z",
       "createdBy": {
         "id": "user_1762201619138",
         "name": "douglas",
         "email": "douglas@gmail.com"
       },
+      "comments": [
+        {
+          "id": 1762293669515,
+          "text": "  nnnnkmml",
+          "createdAt": "2025-11-04T22:01:08.160Z",
+          "createdBy": {
+            "id": "user_1762201619138",
+            "name": "douglas",
+            "email": "douglas@gmail.com"
+          }
+        }
+      ],
+      "attachments": []
+    },
+    {
+      "id": 1762293647694,
+      "title": "tesfghjg",
+      "description": "jhbjbhbbnn",
+      "category": "Sistema",
+      "priority": "medium",
+      "status": "closed",
+      "createdAt": "2025-11-04T22:00:47.694Z",
+      "updatedAt": "2025-11-04T22:18:23.658Z",
       "comments": [],
       "attachments": []
     }

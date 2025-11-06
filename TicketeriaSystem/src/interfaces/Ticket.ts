@@ -6,7 +6,7 @@ export type TicketStatus = 'open' | 'in_progress' | 'resolved' | 'closed';
 
 
 export interface Ticket {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   category: string;
@@ -21,9 +21,6 @@ export interface Ticket {
     name: string;
     email: string;
   };
-
-  serverId?: number;
-  syncStatus?: 'synced' | 'pending';
 }
 
 

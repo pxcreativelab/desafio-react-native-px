@@ -75,8 +75,6 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         isLoading: false,
         biometricEnabled,
       });
-
-      showToast('Login realizado com sucesso!', 'success');
     } catch (error: any) {
       showToast(error.message || 'Erro ao fazer login', 'error');
       throw error;
