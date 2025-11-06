@@ -1,0 +1,49 @@
+import { create } from 'zustand';
+
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
+
+export interface Toast {
+  id: string;
+  message: string;
+  type: ToastType;
+  duration?: number;
+}
+
+interface ToastStore {
+  toasts: Toast[];
+  showToast: (message: string, type: ToastType, duration?: number) => void;
+  hideToast: (id: string) => void;
+  clearAll: () => void;
+}
+
+export const useToastStore = create<ToastStore>(set => ({
+  toasts: [],
+
+  showToast: (message, type, duration = 3000) => {
+    const id = Math.random().toString(36).substring(7);
+    const toast: Toast = { id, message, type, duration };
+
+    set(state => ({
+      toasts: [...state.toasts, toast],
+    }));
+
+    // Auto-hide após o duration
+    if (duration > 0) {
+      setTimeout(() => {
+        set(state => ({
+          toasts: state.toasts.filter(t => t.id !== id),
+        }));
+      }, duration);
+    }
+  },
+
+  hideToast: id => {
+    set(state => ({
+      toasts: state.toasts.filter(t => t.id !== id),
+    }));
+  },
+
+  clearAll: () => {
+    set({ toasts: [] });
+  },
+}));

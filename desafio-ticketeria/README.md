@@ -27,25 +27,25 @@ Consulte `SQLITE_OFFLINE.md` para implementar modo offline robusto com SQLite.
 Use este checklist durante o desenvolvimento:
 
 ### Fase 1: Setup e Estrutura
-- [ ] Criar estrutura de pastas
-- [ ] Criar `TicketApi.ts` com interfaces TypeScript
-- [ ] Implementar funções básicas de API (fetch, create)
+- [x] Criar estrutura de pastas
+- [x] Criar `TicketApi.ts` com interfaces TypeScript
+- [x] Implementar funções básicas de API (fetch, create)
 
 ### Fase 2: Componentes Base
-- [ ] Criar `TicketStatusBadge`
-- [ ] Criar `TicketCard`
-- [ ] Criar `TicketComment` (se necessário)
+- [x] Criar `TicketStatusBadge`
+- [x] Criar `TicketCard`
+- [x] Criar `TicketComment` (se necessário)
 
 ### Fase 3: Páginas Principais
-- [ ] Implementar lista de tickets
-- [ ] Adicionar busca e filtros
-- [ ] Implementar página de detalhes
-- [ ] Implementar página de criação
+- [x] Implementar lista de tickets
+- [x] Adicionar busca e filtros
+- [x] Implementar página de detalhes
+- [x] Implementar página de criação
 
 ### Fase 4: Integração
-- [ ] Adicionar rotas no `App.routes.tsx`
-- [ ] Conectar todas as telas
-- [ ] Testar fluxo completo
+- [x] Adicionar rotas no `App.routes.tsx`
+- [x] Conectar todas as telas
+- [x] Testar fluxo completo
 
 ### Fase 5: Refinamento
 - [ ] Adicionar tratamento de erros

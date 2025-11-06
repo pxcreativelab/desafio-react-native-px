@@ -15,21 +15,21 @@ Criar um sistema completo de cadastro e gestão de tickets (ticketeria) seguindo
 ### ✅ Obrigatório (MVP - Foco Principal)
 Estas funcionalidades são essenciais e devem ser implementadas:
 
-- [ ] Listagem de tickets com busca e filtros
-- [ ] Cadastro de ticket completo
-- [ ] Visualização de detalhes do ticket
-- [ ] Adição de comentários
-- [ ] Alteração de status do ticket
-- [ ] Cache local com AsyncStorage
-- [ ] Carregamento de dados do cache quando offline
+- [x] Listagem de tickets com busca e filtros
+- [x] Cadastro de ticket completo
+- [x] Visualização de detalhes do ticket
+- [x] Adição de comentários
+- [x] Alteração de status do ticket
+- [x] Cache local com AsyncStorage
+- [x] Carregamento de dados do cache quando offline
 
 ### ⭐ Opcional/Bônus (Desejável)
 Estas funcionalidades agregam valor mas não são obrigatórias:
 
-- [ ] SQLite para modo offline robusto
-- [ ] Sistema de sincronização de pendências
-- [ ] Upload e visualização de anexos
-- [ ] Login por biometria
+- [x] SQLite para modo offline robusto
+- [x] Sistema de sincronização de pendências
+- [x] Upload e visualização de anexos
+- [x] Login por biometria
 
 **Nota:** Foque primeiro no MVP. As funcionalidades opcionais são bônus e podem ser implementadas caso o tempo permita.
 
@@ -39,11 +39,11 @@ Estas funcionalidades agregam valor mas não são obrigatórias:
 
 Antes de começar, verifique no projeto:
 
-- [ ] **Estrutura de Rotas:** Onde ficam as rotas? (`src/routes/App.routes.tsx` ou similar)
-- [ ] **Serviço API Base:** Existe `src/services/Api.ts` configurado?
-- [ ] **Sistema de Tema:** Existe `src/styles/theme.ts` ou similar?
-- [ ] **Padrões de Código:** Como são estruturadas as páginas existentes?
-- [ ] **Autenticação:** Como funciona o sistema de autenticação?
+- [x] **Estrutura de Rotas:** Onde ficam as rotas? (`src/routes/App.routes.tsx` ou similar)
+- [x] **Serviço API Base:** Existe `src/services/Api.ts` configurado?
+- [x] **Sistema de Tema:** Existe `src/styles/theme.ts` ou similar?
+- [x] **Padrões de Código:** Como são estruturadas as páginas existentes?
+- [x] **Autenticação:** Como funciona o sistema de autenticação?
 
 **Dica:** Explore o projeto antes de começar para entender os padrões existentes.
 
@@ -52,71 +52,71 @@ Antes de começar, verifique no projeto:
 ## 🎯 Requisitos Funcionais
 
 ### 1. Listagem de Tickets (`TicketList`)
-- [ ] Tela que exibe lista de tickets cadastrados
-- [ ] Busca por título ou número do ticket
-- [ ] Filtros por status (aberto, em andamento, resolvido, fechado)
-- [ ] Ordenação por data (mais recente primeiro)
-- [ ] Pull to refresh
-- [ ] Paginação ou scroll infinito
-- [ ] Indicador visual de status (cores diferentes)
-- [ ] Navegação para detalhes do ticket ao tocar
+- [x] Tela que exibe lista de tickets cadastrados
+- [x] Busca por título ou número do ticket
+- [x] Filtros por status (aberto, em andamento, resolvido, fechado)
+- [x] Ordenação por data (mais recente primeiro)
+- [x] Pull to refresh
+- [x] Paginação ou scroll infinito
+- [x] Indicador visual de status (cores diferentes)
+- [x] Navegação para detalhes do ticket ao tocar
 
 ### 2. Cadastro de Ticket (`CreateTicket`)
-- [ ] Formulário para criação de novo ticket com os campos:
+- [x] Formulário para criação de novo ticket com os campos:
   - Título (obrigatório, mínimo 5 caracteres)
   - Descrição (obrigatório, mínimo 10 caracteres)
   - Categoria (seleção obrigatória - dropdown/select)
   - Prioridade (baixa, média, alta, crítica)
   - Anexos (opcional, múltiplos arquivos)
-- [ ] Validação de campos em tempo real
-- [ ] Preview de arquivos anexados
-- [ ] Feedback visual de sucesso/erro
-- [ ] Redirecionamento após criação bem-sucedida
+- [x] Validação de campos em tempo real
+- [] Preview de arquivos anexados
+- [x] Feedback visual de sucesso/erro
+- [x] Redirecionamento após criação bem-sucedida
 
 ### 3. Detalhes do Ticket (`TicketDetails`)
-- [ ] Exibir todas as informações do ticket
-- [ ] Lista de comentários/respostas
-- [ ] Adicionar novo comentário
-- [ ] Alterar status do ticket (abrir, fechar, resolver)
-- [ ] Visualizar anexos (download/visualização)
+- [x] Exibir todas as informações do ticket
+- [x] Lista de comentários/respostas
+- [x] Adicionar novo comentário
+- [x] Alterar status do ticket (abrir, fechar, resolver)
+- [] Visualizar anexos (download/visualização)
 - [ ] Histórico de alterações (opcional, se API suportar)
 
 ### 4. Integração com APIs
-- [ ] Criar serviço `TicketApi.ts` em `src/services/`
-- [ ] Implementar funções de fetch para:
+- [x] Criar serviço `TicketApi.ts` em `src/services/`
+- [x] Implementar funções de fetch para:
   - Listar tickets: `GET /api/v1/tickets`
   - Buscar ticket: `GET /api/v1/tickets/:id`
   - Criar ticket: `POST /api/v1/tickets`
   - Atualizar ticket: `PUT /api/v1/tickets/:id`
   - Adicionar comentário: `POST /api/v1/tickets/:id/comments`
   - Upload de arquivos: `POST /api/v1/tickets/:id/attachments`
-- [ ] Tratamento de erros (network, validação, etc.)
-- [ ] Loading states apropriados
+- [x] Tratamento de erros (network, validação, etc.)
+- [x] Loading states apropriados
 
 ### 5. AsyncStorage (Cache Local)
-- [ ] Salvar lista de tickets no AsyncStorage após busca bem-sucedida
-- [ ] Carregar tickets do cache ao iniciar a tela (mostrar dados antigos enquanto carrega novos)
-- [ ] Salvar detalhes do ticket localmente para acesso offline
-- [ ] Limpar cache quando necessário (pull to refresh)
-- [ ] Salvar preferências do usuário (filtros, ordenação)
-- [ ] Implementar sincronização quando voltar online
+- [x] Salvar lista de tickets no AsyncStorage após busca bem-sucedida
+- [x] Carregar tickets do cache ao iniciar a tela (mostrar dados antigos enquanto carrega novos)
+- [x] Salvar detalhes do ticket localmente para acesso offline
+- [x] Limpar cache quando necessário (pull to refresh)
+- [x] Salvar preferências do usuário (filtros, ordenação)
+- [x] Implementar sincronização quando voltar online
 
 ### 6. SQLite (Modo Offline Robusto)
-- [ ] Criar tabelas SQLite para Tickets, Comments, Attachments
-- [ ] Salvar tickets no SQLite quando criados/atualizados offline
-- [ ] Salvar comentários pendentes para sincronização posterior
-- [ ] Salvar anexos pendentes localmente
-- [ ] Implementar sistema de fila para ações pendentes
-- [ ] Sincronizar dados pendentes quando voltar online
-- [ ] Usar `isConnected()` para detectar status de conexão
-- [ ] Marcar itens como sincronizados após envio bem-sucedido
+- [] Criar tabelas SQLite para Tickets, Comments, Attachments
+- [] Salvar tickets no SQLite quando criados/atualizados offline
+- [] Salvar comentários pendentes para sincronização posterior
+- [] Salvar anexos pendentes localmente
+- [] Implementar sistema de fila para ações pendentes
+- [] Sincronizar dados pendentes quando voltar online
+- [] Usar `isConnected()` para detectar status de conexão
+- [] Marcar itens como sincronizados após envio bem-sucedido
 
 ### 7. Login com Biometria (Opcional mas Desejável)
-- [ ] Adicionar opção de login rápido por biometria
-- [ ] Verificar disponibilidade do sensor biométrico
-- [ ] Implementar autenticação biométrica usando `react-native-biometrics`
-- [ ] Salvar credenciais criptografadas (usar `cryptoData` helper)
-- [ ] Integrar com o contexto de autenticação existente
+- [x] Adicionar opção de login rápido por biometria
+- [x] Verificar disponibilidade do sensor biométrico
+- [x] Implementar autenticação biométrica usando `react-native-biometrics`
+- [x] Salvar credenciais criptografadas (usar `cryptoData` helper)
+- [x] Integrar com o contexto de autenticação existente
 - [ ] Permitir habilitar/desabilitar login biométrico nas configurações
 
 ---
@@ -328,46 +328,46 @@ Para testar sem uma API real, você pode usar:
 ## ✅ Checklist de Entrega
 
 ### Funcionalidades
-- [ ] Listagem de tickets funcional
-- [ ] Busca funcionando
-- [ ] Filtros por status funcionando
-- [ ] Cadastro de ticket completo
-- [ ] Visualização de detalhes
-- [ ] Adicionar comentários
-- [ ] Alterar status do ticket
-- [ ] Upload e visualização de anexos
-- [ ] Cache local com AsyncStorage funcionando
-- [ ] Carregar dados do cache quando offline
-- [ ] SQLite funcionando para modo offline
-- [ ] Sincronização de dados pendentes funcionando
-- [ ] Login por biometria implementado (opcional)
+- [x] Listagem de tickets funcional
+- [x] Busca funcionando
+- [x] Filtros por status funcionando
+- [x] Cadastro de ticket completo
+- [x] Visualização de detalhes
+- [x] Adicionar comentários
+- [x] Alterar status do ticket
+- [] Upload e visualização de anexos
+- [x] Cache local com AsyncStorage funcionando
+- [x] Carregar dados do cache quando offline
+- [] SQLite funcionando para modo offline
+- [x] Sincronização de dados pendentes funcionando
+- [x] Login por biometria implementado (opcional)
 
 ### Qualidade de Código
-- [ ] Código segue padrões TypeScript
-- [ ] Componentes reutilizáveis
-- [ ] Tratamento de erros adequado
-- [ ] Loading states implementados
-- [ ] Validações de formulário
+- [x] Código segue padrões TypeScript
+- [x] Componentes reutilizáveis
+- [x] Tratamento de erros adequado
+- [x] Loading states implementados
+- [x] Validações de formulário
 - [ ] Nenhum erro de lint/TypeScript
-- [ ] Comentários onde necessário
+- [x] Comentários onde necessário
 
 ### UX/UI
-- [ ] Interface consistente com o design system
-- [ ] Feedback visual em todas as ações
-- [ ] Navegação intuitiva
-- [ ] Estados vazios tratados (sem tickets, sem comentários)
-- [ ] Scroll suave e performático
+- [x] Interface consistente com o design system
+- [x] Feedback visual em todas as ações
+- [x] Navegação intuitiva
+- [x] Estados vazios tratados (sem tickets, sem comentários)
+- [x] Scroll suave e performático
 
 ### Integração
-- [ ] Rotas adicionadas corretamente
-- [ ] APIs chamadas corretamente
-- [ ] Tokens de autenticação utilizados (se necessário)
-- [ ] Tratamento de offline/erro de rede
-- [ ] AsyncStorage funcionando para cache
-- [ ] SQLite funcionando para modo offline robusto
-- [ ] Sincronização de dados local/servidor
-- [ ] Fila de pendências sincronizando corretamente
-- [ ] Biometria integrada (se implementado)
+- [x] Rotas adicionadas corretamente
+- [x] APIs chamadas corretamente
+- [x] Tokens de autenticação utilizados (se necessário)
+- [x] Tratamento de offline/erro de rede
+- [x] AsyncStorage funcionando para cache
+- [] SQLite funcionando para modo offline robusto
+- [x] Sincronização de dados local/servidor
+- [x] Fila de pendências sincronizando corretamente
+- [x] Biometria integrada (se implementado)
 
 ---
 
@@ -436,7 +436,7 @@ Se terminar antes do prazo ou quiser se destacar:
 - [ ] Modo offline com cache local
 - [ ] Notificações push para atualizações de ticket
 - [ ] Busca avançada com múltiplos filtros
-- [ ] Exportar lista de tickets (PDF/CSV)
+- [x] Exportar lista de tickets (PDF/CSV)
 - [ ] Gráficos/estatísticas de tickets
 
 ---
