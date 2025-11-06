@@ -5,7 +5,7 @@ import { useAddComment, useTicketDetails, useUpdateTicketStatus } from '@hooks/t
 import { StaticScreenProps, useNavigation } from '@react-navigation/native';
 import { Attachment, Comment } from '@services/TicketApi';
 import React, { useState } from 'react';
-import { ActivityIndicator, Platform, ScrollView } from 'react-native';
+import { ActivityIndicator, Platform, ScrollView, View } from 'react-native';
 import {
   ActionButton,
   ActionButtonText,
@@ -82,11 +82,15 @@ const TicketDetails: React.FC<Props> = ({ route: { params: { ticketId } } }: Pro
     }
   };
 
-
   return (
     <KeyboardView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <Container>
-        <Header>
+        <View style={{
+          backgroundColor: getPriorityColor(ticket?.priority || 'low'),
+          height: Number(2)
+        }}
+        />
+        <Header >
           <HeaderTitle>Ticket #{ticketId}</HeaderTitle>
           <BackButton onPress={navigation.goBack}>
             <BackButtonText>← Voltar</BackButtonText>

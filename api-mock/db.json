@@ -64,7 +64,30 @@
       "priority": "medium",
       "status": "closed",
       "createdAt": "2025-11-04T22:00:47.694Z",
-      "updatedAt": "2025-11-04T22:18:23.658Z",
+      "updatedAt": "2025-11-06T12:31:49.902Z",
+      "comments": [
+        {
+          "id": 1762432309902,
+          "text": "Twsr",
+          "createdAt": "2025-11-06T12:31:28.664Z",
+          "createdBy": {
+            "id": "user_1762201619138",
+            "name": "douglas",
+            "email": "douglas@gmail.com"
+          }
+        }
+      ],
+      "attachments": []
+    },
+    {
+      "id": 1762432398486,
+      "title": "Teste 123",
+      "description": "Testes 123",
+      "category": "Bug",
+      "priority": "high",
+      "status": "open",
+      "createdAt": "2025-11-06T12:33:18.486Z",
+      "updatedAt": "2025-11-06T12:33:18.486Z",
       "comments": [],
       "attachments": []
     }
